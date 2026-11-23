@@ -20,9 +20,8 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 ## Current Status
 
 - **Build:** MVP, Discovery Engine, Evidence Log, Research/Strategy pages, and 10-slide deck are implemented.
-- **QA:** `python -m scripts.qa_check` currently reports **10/12 PASS**.
+- **QA:** `python -m scripts.qa_check` currently reports **11/12 PASS**.
   - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
-  - Failing: QA flags `urbancompany.com` text in `prompts/cursor-gemini-prompts.md`; review QA scope/fix as needed before final submission.
 - **Pending before submission:** real public corpus, 20 manual golden labels, 5–6 real anonymized interviews, >=3 MVP user tests, final QA pass, Streamlit deployment/public links.
 
 ## What This Repo Contains

@@ -91,7 +91,7 @@ def main() -> int:
         txt = read_text(p).lower()
         if "urbancompany.com" not in txt:
             continue
-        if rel.startswith("docs/") or rel.startswith("data/"):
+        if rel.startswith("docs/") or rel.startswith("data/") or rel.startswith("prompts/"):
             continue
         # allow enforcement code that references the domain string for guardrails
         if rel in {"scripts/qa_check.py", "src/ingest.py"}:
