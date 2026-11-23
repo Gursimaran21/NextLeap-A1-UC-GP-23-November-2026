@@ -1,0 +1,7 @@
+streamlit>=1.39
+pandas
+scikit-learn
+reportlab
+pypdf
+python-dotenv
+altair

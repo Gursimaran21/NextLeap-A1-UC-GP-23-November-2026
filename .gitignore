@@ -1,0 +1,13 @@
+.env
+.streamlit/secrets.toml
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.DS_Store
+outputs/*
+!outputs/NL_UrbanCompany.pdf
+!outputs/evidence_log.md
+!outputs/evidence_log.pdf
+!outputs/discovery_results.json
+data/raw/

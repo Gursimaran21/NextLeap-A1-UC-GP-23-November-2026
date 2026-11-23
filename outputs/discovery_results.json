@@ -1,0 +1,1511 @@
+{
+  "generated_at": "2026-11-23T09:51:51.679435+00:00",
+  "corpus": {
+    "rows_loaded": 40,
+    "rows_kept": 40,
+    "redactions": 0,
+    "sources_count": 6,
+    "min_date": "2026-11-23",
+    "max_date": "2026-11-23",
+    "illustrative": true
+  },
+  "aggregate": {
+    "total_items": 40,
+    "theme_distribution": [
+      {
+        "code": "T1_POST_SERVICE_CLOSURE",
+        "name": "Post-service closure gap",
+        "count": 3,
+        "share_pct": 7.5
+      },
+      {
+        "code": "T2_NEED_RECOGNITION",
+        "name": "Need recognition gap",
+        "count": 2,
+        "share_pct": 5.0
+      },
+      {
+        "code": "T3_MENTAL_AVAILABILITY",
+        "name": "Mental availability gap",
+        "count": 2,
+        "share_pct": 5.0
+      },
+      {
+        "code": "T4_CATEGORY_AWARENESS",
+        "name": "Category awareness gap",
+        "count": 3,
+        "share_pct": 7.5
+      },
+      {
+        "code": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "name": "Local/WhatsApp default",
+        "count": 7,
+        "share_pct": 17.5
+      },
+      {
+        "code": "T6_DECISION_CONFIDENCE",
+        "name": "Decision confidence gap",
+        "count": 1,
+        "share_pct": 2.5
+      },
+      {
+        "code": "T7_PLANNING_SEASONALITY",
+        "name": "Planning/seasonality gap",
+        "count": 3,
+        "share_pct": 7.5
+      },
+      {
+        "code": "T8_EXPERIENCE_QUALITY",
+        "name": "Experience/quality issue",
+        "count": 4,
+        "share_pct": 10.0
+      },
+      {
+        "code": "T9_PRICE_OFFER",
+        "name": "Price/offer expectation",
+        "count": 0,
+        "share_pct": 0.0
+      },
+      {
+        "code": "T10_REDO_REFUND",
+        "name": "Redo/refund/warranty",
+        "count": 2,
+        "share_pct": 5.0
+      },
+      {
+        "code": "T11_UNCLASSIFIED",
+        "name": "Unclassified",
+        "count": 13,
+        "share_pct": 32.5
+      }
+    ],
+    "by_source_class": [
+      {
+        "source_class": "app_store",
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "count": 2
+      },
+      {
+        "source_class": "app_store",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 1
+      },
+      {
+        "source_class": "app_store",
+        "primary_theme": "T3_MENTAL_AVAILABILITY",
+        "count": 1
+      },
+      {
+        "source_class": "app_store",
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "count": 1
+      },
+      {
+        "source_class": "app_store",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 1
+      },
+      {
+        "source_class": "app_store",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 1
+      },
+      {
+        "source_class": "play_store",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 2
+      },
+      {
+        "source_class": "play_store",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 2
+      },
+      {
+        "source_class": "play_store",
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "count": 1
+      },
+      {
+        "source_class": "play_store",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 1
+      },
+      {
+        "source_class": "play_store",
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "count": 1
+      },
+      {
+        "source_class": "reddit",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 3
+      },
+      {
+        "source_class": "reddit",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 2
+      },
+      {
+        "source_class": "reddit",
+        "primary_theme": "T6_DECISION_CONFIDENCE",
+        "count": 1
+      },
+      {
+        "source_class": "reddit",
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "count": 1
+      },
+      {
+        "source_class": "transcript",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 6
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T10_REDO_REFUND",
+        "count": 1
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 1
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "count": 1
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T2_NEED_RECOGNITION",
+        "count": 1
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 1
+      },
+      {
+        "source_class": "trustpilot",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T10_REDO_REFUND",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T2_NEED_RECOGNITION",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T3_MENTAL_AVAILABILITY",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 1
+      },
+      {
+        "source_class": "youtube",
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "count": 1
+      }
+    ],
+    "by_category": [
+      {
+        "category": "AC Service",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 4
+      },
+      {
+        "category": "AC Service",
+        "primary_theme": "T10_REDO_REFUND",
+        "count": 1
+      },
+      {
+        "category": "AC Service",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 1
+      },
+      {
+        "category": "AC Service",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 1
+      },
+      {
+        "category": "All",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 6
+      },
+      {
+        "category": "Appliance Repair",
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "count": 2
+      },
+      {
+        "category": "Appliance Repair",
+        "primary_theme": "T2_NEED_RECOGNITION",
+        "count": 1
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 2
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 2
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "count": 1
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T2_NEED_RECOGNITION",
+        "count": 1
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T3_MENTAL_AVAILABILITY",
+        "count": 1
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "count": 1
+      },
+      {
+        "category": "Deep Cleaning",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 1
+      },
+      {
+        "category": "Pest Control",
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "count": 1
+      },
+      {
+        "category": "Pest Control",
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "count": 1
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "count": 2
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "count": 2
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T10_REDO_REFUND",
+        "count": 1
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 1
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "count": 1
+      },
+      {
+        "category": "Plumbing",
+        "primary_theme": "T6_DECISION_CONFIDENCE",
+        "count": 1
+      },
+      {
+        "category": "Salon",
+        "primary_theme": "T11_UNCLASSIFIED",
+        "count": 3
+      },
+      {
+        "category": "Salon",
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "count": 1
+      },
+      {
+        "category": "Salon",
+        "primary_theme": "T3_MENTAL_AVAILABILITY",
+        "count": 1
+      }
+    ],
+    "return_signal_crosstab": [
+      {
+        "primary_theme": "T10_REDO_REFUND",
+        "return_signal": "did_not_return",
+        "count": 1
+      },
+      {
+        "primary_theme": "T10_REDO_REFUND",
+        "return_signal": "unclear",
+        "count": 1
+      },
+      {
+        "primary_theme": "T11_UNCLASSIFIED",
+        "return_signal": "returned",
+        "count": 5
+      },
+      {
+        "primary_theme": "T11_UNCLASSIFIED",
+        "return_signal": "unclear",
+        "count": 8
+      },
+      {
+        "primary_theme": "T1_POST_SERVICE_CLOSURE",
+        "return_signal": "unclear",
+        "count": 3
+      },
+      {
+        "primary_theme": "T2_NEED_RECOGNITION",
+        "return_signal": "unclear",
+        "count": 2
+      },
+      {
+        "primary_theme": "T3_MENTAL_AVAILABILITY",
+        "return_signal": "did_not_return",
+        "count": 2
+      },
+      {
+        "primary_theme": "T4_CATEGORY_AWARENESS",
+        "return_signal": "unclear",
+        "count": 3
+      },
+      {
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "return_signal": "did_not_return",
+        "count": 1
+      },
+      {
+        "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+        "return_signal": "unclear",
+        "count": 6
+      },
+      {
+        "primary_theme": "T6_DECISION_CONFIDENCE",
+        "return_signal": "unclear",
+        "count": 1
+      },
+      {
+        "primary_theme": "T7_PLANNING_SEASONALITY",
+        "return_signal": "unclear",
+        "count": 3
+      },
+      {
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "return_signal": "did_not_return",
+        "count": 1
+      },
+      {
+        "primary_theme": "T8_EXPERIENCE_QUALITY",
+        "return_signal": "unclear",
+        "count": 3
+      }
+    ],
+    "bias_counts": {
+      "none": 32,
+      "silent_nonreturner_proxy": 4,
+      "bad_experience_overrepresented": 4
+    },
+    "top_quotes_by_theme": {
+      "T1_POST_SERVICE_CLOSURE": [
+        {
+          "item_id": "S001",
+          "quote": "[ILLUSTRATIVE] Booked deep cleaning, it went fine but I never thought about what to book next.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S007",
+          "quote": "[ILLUSTRATIVE] Service was completed but there was no follow-up or reminder for next steps.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S015",
+          "quote": "[ILLUSTRATIVE] Booking was smooth but I had no reason to open the app again for weeks.",
+          "return_signal": "unclear",
+          "source": "Trustpilot"
+        }
+      ],
+      "T5_LOCAL_WHATSAPP_DEFAULT": [
+        {
+          "item_id": "S002",
+          "quote": "[ILLUSTRATIVE] AC service was good. Months later my tap leaked and I called a local plumber from WhatsApp.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S008",
+          "quote": "[ILLUSTRATIVE] Used UC for AC repair once. Next time I needed electrician, I asked in my society group.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        },
+        {
+          "item_id": "S019",
+          "quote": "[ILLUSTRATIVE] Service quality was fine, but my building handyman is just easier for small jobs.",
+          "return_signal": "unclear",
+          "source": "Trustpilot"
+        }
+      ],
+      "T3_MENTAL_AVAILABILITY": [
+        {
+          "item_id": "S003",
+          "quote": "[ILLUSTRATIVE] I used salon at home once and forgot the app existed until a friend mentioned it.",
+          "return_signal": "did_not_return",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S028",
+          "quote": "[ILLUSTRATIVE] I tried them once and the service was decent, but I forgot about them later.",
+          "return_signal": "did_not_return",
+          "source": "YouTube comments"
+        }
+      ],
+      "T4_CATEGORY_AWARENESS": [
+        {
+          "item_id": "S004",
+          "quote": "[ILLUSTRATIVE] The cleaning was okay, but I didn't know they also do pest control.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S011",
+          "quote": "[ILLUSTRATIVE] Didn't know Urban Company had appliance repair too, used a local shop.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        },
+        {
+          "item_id": "S030",
+          "quote": "[ILLUSTRATIVE] Did not know they do so many categories until I watched this video.",
+          "return_signal": "unclear",
+          "source": "YouTube comments"
+        }
+      ],
+      "T11_UNCLASSIFIED": [
+        {
+          "item_id": "S005",
+          "quote": "[ILLUSTRATIVE] After the service I had no idea when I should book again for maintenance.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S009",
+          "quote": "[ILLUSTRATIVE] The app is fine but I don't remember it when something breaks suddenly.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        },
+        {
+          "item_id": "S012",
+          "quote": "[ILLUSTRATIVE] After a good service I still wasn't sure what else my home needed.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        }
+      ],
+      "T8_EXPERIENCE_QUALITY": [
+        {
+          "item_id": "S006",
+          "quote": "[ILLUSTRATIVE] Great job, I booked bathroom cleaning again two months later.",
+          "return_signal": "unclear",
+          "source": "App Store"
+        },
+        {
+          "item_id": "S010",
+          "quote": "[ILLUSTRATIVE] I booked pest control and later booked cleaning because I saw it in the app.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        },
+        {
+          "item_id": "S014",
+          "quote": "[ILLUSTRATIVE] The professional was late and left a mess; I didn't want to try again.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        }
+      ],
+      "T7_PLANNING_SEASONALITY": [
+        {
+          "item_id": "S013",
+          "quote": "[ILLUSTRATIVE] I only use it when something goes wrong, never for planned upkeep.",
+          "return_signal": "unclear",
+          "source": "Play Store"
+        },
+        {
+          "item_id": "S027",
+          "quote": "[ILLUSTRATIVE] If the app reminded me before monsoon, I might have booked pest control there.",
+          "return_signal": "unclear",
+          "source": "Reddit"
+        },
+        {
+          "item_id": "S031",
+          "quote": "[ILLUSTRATIVE] I only book when there is a big problem, not for regular maintenance.",
+          "return_signal": "unclear",
+          "source": "YouTube comments"
+        }
+      ],
+      "T2_NEED_RECOGNITION": [
+        {
+          "item_id": "S016",
+          "quote": "[ILLUSTRATIVE] I got my sofa cleaned once; I didn't know the right frequency for booking again.",
+          "return_signal": "unclear",
+          "source": "Trustpilot"
+        },
+        {
+          "item_id": "S034",
+          "quote": "[ILLUSTRATIVE] I wish I knew when to service appliances before they break down.",
+          "return_signal": "unclear",
+          "source": "YouTube comments"
+        }
+      ],
+      "T10_REDO_REFUND": [
+        {
+          "item_id": "S018",
+          "quote": "[ILLUSTRATIVE] They refunded my booking after a poor visit, so I stopped using it.",
+          "return_signal": "did_not_return",
+          "source": "Trustpilot"
+        },
+        {
+          "item_id": "S032",
+          "quote": "[ILLUSTRATIVE] Had a warranty issue and the redo took too long.",
+          "return_signal": "unclear",
+          "source": "YouTube comments"
+        }
+      ],
+      "T6_DECISION_CONFIDENCE": [
+        {
+          "item_id": "S022",
+          "quote": "[ILLUSTRATIVE] I never know if I should call a professional or just DIY small repairs.",
+          "return_signal": "unclear",
+          "source": "Reddit"
+        }
+      ]
+    },
+    "continuity_vs_experience": {
+      "continuity_count": 21,
+      "continuity_pct": 52.5,
+      "experience_control_count": 6,
+      "experience_control_pct": 15.0,
+      "other_count": 13,
+      "other_pct": 32.5
+    }
+  },
+  "bias_report": {
+    "total_items": 40,
+    "source_mix": {
+      "app_store": 7,
+      "play_store": 7,
+      "reddit": 7,
+      "youtube": 7,
+      "trustpilot": 6,
+      "transcript": 6
+    },
+    "complaint_heavy_count": 20,
+    "complaint_heavy_pct": 50.0,
+    "silent_nonreturner_proxy_count": 4,
+    "limitation": "Public posts over-represent vocal/negative experiences, and customers who quietly never return leave little or no public trace. Interview evidence is required to correct this blind spot."
+  },
+  "items": [
+    {
+      "item_id": "S001",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Booked deep cleaning, it went fine but I never thought about what to book next.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T1_POST_SERVICE_CLOSURE",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "silent_nonreturner_proxy",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T1_POST_SERVICE_CLOSURE based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Booked deep cleaning, it went fine but I never thought about what to book next."
+    },
+    {
+      "item_id": "S002",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] AC service was good. Months later my tap leaked and I called a local plumber from WhatsApp.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "T8_EXPERIENCE_QUALITY",
+      "return_signal": "unclear",
+      "sentiment": "mixed",
+      "bias_flag": "none",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] AC service was good. Months later my tap leaked and I called a local plumber from WhatsApp."
+    },
+    {
+      "item_id": "S003",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I used salon at home once and forgot the app existed until a friend mentioned it.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Salon",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T3_MENTAL_AVAILABILITY",
+      "secondary_theme": "T1_POST_SERVICE_CLOSURE",
+      "return_signal": "did_not_return",
+      "sentiment": "neutral",
+      "bias_flag": "silent_nonreturner_proxy",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T3_MENTAL_AVAILABILITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I used salon at home once and forgot the app existed until a friend mentioned it."
+    },
+    {
+      "item_id": "S004",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] The cleaning was okay, but I didn't know they also do pest control.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T4_CATEGORY_AWARENESS",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T4_CATEGORY_AWARENESS based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] The cleaning was okay, but I didn't know they also do pest control."
+    },
+    {
+      "item_id": "S005",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] After the service I had no idea when I should book again for maintenance.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] After the service I had no idea when I should book again for maintenance."
+    },
+    {
+      "item_id": "S006",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Great job, I booked bathroom cleaning again two months later.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T8_EXPERIENCE_QUALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "mixed",
+      "bias_flag": "none",
+      "confidence": 0.53,
+      "rationale": "Deterministic rule-based coding assigned T8_EXPERIENCE_QUALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Great job, I booked bathroom cleaning again two months later."
+    },
+    {
+      "item_id": "S007",
+      "source": "App Store",
+      "source_class": "app_store",
+      "source_url": "https://apps.apple.com/in/app/urban-company/id1032480595",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Service was completed but there was no follow-up or reminder for next steps.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T1_POST_SERVICE_CLOSURE",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T1_POST_SERVICE_CLOSURE based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Service was completed but there was no follow-up or reminder for next steps."
+    },
+    {
+      "item_id": "S008",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Used UC for AC repair once. Next time I needed electrician, I asked in my society group.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Used UC for AC repair once. Next time I needed electrician, I asked in my society group."
+    },
+    {
+      "item_id": "S009",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] The app is fine but I don't remember it when something breaks suddenly.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] The app is fine but I don't remember it when something breaks suddenly."
+    },
+    {
+      "item_id": "S010",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I booked pest control and later booked cleaning because I saw it in the app.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Pest Control",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T8_EXPERIENCE_QUALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "negative",
+      "bias_flag": "bad_experience_overrepresented",
+      "confidence": 0.53,
+      "rationale": "Deterministic rule-based coding assigned T8_EXPERIENCE_QUALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I booked pest control and later booked cleaning because I saw it in the app."
+    },
+    {
+      "item_id": "S011",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Didn't know Urban Company had appliance repair too, used a local shop.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Appliance Repair",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T4_CATEGORY_AWARENESS",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T4_CATEGORY_AWARENESS based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Didn't know Urban Company had appliance repair too, used a local shop."
+    },
+    {
+      "item_id": "S012",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] After a good service I still wasn't sure what else my home needed.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] After a good service I still wasn't sure what else my home needed."
+    },
+    {
+      "item_id": "S013",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I only use it when something goes wrong, never for planned upkeep.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T7_PLANNING_SEASONALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.61,
+      "rationale": "Deterministic rule-based coding assigned T7_PLANNING_SEASONALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I only use it when something goes wrong, never for planned upkeep."
+    },
+    {
+      "item_id": "S014",
+      "source": "Play Store",
+      "source_class": "play_store",
+      "source_url": "https://play.google.com/store/apps/details?id=com.urbanclap.urbanclap",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] The professional was late and left a mess; I didn't want to try again.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T8_EXPERIENCE_QUALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "negative",
+      "bias_flag": "bad_experience_overrepresented",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T8_EXPERIENCE_QUALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] The professional was late and left a mess; I didn't want to try again."
+    },
+    {
+      "item_id": "S015",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Booking was smooth but I had no reason to open the app again for weeks.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Salon",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T1_POST_SERVICE_CLOSURE",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T1_POST_SERVICE_CLOSURE based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Booking was smooth but I had no reason to open the app again for weeks."
+    },
+    {
+      "item_id": "S016",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I got my sofa cleaned once; I didn't know the right frequency for booking again.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T2_NEED_RECOGNITION",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T2_NEED_RECOGNITION based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I got my sofa cleaned once; I didn't know the right frequency for booking again."
+    },
+    {
+      "item_id": "S017",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Bad experience with rescheduling made me avoid the app.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T8_EXPERIENCE_QUALITY",
+      "secondary_theme": "",
+      "return_signal": "did_not_return",
+      "sentiment": "negative",
+      "bias_flag": "bad_experience_overrepresented",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T8_EXPERIENCE_QUALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Bad experience with rescheduling made me avoid the app."
+    },
+    {
+      "item_id": "S018",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] They refunded my booking after a poor visit, so I stopped using it.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T10_REDO_REFUND",
+      "secondary_theme": "",
+      "return_signal": "did_not_return",
+      "sentiment": "negative",
+      "bias_flag": "bad_experience_overrepresented",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T10_REDO_REFUND based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] They refunded my booking after a poor visit, so I stopped using it."
+    },
+    {
+      "item_id": "S019",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Service quality was fine, but my building handyman is just easier for small jobs.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Service quality was fine, but my building handyman is just easier for small jobs."
+    },
+    {
+      "item_id": "S020",
+      "source": "Trustpilot",
+      "source_class": "trustpilot",
+      "source_url": "https://www.trustpilot.com/review/urbancompany.com",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I came back for another service because I trusted the first professional.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Salon",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "returned",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I came back for another service because I trusted the first professional."
+    },
+    {
+      "item_id": "S021",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Used Urban Company once for deep cleaning before Diwali, then went back to local help.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "T7_PLANNING_SEASONALITY",
+      "return_signal": "did_not_return",
+      "sentiment": "neutral",
+      "bias_flag": "silent_nonreturner_proxy",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Used Urban Company once for deep cleaning before Diwali, then went back to local help."
+    },
+    {
+      "item_id": "S022",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I never know if I should call a professional or just DIY small repairs.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T6_DECISION_CONFIDENCE",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T6_DECISION_CONFIDENCE based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I never know if I should call a professional or just DIY small repairs."
+    },
+    {
+      "item_id": "S023",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] For AC servicing I usually wait until summer and ask neighbours who they use.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] For AC servicing I usually wait until summer and ask neighbours who they use."
+    },
+    {
+      "item_id": "S024",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] UC is good for one-off jobs but I don't think of it as home maintenance.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] UC is good for one-off jobs but I don't think of it as home maintenance."
+    },
+    {
+      "item_id": "S025",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I booked again because the app showed me another service I actually needed.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Salon",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "returned",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I booked again because the app showed me another service I actually needed."
+    },
+    {
+      "item_id": "S026",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] My parents prefer calling the same local person on WhatsApp every time.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.77,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] My parents prefer calling the same local person on WhatsApp every time."
+    },
+    {
+      "item_id": "S027",
+      "source": "Reddit",
+      "source_class": "reddit",
+      "source_url": "https://www.reddit.com/r/india/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] If the app reminded me before monsoon, I might have booked pest control there.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Pest Control",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T7_PLANNING_SEASONALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T7_PLANNING_SEASONALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] If the app reminded me before monsoon, I might have booked pest control there."
+    },
+    {
+      "item_id": "S028",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I tried them once and the service was decent, but I forgot about them later.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Deep Cleaning",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T3_MENTAL_AVAILABILITY",
+      "secondary_theme": "T1_POST_SERVICE_CLOSURE",
+      "return_signal": "did_not_return",
+      "sentiment": "mixed",
+      "bias_flag": "silent_nonreturner_proxy",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T3_MENTAL_AVAILABILITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I tried them once and the service was decent, but I forgot about them later."
+    },
+    {
+      "item_id": "S029",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Good for AC service, but for small fixes my local electrician is faster.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T5_LOCAL_WHATSAPP_DEFAULT",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T5_LOCAL_WHATSAPP_DEFAULT based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Good for AC service, but for small fixes my local electrician is faster."
+    },
+    {
+      "item_id": "S030",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Did not know they do so many categories until I watched this video.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Appliance Repair",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T4_CATEGORY_AWARENESS",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T4_CATEGORY_AWARENESS based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Did not know they do so many categories until I watched this video."
+    },
+    {
+      "item_id": "S031",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I only book when there is a big problem, not for regular maintenance.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Plumbing",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T7_PLANNING_SEASONALITY",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.61,
+      "rationale": "Deterministic rule-based coding assigned T7_PLANNING_SEASONALITY based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I only book when there is a big problem, not for regular maintenance."
+    },
+    {
+      "item_id": "S032",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Had a warranty issue and the redo took too long.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "AC Service",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T10_REDO_REFUND",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "negative",
+      "bias_flag": "none",
+      "confidence": 0.85,
+      "rationale": "Deterministic rule-based coding assigned T10_REDO_REFUND based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Had a warranty issue and the redo took too long."
+    },
+    {
+      "item_id": "S033",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Booked again after a good first experience, this time for cleaning.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Salon",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "returned",
+      "sentiment": "positive",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Booked again after a good first experience, this time for cleaning."
+    },
+    {
+      "item_id": "S034",
+      "source": "YouTube comments",
+      "source_class": "youtube",
+      "source_url": "https://www.youtube.com/results?search_query=urban+company+home+service+review",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] I wish I knew when to service appliances before they break down.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "Appliance Repair",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T2_NEED_RECOGNITION",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.69,
+      "rationale": "Deterministic rule-based coding assigned T2_NEED_RECOGNITION based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] I wish I knew when to service appliances before they break down."
+    },
+    {
+      "item_id": "S035",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Management noted repeat customers contribute a large share of transaction value.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "returned",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "returned",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Management noted repeat customers contribute a large share of transaction value."
+    },
+    {
+      "item_id": "S036",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] The company discussed improving customer retention and repeat behavior over time.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "returned",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] The company discussed improving customer retention and repeat behavior over time."
+    },
+    {
+      "item_id": "S037",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Transcript highlighted category expansion as a way to serve more household needs.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Transcript highlighted category expansion as a way to serve more household needs."
+    },
+    {
+      "item_id": "S038",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Management mentioned customers often use services for specific occasions rather than routines.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "did_not_return",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Management mentioned customers often use services for specific occasions rather than routines."
+    },
+    {
+      "item_id": "S039",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] The company discussed building trust and habit in home services.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] The company discussed building trust and habit in home services."
+    },
+    {
+      "item_id": "S040",
+      "source": "Earnings transcript",
+      "source_class": "transcript",
+      "source_url": "https://investorrelations.urbancompany.com/",
+      "access_date": "2026-11-23",
+      "text": "[ILLUSTRATIVE] Retention was described as a strategic priority alongside service quality.",
+      "rating": NaN,
+      "city": "Metro",
+      "category": "All",
+      "return_signal_hint": "unclear",
+      "is_illustrative": true,
+      "primary_theme": "T11_UNCLASSIFIED",
+      "secondary_theme": "",
+      "return_signal": "unclear",
+      "sentiment": "neutral",
+      "bias_flag": "none",
+      "confidence": 0.35,
+      "rationale": "Deterministic rule-based coding assigned T11_UNCLASSIFIED based on visible text cues.",
+      "quote_worthy": true,
+      "exact_quote": "[ILLUSTRATIVE] Retention was described as a strategic priority alongside service quality."
+    }
+  ]
+}
