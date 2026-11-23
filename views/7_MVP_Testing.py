@@ -36,7 +36,7 @@ def render() -> None:
             "change_next_iteration": "[Fill after test]",
         },
     ]
-    st.dataframe(pd.DataFrame(tests), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(tests), width="stretch", hide_index=True)
 
     st.subheader("Test cards")
     for t in tests:

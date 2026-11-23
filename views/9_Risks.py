@@ -82,7 +82,7 @@ def render() -> None:
             st.write(f"**Early-warning signal:** {r['early_warning']}")
 
     st.subheader("Risk register (table)")
-    st.dataframe(df.drop(columns=["color"]), use_container_width=True, hide_index=True)
+    st.dataframe(df.drop(columns=["color"]), width="stretch", hide_index=True)
 
 
 render()

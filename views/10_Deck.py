@@ -72,7 +72,7 @@ def render() -> None:
                 st.markdown(f"- {b}")
             chart = _mini_chart(s.get("visual", ""))
             if chart is not None:
-                st.altair_chart(chart, use_container_width=True)
+                st.altair_chart(chart, width="stretch")
             links = s.get("footnote_links", []) + s.get("source_refs", [])
             if links:
                 st.caption("Supporting artefacts / sources: " + " · ".join(links))

@@ -60,7 +60,7 @@ def render() -> None:
     for it in results.get("items", []):
         by_src[str(it.get("source", "unknown"))] = by_src.get(str(it.get("source", "unknown")), 0) + 1
     src_df = pd.DataFrame([{"source": k, "count": v} for k, v in sorted(by_src.items())])
-    st.dataframe(src_df, use_container_width=True, hide_index=True)
+    st.dataframe(src_df, width="stretch", hide_index=True)
     st.write({
         "rows_loaded": corpus.get("rows_loaded"),
         "rows_kept": corpus.get("rows_kept"),
@@ -75,7 +75,7 @@ def render() -> None:
             {"theme": k, "precision": v.get("precision"), "recall": v.get("recall"), "f1": v.get("f1-score"), "support": v.get("support")}
             for k, v in per_theme.items()
         ])
-        st.dataframe(pt_df, use_container_width=True, hide_index=True)
+        st.dataframe(pt_df, width="stretch", hide_index=True)
     else:
         st.warning("Per-theme metrics will appear after golden set is fully labelled.")
 
@@ -95,7 +95,7 @@ def render() -> None:
             tooltip=["human", "engine", "count"],
         ).properties(height=360)
         text = heat.mark_text(baseline="middle").encode(text="count:Q", color=alt.value("#12212B"))
-        st.altair_chart(heat + text, use_container_width=True)
+        st.altair_chart(heat + text, width="stretch")
     else:
         st.warning("Confusion matrix will appear after golden set is fully labelled.")
 

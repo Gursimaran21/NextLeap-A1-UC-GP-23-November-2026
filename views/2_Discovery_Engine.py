@@ -26,7 +26,7 @@ def render() -> None:
     with st.sidebar:
         st.subheader("Discovery controls")
         use_sample = st.toggle("Use bundled illustrative sample", value=True)
-        run_btn = st.button("Run engine", type="primary", use_container_width=True)
+        run_btn = st.button("Run engine", type="primary", width="stretch")
         st.divider()
         st.write("LLM status")
         if llm.available():
@@ -117,7 +117,7 @@ def render() -> None:
             color=alt.Color("code:N", legend=None),
             tooltip=["code", "name", "count", "share_pct"],
         ).properties(height=320)
-        st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, width="stretch")
 
     st.subheader("Share by source class")
     src_df = pd.DataFrame(agg.get("by_source_class", []))
@@ -128,7 +128,7 @@ def render() -> None:
             color=alt.Color("primary_theme:N", title="Theme"),
             tooltip=["source_class", "primary_theme", "count"],
         ).properties(height=260)
-        st.altair_chart(chart2, use_container_width=True)
+        st.altair_chart(chart2, width="stretch")
 
     st.subheader("Top quotes by theme")
     quotes = agg.get("top_quotes_by_theme", {})
@@ -137,7 +137,7 @@ def render() -> None:
         for q in qlist:
             quote_rows.append({"theme": code, **q})
     if quote_rows:
-        st.dataframe(pd.DataFrame(quote_rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(quote_rows), width="stretch", hide_index=True)
     else:
         st.info("No quotes available yet.")
 

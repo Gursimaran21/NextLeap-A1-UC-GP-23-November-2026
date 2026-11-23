@@ -65,7 +65,7 @@ def render() -> None:
             "measurement_source": "Golden task audit + interviews.",
         },
     ])
-    st.dataframe(metrics, use_container_width=True, hide_index=True)
+    st.dataframe(metrics, width="stretch", hide_index=True)
 
     st.subheader("Tool-choice golden tasks (10)")
     golden_tasks = pd.DataFrame([
@@ -80,7 +80,7 @@ def render() -> None:
         {"task": "Do I need pest control before monsoon?", "expected_tool": "public_reference_lookup/route_need", "expected_route": "UC_CATEGORY or WAIT_AND_WATCH"},
         {"task": "No issue right now", "expected_tool": "ask_clarifying_question/show_public_info", "expected_route": "WAIT_AND_WATCH"},
     ])
-    st.dataframe(golden_tasks, use_container_width=True, hide_index=True)
+    st.dataframe(golden_tasks, width="stretch", hide_index=True)
 
     st.markdown("**Precision/recall of tool choice:** compute against labelled golden tasks once run. Report per-tool precision/recall and overall accuracy. Placeholder until audit is completed.")
     st.code("precision = TP / (TP + FP)\nrecall = TP / (TP + FN)\nReport per tool and macro average.", language="text")
