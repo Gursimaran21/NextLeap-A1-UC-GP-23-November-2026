@@ -14,6 +14,8 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 | [`docs/methodology.md`](docs/methodology.md) | Discovery/evaluation methodology |
 | [`docs/sources.md`](docs/sources.md) | Public source log and access notes |
 | [`docs/deploy_streamlit_cloud.md`](docs/deploy_streamlit_cloud.md) | Streamlit Cloud deployment guide |
+| [`docs/interview_guide.md`](docs/interview_guide.md) | Ready-to-run kit for the 5–6 anonymized interviews (C6/C7) |
+| [`docs/mvp_test_script.md`](docs/mvp_test_script.md) | Moderator script + tasks for the 3 real MVP user tests |
 | [`docs/qa_report.md`](docs/qa_report.md) | QA report snapshot |
 | [`prompts/cursor-gemini-prompts.md`](prompts/cursor-gemini-prompts.md) | Cursor/Gemini prompt pack (P0–P13) |
 

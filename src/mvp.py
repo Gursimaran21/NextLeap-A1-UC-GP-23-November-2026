@@ -100,7 +100,13 @@ TOOLS = [
     "show_public_info",
 ]
 
-URGENT_RE = re.compile(r"gas smell|sparks?|burning smell|flooding|burst pipe|water everywhere|electric shock|fire", re.I)
+URGENT_RE = re.compile(
+    r"gas\s+smell|smell(?:s|ing)?\s+(?:of\s+)?gas|gas\s+leak|leaking\s+gas|"
+    r"sparks?|sparking|burning\s+smell|smell\s+of\s+burning|"
+    r"flooding|flooded|burst(?:ing)?\s+pipe|pipe\s+burst|water\s+everywhere|"
+    r"electric\s+shock|fire",
+    re.I,
+)
 DIY_RE = re.compile(r"filter|wipe|clean vent|tighten|unclog|drain hair|battery|remote|dust", re.I)
 LOCAL_RE = re.compile(r"society|building electrician|neighbor|neighbour|watchman|caretaker|whatsapp group|local electrician from downstairs", re.I)
 
