@@ -11,12 +11,22 @@ import streamlit as st
 from src import config, engine, eval as eval_mod, ingest, llm
 
 
-def _load_default_corpus():
+def _load_default_corpus(use_sample: bool = False):
+    """Load the real public corpus by default; the illustrative sample is opt-in.
+
+    Returns (dataframe, source path, sample_used).
+    """
     config.ensure_dirs()
     sample = config.DATA_DIR / "public_corpus_sample.csv"
+    if use_sample:
+        if not sample.exists():
+            ingest.build_sample_corpus(sample, write=True)
+        return ingest.load_corpus(sample), sample, True
+    if config.CORPUS.exists():
+        return ingest.load_corpus(config.CORPUS), config.CORPUS, False
     if not sample.exists():
         ingest.build_sample_corpus(sample, write=True)
-    return ingest.load_corpus(sample), sample
+    return ingest.load_corpus(sample), sample, True
 
 
 def render() -> None:
@@ -25,7 +35,7 @@ def render() -> None:
 
     with st.sidebar:
         st.subheader("Discovery controls")
-        use_sample = st.toggle("Use bundled illustrative sample", value=True)
+        use_sample = st.toggle("Use bundled illustrative sample", value=False)
         run_btn = st.button("Run engine", type="primary", width="stretch")
         st.divider()
         st.write("LLM status")
@@ -52,8 +62,9 @@ def render() -> None:
                 tmp.write_bytes(uploaded.getbuffer())
                 df = ingest.load_corpus(tmp)
                 src_path = tmp
+                sample_used = False
             else:
-                df, src_path = _load_default_corpus()
+                df, src_path, sample_used = _load_default_corpus(use_sample)
 
             if paste_text.strip():
                 pasted = ingest.paste_corpus(paste_text, paste_source, paste_url, paste_class)
@@ -77,10 +88,19 @@ def render() -> None:
                 "bias_report": engine.bias_report(coded),
                 "items": coded.to_dict(orient="records"),
             }
-            config.DISCOVERY_JSON.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
+            # Demo runs on the illustrative sample must never overwrite the
+            # canonical evidence outputs produced from the real public corpus.
+            out_path = (
+                config.OUTPUTS_DIR / "discovery_results_sample.json"
+                if sample_used
+                else config.DISCOVERY_JSON
+            )
+            out_path.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
             st.session_state.discovery_results = results
             st.session_state.discovery_df = coded
-            st.success("Discovery engine run complete.")
+            if sample_used:
+                st.warning("Illustrative sample results saved separately; canonical evidence outputs unchanged.")
+            st.success(f"Discovery engine run complete — saved to {out_path.name}.")
         except Exception as e:
             st.error(f"Run failed: {e}")
 
