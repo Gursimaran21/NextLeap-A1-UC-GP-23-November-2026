@@ -1,12 +1,35 @@
-# Urban Company — Home Care Companion (NextLeap Graduation Project)
+# Urban Company — Home Care Companion
 
-Public, customer-side prototype for the NextLeap PM Fellowship Graduation Project (Nov 2026, PMF Cohort 52).  
-**Constraint:** No bookings, no account access, no discounts/coupons/pricing/professional-pay changes. Public information only.
+Public, customer-side prototype for the **NextLeap PM Fellowship Graduation Project** (Nov 2026, PMF Cohort 52).  
+**Constraint:** No bookings, no account access, no discounts/coupons/pricing/professional-pay changes. Public information only.  
+All work must respect [`docs/constraints.md`](docs/constraints.md).
 
-## What this repo contains
+## Key Docs
+
+| Doc | Purpose |
+|---|---|
+| [`PRD.md`](PRD.md) | Product requirements, scope, acceptance criteria, milestones |
+| [`docs/brief.md`](docs/brief.md) | Original graduation project brief |
+| [`docs/constraints.md`](docs/constraints.md) | Canonical C1–C10 constraints and QA assertions |
+| [`docs/methodology.md`](docs/methodology.md) | Discovery/evaluation methodology |
+| [`docs/sources.md`](docs/sources.md) | Public source log and access notes |
+| [`docs/deploy_streamlit_cloud.md`](docs/deploy_streamlit_cloud.md) | Streamlit Cloud deployment guide |
+| [`docs/qa_report.md`](docs/qa_report.md) | QA report snapshot |
+| [`prompts/cursor-gemini-prompts.md`](prompts/cursor-gemini-prompts.md) | Cursor/Gemini prompt pack (P0–P13) |
+
+## Current Status
+
+- **Build:** MVP, Discovery Engine, Evidence Log, Research/Strategy pages, and 10-slide deck are implemented.
+- **QA:** `python -m scripts.qa_check` currently reports **10/12 PASS**.
+  - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
+  - Failing: QA flags `urbancompany.com` text in `prompts/cursor-gemini-prompts.md`; review QA scope/fix as needed before final submission.
+- **Pending before submission:** real public corpus, 20 manual golden labels, 5–6 real anonymized interviews, >=3 MVP user tests, final QA pass, Streamlit deployment/public links.
+
+## What This Repo Contains
+
 - **Home Care Companion MVP** (Streamlit): 4-step wizard — profile, 90-day calendar, Need Decider, post-service reflection.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
-- **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations.
+- **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).
 - **QA**: `python -m scripts.qa_check`.
 
@@ -21,7 +44,7 @@ src/ingest.py  ── PII redaction, C3 guard, dedupe
         ▼
 src/engine.py  ── T1–T11 coding (LLM or deterministic fallback)
         │
-        ├── src/eval.py  ── golden set, agreement, evidence log
+        ├── src/eval.py        ── golden set, agreement, evidence log
         ├── src/opportunity.py ── D1–D6 opportunity ranking (T9 excluded)
         ▼
 outputs/discovery_results.json, evidence_log.md/pdf
@@ -35,7 +58,7 @@ Streamlit app (app.py + views/*)
 outputs/NL_UrbanCompany.pdf, tool_trace.jsonl, mvp_feedback.jsonl
 ```
 
-## Run locally
+## Run Locally
 
 ```powershell
 cd C:\Users\Daman-Simran\Desktop\NextLeap-PMF-Projects-2026\NextLeap-A1-UC-GP-23-November-2026
@@ -46,7 +69,9 @@ copy .env.example .env  # optional: add GEMINI_API_KEY
 streamlit run app.py
 ```
 
-## Run the pipeline
+Optional LLM: set `GEMINI_API_KEY` in `.env` or Streamlit secrets. The app should run without it using deterministic fallback.
+
+## Run the Pipeline
 
 ```powershell
 # Build/load sample corpus and run discovery
@@ -63,26 +88,48 @@ python -m src.deck
 python -m scripts.qa_check
 ```
 
-## Re-collect data (public only)
-1. Collect **public** feedback only (app store reviews, public forums, public social posts, public transcripts). Do **not** scrape logged-in Urban Company surfaces or use private data.
-2. Put rows in `data/public_corpus.csv` with columns: `source,text,date,url,source_class,rating,geography,category,language,is_illustrative,notes`.
-3. Run `python -m src.ingest` or use Discovery Engine upload.
-4. Manually label 20 rows in `data/golden_set.csv` (`human_theme_code`, `human_return_signal`). **Do not fabricate labels.**
-5. Add 5–6 anonymized interviews in `data/interviews.csv` (R01–R06; no PII).
+## Data Files (Public / Anonymized Only)
 
-## Deployed URLs (placeholders)
+| File | Expected columns | Notes |
+|---|---|---|
+| `data/public_corpus.csv` | `item_id,source,source_class,source_url,access_date,text,rating,city,category,return_signal_hint,is_illustrative` | Public sources only (C3). No logged-in UC/app scraping. |
+| `data/golden_set.csv` | `item_id,text,human_primary_theme,human_return_signal,human_note` | 20 rows manually labelled; **do not fabricate labels**. |
+| `data/interviews.csv` | `respondent_id,category,returner_90d,total_bookings,city_tier,quote,theme_code,notes` | 5–6 anonymized interviews (R01–R06), both returner yes/no, >=2 categories, no PII (C6/C7). |
+| `data/public_reference.csv` | `need,trigger,typical_timing_days,public_basis,source_url,source_class` | Public, non-UC-specific reference facts with sources. |
+
+## Re-collect / Replace Data
+
+1. Collect **public** feedback only (app stores, public forums, public social posts, public transcripts). Do **not** scrape logged-in Urban Company surfaces or use private data.
+2. Replace or append rows in `data/public_corpus.csv` with the schema above; keep provenance (`source_url`, `access_date`, `source_class`).
+3. Run discovery via `python -m src.engine` or the Discovery Engine page.
+4. Manually label 20 rows in `data/golden_set.csv`. Do not fabricate labels.
+5. Replace `data/interviews.csv` placeholders with 5–6 real anonymized interviews.
+6. Run >=3 MVP user tests and update `views/7_MVP_Testing.py`.
+
+## Deliverables
+
+| Deliverable | App / Artifact | Status |
+|---|---|---|
+| AI Discovery Engine | `views/2_Discovery_Engine.py` | Implemented |
+| 10-slide deck | `outputs/NL_UrbanCompany.pdf`, `views/10_Deck.py` | Draft generated |
+| Deployed AI-native MVP | `app.py`, `views/1_MVP.py` | Implemented; deploy pending |
+| AI Evidence Log | `views/3_Evidence_Log.py`, `outputs/evidence_log.md`, `outputs/evidence_log.pdf` | Draft generated |
+
+## Deployed URLs
+
 - Streamlit app: `<ADD_STREAMLIT_CLOUD_URL>`
 - Evidence log: `<ADD_PUBLIC_EVIDENCE_LOG_URL>`
 - Deck PDF: `<ADD_PUBLIC_DECK_PDF_URL>`
 
-## Submission checklist
+## Submission Checklist
+
 - [ ] `docs/constraints.md` respected; no C1/C2/C3 violations.
 - [ ] Public corpus collected (real public data, not only illustrative sample).
 - [ ] `data/golden_set.csv` has 20 manually labelled rows.
-- [ ] `data/interviews.csv` has 5–6 anonymized interviews (R01–R06), both returner values, >=2 categories.
+- [ ] `data/interviews.csv` has 5–6 real anonymized interviews (R01–R06), both returner values, >=2 categories.
 - [ ] >=3 MVP user tests completed; `views/7_MVP_Testing.py` updated.
-- [ ] `outputs/evidence_log.md` and `outputs/evidence_log.pdf` generated.
-- [ ] `outputs/NL_UrbanCompany.pdf` built (10 slides max, no fellow name).
-- [ ] `python -m scripts.qa_check` passes.
+- [ ] `outputs/evidence_log.md` and `outputs/evidence_log.pdf` regenerated after real data updates.
+- [ ] `outputs/NL_UrbanCompany.pdf` rebuilt (10 slides max, no fellow name).
+- [ ] `python -m scripts.qa_check` passes (target 12/12).
 - [ ] App deployed on Streamlit Cloud; public links added above.
 - [ ] `config.FELLOW_NAME_TO_EXCLUDE` set locally before final deck QA (do not commit personal name).
