@@ -20,9 +20,10 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 ## Current Status
 
 - **Build:** MVP, Discovery Engine, Evidence Log, Research/Strategy pages, and 10-slide deck are implemented.
+- **Real data:** `data/public_corpus.csv` now holds **500 real public App Store (India) reviews** (465 kept after cleaning), collected 2026-11-23 via `scripts/collect_appstore.py`. Discovery results, evidence log, and deck regenerated from real data. Golden template regenerated from real reviews (20 rows, unlabelled).
 - **QA:** `python -m scripts.qa_check` currently reports **11/12 PASS**.
   - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
-- **Pending before submission:** real public corpus, 20 manual golden labels, 5–6 real anonymized interviews, >=3 MVP user tests, final QA pass, Streamlit deployment/public links.
+- **Pending before submission:** 20 manual golden labels (`python -m scripts.label_golden`), 5–6 real anonymized interviews, >=3 MVP user tests, fellow-name exclusion set locally, final QA pass, Streamlit deployment/public links.
 
 ## What This Repo Contains
 
@@ -99,6 +100,7 @@ python -m scripts.qa_check
 ## Re-collect / Replace Data
 
 1. Collect **public** feedback only (app stores, public forums, public social posts, public transcripts). Do **not** scrape logged-in Urban Company surfaces or use private data.
+   - App Store (India) reviews can be refreshed with `python -m scripts.collect_appstore` (public Apple RSS endpoint).
 2. Replace or append rows in `data/public_corpus.csv` with the schema above; keep provenance (`source_url`, `access_date`, `source_class`).
 3. Run discovery via `python -m src.engine` or the Discovery Engine page.
 4. Manually label 20 rows in `data/golden_set.csv`. Do not fabricate labels.
@@ -123,7 +125,7 @@ python -m scripts.qa_check
 ## Submission Checklist
 
 - [ ] `docs/constraints.md` respected; no C1/C2/C3 violations.
-- [ ] Public corpus collected (real public data, not only illustrative sample).
+- [x] Public corpus collected (real public data, not only illustrative sample) — 500 App Store (India) reviews, 2026-11-23.
 - [ ] `data/golden_set.csv` has 20 manually labelled rows.
 - [ ] `data/interviews.csv` has 5–6 real anonymized interviews (R01–R06), both returner values, >=2 categories.
 - [ ] >=3 MVP user tests completed; `views/7_MVP_Testing.py` updated.

@@ -12,6 +12,14 @@ Respect `docs/constraints.md` (C3). Public sources only. No logged-in Urban Comp
 | Public reference sources | Home-maintenance timing/cadence guidance | e.g. CDC/EPA/public home-care pages | Public | Paywalled or logged-in sources |
 | Primary interviews | Anonymized notes/quotes (R01–R06) | N/A (offline collection) | Consent-based, anonymized | Names, phone, address, screenshots, invoices, personal docs |
 
+## Actually collected (real, not illustrative)
+
+| Date | Source | Method | Volume | Provenance |
+|---|---|---|---|---|
+| 2026-11-23 | App Store (India) — Urban Company app id `1032480595` | Apple public customer-reviews RSS/JSON (`itunes.apple.com/in/rss/customerreviews/...`), pages 1–10, no login | 500 fetched → 465 kept after ingest (PII redaction, <20-char drop, dedupe) | `source_url` = public App Store reviews page; raw saved to `data/raw/appstore_reviews.json` |
+
+Collection script: `scripts/collect_appstore.py` (public endpoint only; no UC scraping). This is a **single-source, complaint-heavy** corpus; the bias report and deck state that limitation explicitly. Other source classes below remain available to add via the Discovery Engine paste/upload, but are not yet collected.
+
 ## Not accessed
 - Urban Company logged-in app/web account surfaces.
 - Private customer data, booking history exports, internal UC analytics.

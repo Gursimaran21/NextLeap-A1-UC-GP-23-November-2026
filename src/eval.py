@@ -43,7 +43,9 @@ def load_golden(path: str | Path | None = None) -> pd.DataFrame:
     df["human_note"] = df["human_note"].fillna("").astype(str).str.strip()
 
     labelled = df[df["human_primary_theme"].map(_is_labelled)]
-    if len(df) < config.GOLDEN_N or len(labelled) < config.GOLDEN_N:
+    # Regenerate only when the template is missing/short or completely unlabelled.
+    # Never overwrite partially labelled rows (protects manual labelling progress).
+    if len(df) < config.GOLDEN_N or len(labelled) == 0:
         template = _generate_template()
         template.to_csv(gpath, index=False)
         print(
@@ -56,16 +58,26 @@ def load_golden(path: str | Path | None = None) -> pd.DataFrame:
 
 
 def _generate_template() -> pd.DataFrame:
-    """Create a 20-row labelling template from sample/available corpus."""
+    """Create a 20-row labelling template from the real corpus (preferred) or sample."""
     from .ingest import build_sample_corpus, load_corpus
 
-    sample_path = config.DATA_DIR / "public_corpus_sample.csv"
-    if not sample_path.exists():
-        build_sample_corpus(sample_path, write=True)
+    corpus = None
     try:
-        corpus = load_corpus(sample_path)
+        if config.CORPUS.exists():
+            candidate = load_corpus(config.CORPUS)
+            if len(candidate) >= config.GOLDEN_N:
+                corpus = candidate
     except Exception:
-        corpus = build_sample_corpus(sample_path, write=True)
+        corpus = None
+
+    if corpus is None:
+        sample_path = config.DATA_DIR / "public_corpus_sample.csv"
+        if not sample_path.exists():
+            build_sample_corpus(sample_path, write=True)
+        try:
+            corpus = load_corpus(sample_path)
+        except Exception:
+            corpus = build_sample_corpus(sample_path, write=True)
 
     # Pick diverse rows across sources where possible.
     picks = []
@@ -73,7 +85,9 @@ def _generate_template() -> pd.DataFrame:
         picks.append(grp.head(4))
     diverse = pd.concat(picks, ignore_index=True).drop_duplicates(subset=["text"])
     if len(diverse) < config.GOLDEN_N:
-        diverse = corpus.drop_duplicates(subset=["text"])
+        # Single-source corpus: spread picks evenly for rating/date diversity.
+        step = max(1, len(corpus) // config.GOLDEN_N)
+        diverse = corpus.iloc[::step].drop_duplicates(subset=["text"])
     diverse = diverse.head(config.GOLDEN_N).copy()
     template = pd.DataFrame({
         "item_id": diverse.get("item_id", pd.Series([f"G{i:03d}" for i in range(1, len(diverse)+1)])).astype(str),
@@ -289,13 +303,26 @@ if __name__ == "__main__":
     from . import engine
 
     config.ensure_dirs()
-    sample = config.DATA_DIR / "public_corpus_sample.csv"
-    if not sample.exists():
-        from .ingest import build_sample_corpus
+    # Prefer the real corpus; fall back to the illustrative sample only if unusable.
+    results = None
+    try:
+        if config.CORPUS.exists():
+            candidate = engine.run(config.CORPUS, llm=None)
+            if candidate.get("aggregate", {}).get("total_items", 0) > 0:
+                results = candidate
+    except Exception as exc:  # noqa: BLE001
+        print(f"Real corpus unavailable ({exc}); falling back to sample.")
+    if results is None:
+        sample = config.DATA_DIR / "public_corpus_sample.csv"
+        if not sample.exists():
+            from .ingest import build_sample_corpus
 
-        build_sample_corpus(sample, write=True)
+            build_sample_corpus(sample, write=True)
+        results = engine.run(sample, llm=None)
+
     golden = load_golden()
-    results = engine.run(sample, llm=None)
     themed = pd.DataFrame(results["items"])
     ev = evaluate(themed, golden)
-    print(json.dumps(ev, indent=2)[:4000])
+    paths = export(results, ev)
+    print(json.dumps(ev, indent=2)[:2000])
+    print(f"Evidence log: {paths['md']} | {paths['pdf']}")

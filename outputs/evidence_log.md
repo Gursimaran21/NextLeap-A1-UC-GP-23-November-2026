@@ -6,17 +6,12 @@
 
 | Source | Items |
 |---|---:|
-| App Store | 7 |
-| Earnings transcript | 6 |
-| Play Store | 7 |
-| Reddit | 7 |
-| Trustpilot | 6 |
-| YouTube comments | 7 |
+| App Store (India) | 465 |
 
-- Total items loaded: **40**
-- Total items kept after cleaning/redaction: **40**
+- Total items loaded: **500**
+- Total items kept after cleaning/redaction: **465**
 - PII redactions: **0**
-- Illustrative sample used: **True**
+- Illustrative sample used: **False**
 
 ## Theme Taxonomy
 
@@ -55,9 +50,9 @@
 
 ## Bias Handling
 
-- Source mix: {'app_store': 7, 'play_store': 7, 'reddit': 7, 'youtube': 7, 'trustpilot': 6, 'transcript': 6}
-- Complaint-heavy share: 50.0% (20 items)
-- Silent-nonreturner proxy count: 4
+- Source mix: {'app_store': 465}
+- Complaint-heavy share: 100.0% (465 items)
+- Silent-nonreturner proxy count: 0
 - Limitation: Public posts over-represent vocal/negative experiences, and customers who quietly never return leave little or no public trace. Interview evidence is required to correct this blind spot.
 
 ## Limitations
