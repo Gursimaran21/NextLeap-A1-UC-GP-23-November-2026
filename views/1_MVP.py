@@ -14,6 +14,7 @@ from src import config, llm as llm_mod, mvp
 
 
 LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "urban_company_logo.jpg"
+ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background.jpg"
 
 
 def _header_html() -> str:
@@ -27,6 +28,52 @@ def _header_html() -> str:
         "Urban Company - Home Care Companion</h1>"
         "</div>"
     )
+
+
+def _about_html() -> str:
+    """Render the About section as a photo-backed, readable hero card."""
+    encoded = base64.b64encode(ABOUT_BG_PATH.read_bytes()).decode("ascii")
+    third_paragraph = (
+        "It supports Urban Company's 90-day repeat-booking objective without "
+        + "dis" + "counts, pricing changes or operational changes."
+    )
+    tags = ["Need recognition", "Post-service continuity", "Informed choice"]
+    tag_html = "".join(
+        '<span style="background:rgba(255,255,255,0.16); border:1px solid '
+        'rgba(255,255,255,0.32); padding:5px 11px; border-radius:999px; '
+        f'font-size:12px; letter-spacing:0.02em;">{tag}</span>'
+        for tag in tags
+    )
+    return f"""
+    <div style="background-image: linear-gradient(90deg, rgba(15,27,38,0.94) 0%, rgba(15,27,38,0.82) 55%, rgba(15,27,38,0.46) 100%), url('data:image/jpeg;base64,{encoded}');
+                background-size: cover; background-position: 65% center; border-radius:18px;
+                padding:32px 34px; min-height:260px; color:#ffffff;
+                box-shadow:0 18px 40px rgba(15,27,38,0.16);">
+      <div style="display:inline-block; background:rgba(255,255,255,0.16); border:1px solid rgba(255,255,255,0.34);
+                  padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.1em;
+                  text-transform:uppercase; margin-bottom:14px;">Solution overview</div>
+      <h2 style="margin:0 0 14px 0; font-size:1.6rem; line-height:1.25; font-weight:700;">
+        About Urban Company - Home Care Companion
+      </h2>
+      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">
+        Urban Company - Home Care Companion is an AI-powered digital experience that helps urban households
+        recognise, plan and manage home-care needs through personalised guidance.
+      </p>
+      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">
+        It focuses on need recognition, post-service continuity, service clarity and informed decisions
+        between DIY, local help and professional services.
+      </p>
+      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">{third_paragraph}</p>
+      <p style="margin:0 0 16px 0; font-size:0.98rem; line-height:1.62;">
+        <strong style="font-weight:700;">Scope:</strong> An independent customer-side experience with no
+        booking, messaging, or customer-account access capabilities.
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">{tag_html}</div>
+      <div style="text-align:right; font-size:11px; opacity:0.72; margin-top:18px;">
+        Background image: Unsplash
+      </div>
+    </div>
+    """
 
 
 STEPS = [
@@ -262,17 +309,7 @@ def render() -> None:
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
     st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
 
-    st.subheader("About Urban Company - Home Care Companion")
-    st.markdown(
-        "Urban Company - Home Care Companion is an AI-powered digital experience that helps urban households "
-        "recognise, plan and manage home-care needs through personalised guidance.\n\n"
-        "It focuses on need recognition, post-service continuity, service clarity and informed decisions "
-        "between DIY, local help and professional services.\n\n"
-        "It supports Urban Company's 90-day repeat-booking objective without " + "dis" + "counts, "
-        "pricing changes or operational changes.\n\n"
-        "**Scope:** An independent customer-side experience with no booking, messaging, or customer-account "
-        "access capabilities."
-    )
+    st.markdown(_about_html(), unsafe_allow_html=True)
 
     st.subheader("Your Home-Care Journey in Four Steps")
     st.markdown(
