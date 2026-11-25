@@ -61,7 +61,7 @@ st.markdown(
       }
       [data-testid="stTopNavLink"] img,
       [data-testid="stTopNavDropdownLink"] img {
-        max-height: 20px !important;
+        max-height: 24px !important;
         width: auto !important;
         object-fit: contain !important;
         vertical-align: middle;
