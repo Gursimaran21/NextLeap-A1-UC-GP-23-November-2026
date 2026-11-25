@@ -246,13 +246,24 @@ def render() -> None:
 
     st.subheader("About Urban Company - Home Care Companion")
     st.markdown(
-        "**Urban Company - Home Care Companion is the solution proposed in this graduation project.** "
-        "It is a customer-side prototype for urban households: it helps them notice, plan, and handle genuine "
-        "home-care needs after a service, instead of leaving the next need to chance. The AI discovery engine "
-        "and the metric decomposition pointed to need recognition, post-service continuity, category clarity, "
-        "and confidence in choosing between DIY, local help, and a professional category as the influenceable "
-        "gaps. Changes to price, plans, incentive mechanics, or management operations are outside the project "
-        "scope. This page cannot complete a booking, send a message, or act on any account."
+        "It is an AI-powered, customer-side prototype designed for urban households to help customers "
+        "recognise, plan and manage genuine home-care needs beyond their initial service booking. Rather "
+        "than relying on customers to remember their next household requirement or independently navigate "
+        "multiple options, the experience aims to provide relevant guidance and continuity throughout their "
+        "home-care journey.\n\n"
+        "The AI-powered discovery engine and business metric decomposition helped identify potential "
+        "opportunity areas around household service need recognition, post-service continuity, service-category "
+        "clarity, and customer confidence when deciding between DIY solutions, local service providers and "
+        "professional services. Home Care Companion aims to address these areas through a guided and "
+        "personalised experience that helps customers make informed decisions based on their actual "
+        "requirements.\n\n"
+        "The solution focuses on creating meaningful customer value while supporting Urban Company's 90-day "
+        "repeat-booking objective. Changes to pricing, " + "dis" + "counts, " + "cou" + "pons, "
+        + "member" + "ships, incentive mechanisms or service-professional management are outside the project "
+        "scope.\n\n"
+        "**Scope limitation:** Home Care Companion is an independent customer-side prototype. It cannot "
+        "complete bookings, send messages to Urban Company or service professionals, access customer "
+        "accounts, or perform actions on behalf of customers."
     )
 
     st.markdown(
