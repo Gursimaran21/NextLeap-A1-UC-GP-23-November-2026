@@ -37,7 +37,7 @@ def _about_html() -> str:
         "It supports Urban Company's 90-day repeat-booking objective without "
         + "dis" + "counts, pricing changes or operational changes."
     )
-    tags = ["Need recognition", "Post-service continuity", "Informed choice"]
+    tags = ["Need recognition", "Post-service continuity", "Service clarity", "Informed choice"]
     tag_html = "".join(
         '<span style="background:rgba(255,255,255,0.16); border:1px solid '
         'rgba(255,255,255,0.32); padding:5px 11px; border-radius:999px; '
