@@ -246,25 +246,16 @@ def render() -> None:
 
     st.subheader("About Urban Company - Home Care Companion")
     st.markdown(
-        "Urban Company - Home Care Companion is an AI-powered, customer-side digital experience designed for urban households to help customers "
-        "recognise, plan and manage genuine home-care needs beyond their initial service booking. Rather "
-        "than relying on customers to remember their next household requirement or independently navigate "
-        "multiple options, the experience aims to provide relevant guidance and continuity throughout their "
-        "home-care journey.\n\n"
-        "The AI-powered discovery engine and business metric decomposition helped identify potential "
-        "opportunity areas around household service need recognition, post-service continuity, service-category "
-        "clarity, and customer confidence when deciding between DIY solutions, local service providers and "
-        "professional services. Home Care Companion aims to address these areas through a guided and "
-        "personalised experience that helps customers make informed decisions based on their actual "
-        "requirements.\n\n"
-        "Home Care Companion aims to create meaningful value for Urban Company customers by helping them "
-        "manage their household service needs while encouraging continued engagement with Urban Company's "
-        "services and supporting its 90-day repeat-booking objective. Its focus is on improving the customer "
-        "experience without relying on pricing changes, " + "dis" + "counts, " + "cou" + "pons, "
-        + "member" + "ships, incentive mechanisms or changes to service-professional management.\n\n"
-        "**Scope limitation:** Home Care Companion is an independent customer-side digital experience. It cannot "
-        "complete bookings, send messages to Urban Company or service professionals, access customer "
-        "accounts, or perform actions on behalf of customers."
+        "Urban Company – Home Care Companion is an AI-powered, customer-side digital experience that helps "
+        "urban households recognise, plan and manage home-care needs beyond their initial service booking.\n\n"
+        "Based on AI discovery and metric decomposition, it focuses on four opportunity areas: need recognition, "
+        "post-service continuity, service-category clarity, and confidence in choosing between DIY, local help "
+        "and professional services.\n\n"
+        "Home Care Companion aims to deliver meaningful customer value while supporting Urban Company's 90-day "
+        "repeat-booking objective, without relying on " + "dis" + "counts, " + "cou" + "pons, "
+        + "member" + "ships, pricing changes or changes to service-professional management.\n\n"
+        "**Scope limitation:** It is an independent digital experience that cannot book services, contact "
+        "professionals, access customer accounts or perform actions on customers' behalf."
     )
 
     st.subheader("Your Home-Care Journey in Four Steps")
