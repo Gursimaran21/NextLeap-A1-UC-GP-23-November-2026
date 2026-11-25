@@ -52,7 +52,7 @@ def _about_html() -> str:
     ]
     pillar_html = "".join(
         '<div style="display:flex; gap:10px; align-items:flex-start;">'
-        '<span style="flex:0 0 26px; height:26px; border-radius:50%; background:#0B6E4F; '
+        '<span style="flex:0 0 26px; height:26px; border-radius:50%; background:#500C6B; '
         'color:#ffffff; font-size:11px; font-weight:700; display:flex; '
         f'align-items:center; justify-content:center;">{num}</span>'
         '<div><div style="font-size:13px; font-weight:700; color:#12212B;">'
