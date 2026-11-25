@@ -256,12 +256,12 @@ def render() -> None:
     )
 
     st.markdown(
-        "- **Step 1 – Tell me about your home:** collects an anonymous household profile.\n"
-        "- **Step 2 – Your next 90 days:** builds a 90-day planning calendar from public reference guidance "
-        "and your own notes.\n"
-        "- **Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
-        "category, or wait/clarify, and explains why each route is chosen.\n"
-        "- **Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
+        "**Step 1 – Tell me about your home:** collects an anonymous household profile.  \n"
+        "**Step 2 – Your next 90 days:** builds a 90-day planning calendar from public reference guidance "
+        "and your own notes.  \n"
+        "**Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
+        "category, or wait/clarify, and explains why each route is chosen.  \n"
+        "**Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
         "locally.\n\n"
         "Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
         "and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal "
