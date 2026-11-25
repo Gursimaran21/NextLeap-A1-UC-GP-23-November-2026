@@ -61,7 +61,7 @@ def _about_html() -> str:
         for num, title, detail in pillars
     )
     return f"""
-    <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:stretch; background:#EBDFF0;
+    <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:stretch; background:#F7F1F9;
                 border:1px solid #E6D9EA; border-radius:18px; padding:26px;
                 box-shadow:0 16px 36px rgba(15,27,38,0.08);">
       <div style="flex:1 1 420px; min-width:300px;">
