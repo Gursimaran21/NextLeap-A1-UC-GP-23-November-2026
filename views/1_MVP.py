@@ -246,7 +246,7 @@ def render() -> None:
 
     st.subheader("About Urban Company - Home Care Companion")
     st.markdown(
-        "Urban Company - Home Care Companion is an AI-powered, Customer-side digital experience designed for urban households to help customers "
+        "Urban Company - Home Care Companion is an AI-powered, customer-side digital experience designed for urban households to help customers "
         "recognise, plan and manage genuine home-care needs beyond their initial service booking. Rather "
         "than relying on customers to remember their next household requirement or independently navigate "
         "multiple options, the experience aims to provide relevant guidance and continuity throughout their "
