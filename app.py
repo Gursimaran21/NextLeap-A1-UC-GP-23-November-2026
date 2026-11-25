@@ -59,27 +59,13 @@ st.markdown(
       [data-testid="stTopNavSection"]:hover {
         background-color: #F7F1F9 !important;
       }
-      [data-testid="stTopNavLink"] img,
-      [data-testid="stTopNavDropdownLink"] img {
-        max-height: 24px !important;
-        width: auto !important;
-        object-fit: contain !important;
-        vertical-align: middle;
-      }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-_NAV_ICON = "![Urban Company Home Care Companion](app/static/HCC-LOGO-4-icon.png)"
-
 pages = [
-    st.Page(
-        "views/1_MVP.py",
-        title=f"{_NAV_ICON} Urban Company - Home Care Companion",
-        icon="",
-        default=True,
-    ),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),
