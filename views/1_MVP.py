@@ -267,7 +267,7 @@ def render() -> None:
         "accounts, or perform actions on behalf of customers."
     )
 
-    st.subheader("How the experience works")
+    st.subheader("Your Home-Care Journey in Four Steps")
     st.markdown(
         "**Step 1 – Tell me about your home:** collects an anonymous household profile.  \n"
         "**Step 2 – Your next 90 days:** builds a 90-day planning calendar from public reference guidance "
