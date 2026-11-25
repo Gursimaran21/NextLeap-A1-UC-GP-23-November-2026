@@ -255,16 +255,17 @@ def render() -> None:
         "scope. This page cannot complete a booking, send a message, or act on any account."
     )
 
-    st.subheader("About this page")
     st.markdown(
-        "This page is the working MVP, split into four steps. **Step 1** collects an anonymous household "
-        "profile. **Step 2** builds a 90-day planning calendar from public reference guidance and your own "
-        "notes. **Step 3** routes a described need to DIY, local/neighbour, a relevant service category, or "
-        "wait/clarify, and explains why each route is chosen. **Step 4** captures a post-service reflection "
-        "and downloads a private checklist locally. Every step runs offline with deterministic logic; a "
-        "configured Gemini key may improve wording, but routing and safety rules stay local. Each action is "
-        "written to a tool trace so the AI audit can check tool choice. No personal details are requested "
-        "and no external service is contacted."
+        "- **Step 1 – Tell me about your home:** collects an anonymous household profile.\n"
+        "- **Step 2 – Your next 90 days:** builds a 90-day planning calendar from public reference guidance "
+        "and your own notes.\n"
+        "- **Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
+        "category, or wait/clarify, and explains why each route is chosen.\n"
+        "- **Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
+        "locally.\n"
+        "- Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
+        "and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal "
+        "details are requested and no external service is contacted."
     )
 
     with st.expander("Demo tasks for mentors"):
