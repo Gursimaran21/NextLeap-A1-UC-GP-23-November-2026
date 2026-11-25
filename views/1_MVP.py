@@ -84,14 +84,11 @@ def _about_html() -> str:
           booking, messaging or account access.
         </div>
       </div>
-      <div style="flex:1 1 320px; min-width:260px; min-height:300px; border-radius:14px; position:relative;
-                  background-image: linear-gradient(180deg, rgba(255,255,255,0) 55%, rgba(18,33,43,0.62) 100%),
-                  url('data:image/jpeg;base64,{encoded}');
-                  background-size:cover; background-position:center;">
-        <div style="position:absolute; left:18px; right:18px; bottom:16px; color:#ffffff;
-                    font-size:13px; line-height:1.45; font-weight:600;">
-          A clearer way to care for your home, one decision at a time.
-        </div>
+      <div style="flex:0 1 340px; min-width:260px; border-radius:14px; background:#E8F0EB;
+                  padding:14px; display:flex; align-items:center; justify-content:center;">
+        <img src="data:image/jpeg;base64,{encoded}" alt="Home care planning visual"
+             style="display:block; max-width:100%; max-height:360px; width:auto; height:auto;
+                    border-radius:10px; box-shadow:0 8px 20px rgba(15,27,38,0.12);" />
       </div>
     </div>
     """
