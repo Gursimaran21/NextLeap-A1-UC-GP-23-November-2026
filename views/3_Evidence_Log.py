@@ -39,6 +39,38 @@ def render() -> None:
         golden = eval_mod.load_golden()
         st.success("Golden set uploaded.")
 
+    st.subheader("Label the golden set here")
+    st.caption("20 rows. Choose a fixed theme and return signal for every row, then save. Nothing is auto-labelled.")
+    editor = st.data_editor(
+        golden,
+        key="golden_editor",
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "item_id": st.column_config.TextColumn("item_id", disabled=True),
+            "text": st.column_config.TextColumn("text", disabled=True, width="large"),
+            "human_primary_theme": st.column_config.SelectboxColumn(
+                "human_primary_theme", options=["TODO"] + [str(c) for c in config.THEME_CODES]
+            ),
+            "human_return_signal": st.column_config.SelectboxColumn(
+                "human_return_signal", options=["TODO"] + [str(s) for s in config.RETURN_SIGNALS]
+            ),
+            "human_note": st.column_config.TextColumn("human_note"),
+        },
+    )
+    if st.button("Save golden labels"):
+        bad = editor[
+            (~editor["human_primary_theme"].isin(set(config.THEME_CODES)))
+            | (~editor["human_return_signal"].isin(set(config.RETURN_SIGNALS)))
+        ]
+        if len(editor) != config.GOLDEN_N or not bad.empty:
+            st.error(f"Need all {config.GOLDEN_N} rows labelled with valid codes; {len(bad)} rows are still invalid.")
+        else:
+            editor.to_csv(config.GOLDEN, index=False)
+            st.session_state.pop("eval_result", None)
+            st.success("Golden labels saved. Agreement metrics are now computed from real human labels.")
+            st.rerun()
+
     if st.button("Recompute agreement"):
         if not config.DISCOVERY_JSON.exists():
             engine.run(sample_path, llm=None, out_path=config.OUTPUTS_DIR / "discovery_results_sample.json")
@@ -113,6 +145,30 @@ def render() -> None:
     bias = results.get("bias_report", {})
     st.write(bias)
     st.warning(bias.get("limitation", ""))
+
+    cov_path = config.OUTPUTS_DIR / "source_availability.json"
+    if cov_path.exists():
+        st.subheader("Public source availability")
+        cov = json.loads(cov_path.read_text(encoding="utf-8"))
+        cov_df = pd.DataFrame(cov.get("rows", []))
+        if not cov_df.empty:
+            st.dataframe(
+                cov_df[["source", "source_class", "http_status", "reachable", "error"]],
+                width="stretch", hide_index=True,
+            )
+        st.caption("Availability probe only. Unreachable sources contributed no data; nothing was invented.")
+
+    audit_path = config.OUTPUTS_DIR / "audit_results.json"
+    if audit_path.exists():
+        st.subheader("AI tool-choice audit (system self-check)")
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        a1, a2, a3, a4 = st.columns(4)
+        a1.metric("Tool accuracy", f"{audit.get('tool_accuracy_pct')}%")
+        a2.metric("Route accuracy", f"{audit.get('route_accuracy_pct')}%")
+        a3.metric("No-action routes", f"{audit.get('no_action_route_pct')}%")
+        a4.metric("Incorrect routes", f"{audit.get('incorrect_route_pct')}%")
+        st.dataframe(pd.DataFrame(audit.get("rows", [])), width="stretch", hide_index=True)
+        st.caption(audit.get("limitation", ""))
 
     st.subheader("Limitations")
     st.markdown(

@@ -16,7 +16,7 @@ DATA_DIR = ROOT / "data"
 OUTPUTS_DIR = ROOT / "outputs"
 DOCS_DIR = ROOT / "docs"
 
-CORPUS = DATA_DIR / "public_corpus.csv"
+CORPUS = DATA_DIR / "public_corpus_merged.csv"  # App Store + Google Play; legacy App Store snapshot kept at public_corpus.csv
 GOLDEN = DATA_DIR / "golden_set.csv"
 INTERVIEWS = DATA_DIR / "interviews.csv"
 REFERENCE = DATA_DIR / "public_reference.csv"

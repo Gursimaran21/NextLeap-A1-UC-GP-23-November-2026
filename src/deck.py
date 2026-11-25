@@ -52,17 +52,17 @@ SLIDES: list[dict] = [
     },
     {
         "n": 4,
-        "title": "Real app-store reviews are dominated by experience complaints; continuity signals are rare in public traces",
+        "title": "Real app-store and Play Store reviews are dominated by experience complaints; continuity signals are rare in public traces",
         "key_message": "The known public-data bias is confirmed on real reviews: silent non-returners leave little trace, so primary research must carry the continuity hypothesis.",
         "bullets": [
-            "Corpus: 465 real App Store (India) reviews collected 2026-11-23 with full provenance (public RSS; no logged-in UC access).",
-            "Deterministic offline coding: continuity themes T1-T7 about 1%, experience/price/redo controls about 25%, short praise or unclassified about 74%.",
-            "Implication: public traces under-represent planning/continuity gaps; interviews and golden-set validation are required, not optional.",
+            "Corpus: 635 real public reviews (465 App Store India + 170 Google Play India) collected 2026-11-23/25 with full provenance; no logged-in UC access.",
+            "Deterministic offline coding: continuity themes T1-T7 about 1.1%, experience/price/redo controls about 23.5%, short praise or unclassified about 75.4%.",
+            "Both sources are app-store/complaint-heavy (100% flagged); silent non-returners still leave little trace, so interviews and golden-set validation are required.",
             "T9 price/offer excluded from solutioning (C1); T10 redo/refund excluded from metric counting (C5).",
         ],
         "visual": "theme_bar",
         "footnote_links": ["outputs/discovery_results.json", "outputs/evidence_log.md"],
-        "source_refs": ["Public corpus (App Store India, real)"],
+        "source_refs": ["Public corpus (App Store + Google Play India, real)"],
     },
     {
         "n": 5,

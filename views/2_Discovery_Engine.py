@@ -8,7 +8,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from src import config, engine, eval as eval_mod, ingest, llm
+from src import config, discovery_questions, engine, eval as eval_mod, ingest, llm, opportunity
 
 
 def _load_default_corpus(use_sample: bool = False):
@@ -173,6 +173,38 @@ def render() -> None:
     st.subheader("Bias report")
     st.warning(bias.get("limitation", "Bias limitation unavailable."))
     st.json({k: v for k, v in bias.items() if k != "limitation"})
+
+    st.subheader("Part 1 discovery questions — evidence status")
+    st.dataframe(discovery_questions.question_report_dataframe(results), width="stretch", hide_index=True)
+    for q in discovery_questions.build_question_report(results):
+        with st.expander(f"{q['id']} · {q['question']}"):
+            st.write("**Status:**", q["status"])
+            st.write("**Detail:**", q["detail"] or "—")
+            st.caption(q["note"])
+            for ex in q["example_quotes"]:
+                st.markdown(f"> “{ex['quote']}” — {ex['item_id']} ({ex['source']})")
+            if not q["example_quotes"]:
+                st.info("No verbatim evidence for this question in the current corpus.")
+
+    st.subheader("Segmentation coverage")
+    st.json(agg.get("segmentation_coverage", {}))
+    st.caption("Empty fields are reported as zero coverage — never treated as evidence.")
+
+    st.subheader("Opportunity ranking")
+    opp = opportunity.opportunities_dataframe(results)
+    if not opp.empty:
+        cols = ["rank", "theme_code", "share_pct", "stage", "reach_0_5", "influenceability_0_5",
+                "metric_link_0_5", "evidence_strength_0_5", "score", "status"]
+        st.dataframe(opp[cols], width="stretch", hide_index=True)
+        eligible = opp[~opp["excluded"]]
+        if not eligible.empty:
+            chart_opp = alt.Chart(eligible).mark_bar().encode(
+                x=alt.X("score:Q", title="Heuristic score"),
+                y=alt.Y("label:N", sort="-x", title="Theme"),
+                tooltip=["theme_code", "share_pct", "score", "stage"],
+            ).properties(height=300)
+            st.altair_chart(chart_opp, width="stretch")
+        st.caption("Weights are hand-set heuristics, not data-derived; price themes are excluded under C1. Not validated until interviews are complete.")
 
     st.subheader("How it works (1-slide block)")
     st.markdown(

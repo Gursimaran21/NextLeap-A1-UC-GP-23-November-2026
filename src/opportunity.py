@@ -160,12 +160,9 @@ def opportunities_dataframe(discovery: dict[str, Any], interviews_summary: dict[
 
 if __name__ == "__main__":
     config.ensure_dirs()
-    if config.DISCOVERY_JSON.exists():
-        discovery = json.loads(config.DISCOVERY_JSON.read_text(encoding="utf-8"))
-    else:
-        from . import engine
-
-        discovery = engine.run(config.DATA_DIR / "public_corpus_sample.csv", llm=None)
+    if not config.DISCOVERY_JSON.exists():
+        raise SystemExit("Canonical results missing. Run `python -m src.engine` first; no sample fallback for scoring.")
+    discovery = json.loads(config.DISCOVERY_JSON.read_text(encoding="utf-8"))
     df = opportunities_dataframe(discovery)
     cols = ["rank", "theme_code", "share_pct", "stage", "reach_0_5", "influenceability_0_5", "metric_link_0_5", "evidence_strength_0_5", "score", "excluded"]
     print(df[cols].to_string(index=False))

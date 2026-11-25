@@ -7,9 +7,10 @@
 | Source | Items |
 |---|---:|
 | App Store (India) | 465 |
+| Google Play | 170 |
 
-- Total items loaded: **500**
-- Total items kept after cleaning/redaction: **465**
+- Total items loaded: **663**
+- Total items kept after cleaning/redaction: **635**
 - PII redactions: **0**
 - Illustrative sample used: **False**
 
@@ -50,8 +51,8 @@
 
 ## Bias Handling
 
-- Source mix: {'app_store': 465}
-- Complaint-heavy share: 100.0% (465 items)
+- Source mix: {'app_store': 465, 'play_store': 170}
+- Complaint-heavy share: 100.0% (635 items)
 - Silent-nonreturner proxy count: 0
 - Limitation: Public posts over-represent vocal/negative experiences, and customers who quietly never return leave little or no public trace. Interview evidence is required to correct this blind spot.
 

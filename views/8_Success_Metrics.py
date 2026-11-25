@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import pandas as pd
 import streamlit as st
 
@@ -139,8 +141,26 @@ def render() -> None:
     ])
     st.dataframe(golden_tasks, width="stretch", hide_index=True)
 
-    st.markdown("**Precision/recall of tool choice:** compute against labelled golden tasks once run. Report per-tool precision/recall and overall accuracy. Not yet computed — pending the labelled golden-task audit; no accuracy figure is claimed.")
+    st.markdown("**Precision/recall of tool choice:** computed below from real deterministic runs of the router against the written task specification.")
     st.code("precision = TP / (TP + FP)\nrecall = TP / (TP + FN)\nReport per tool and macro average.", language="text")
+
+    audit_path = config.OUTPUTS_DIR / "audit_results.json"
+    if audit_path.exists():
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        st.subheader("Computed tool-choice audit (system self-check)")
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Tool accuracy", f"{audit.get('tool_accuracy_pct')}%")
+        m2.metric("Route accuracy", f"{audit.get('route_accuracy_pct')}%")
+        m3.metric("No-action routes", f"{audit.get('no_action_route_pct')}%")
+        m4.metric("Incorrect routes", f"{audit.get('incorrect_route_pct')}%")
+        per_tool = pd.DataFrame([
+            {"tool": k, **v} for k, v in audit.get("per_tool", {}).items()
+        ])
+        if not per_tool.empty:
+            st.dataframe(per_tool, width="stretch", hide_index=True)
+        st.caption(audit.get("limitation", ""))
+    else:
+        st.warning("Run `python -m scripts.audit_tool_choice` to compute real tool-choice metrics.")
 
     st.subheader("3 anti-nudge guardrails")
     st.markdown(

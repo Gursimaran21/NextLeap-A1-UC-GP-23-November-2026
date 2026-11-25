@@ -23,6 +23,8 @@ OPTIONAL_COLUMNS = {
     "rating",
     "city",
     "category",
+    "household_type",
+    "first_found_uc",
     "return_signal_hint",
     "hint_return_signal",
     "is_illustrative",
@@ -54,6 +56,11 @@ def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
         out["source_class"] = "other"
     if "is_illustrative" not in out.columns:
         out["is_illustrative"] = False
+    # Segmentation fields are optional; blank means "not captured" and is
+    # reported as such by the engine instead of being silently dropped.
+    for col in ("city", "category", "household_type", "first_found_uc"):
+        if col not in out.columns:
+            out[col] = ""
     return out
 
 
@@ -179,6 +186,8 @@ def paste_corpus(text_block: str, source: str, source_url: str, source_class: st
                 "rating": "",
                 "city": "",
                 "category": "",
+                "household_type": "",
+                "first_found_uc": "",
                 "return_signal_hint": "unclear",
                 "is_illustrative": False,
             }

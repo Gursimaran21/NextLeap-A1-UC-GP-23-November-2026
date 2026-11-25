@@ -51,7 +51,11 @@ def _heuristic_return_signal(text: str) -> str:
     t = text.lower()
     if any(w in t for w in ["booked again", "came back", "returned", "used again", "repeat"]):
         return "returned"
-    if any(w in t for w in ["never booked", "didn't book", "did not book", "went back to local", "forgot", "stopped using", "avoid the app", "didn't return"]):
+    if any(w in t for w in [
+        "never booked", "didn't book", "did not book", "went back to local", "moved to local",
+        "forgot", "stopped using", "never came back", "didn't come back", "did not come back",
+        "avoid the app", "didn't return", "did not return",
+    ]):
         return "did_not_return"
     return "unclear"
 
@@ -60,7 +64,10 @@ def _heuristic_bias_flag(text: str, source_class: str) -> str:
     t = text.lower()
     if source_class in taxonomy.COMPLAINT_HEAVY_SOURCES and _heuristic_sentiment(t) == "negative":
         return "bad_experience_overrepresented"
-    if any(w in t for w in ["forgot", "never thought", "went back to local", "didn't think of", "didn't remember"]):
+    if any(w in t for w in [
+        "forgot", "never thought", "went back to local", "moved to local", "didn't think of",
+        "didn't remember", "never came back", "didn't come back", "stopped using", "quietly stopped",
+    ]):
         return "silent_nonreturner_proxy"
     return "none"
 
@@ -211,6 +218,27 @@ def code_corpus(df: pd.DataFrame, llm: Any = None, progress: Any = None) -> pd.D
     return pd.concat([out.reset_index(drop=True), coded_df.reset_index(drop=True)], axis=1)
 
 
+def _segmentation(df: pd.DataFrame, col: str, total: int) -> dict[str, Any]:
+    """Stratify by an optional field; report zero coverage instead of hiding it."""
+    if col not in df.columns:
+        return {"coverage_pct": 0.0, "rows": [], "note": f"{col} not present in corpus schema"}
+    values = df[col].fillna("").astype(str).str.strip()
+    populated = df[values != ""]
+    if populated.empty:
+        return {"coverage_pct": 0.0, "rows": [], "note": f"{col} not captured in current corpus"}
+    rows = (
+        populated.groupby([col, "primary_theme"]).size().reset_index(name="count")
+        .sort_values([col, "count"], ascending=[True, False])
+        .rename(columns={col: "value"})
+        .to_dict(orient="records")
+    )
+    return {
+        "coverage_pct": round(100 * len(populated) / max(1, total), 1),
+        "rows": rows,
+        "note": f"{len(populated)} rows carry {col}",
+    }
+
+
 def aggregate(df: pd.DataFrame) -> dict[str, Any]:
     """Aggregate coded corpus into discovery metrics."""
     if df is None or df.empty:
@@ -244,6 +272,12 @@ def aggregate(df: pd.DataFrame) -> dict[str, Any]:
         df.groupby(["primary_theme", "return_signal"]).size().reset_index(name="count").to_dict(orient="records")
     )
     bias_counts = df["bias_flag"].value_counts().to_dict() if "bias_flag" in df.columns else {}
+    seg = {
+        "city": _segmentation(df, "city", total),
+        "category": _segmentation(df, "category", total),
+        "household_type": _segmentation(df, "household_type", total),
+        "first_found_uc": _segmentation(df, "first_found_uc", total),
+    }
 
     quotes: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for _, r in df.iterrows():
@@ -266,6 +300,8 @@ def aggregate(df: pd.DataFrame) -> dict[str, Any]:
         "theme_distribution": theme_rows,
         "by_source_class": by_source,
         "by_category": by_category,
+        "segmentation_coverage": {k: v["coverage_pct"] for k, v in seg.items()},
+        "segmentation": seg,
         "return_signal_crosstab": return_signal_ct,
         "bias_counts": bias_counts,
         "top_quotes_by_theme": quotes,

@@ -5,3 +5,4 @@ reportlab
 pypdf
 python-dotenv
 altair
+google-play-scraper

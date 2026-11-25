@@ -9,7 +9,9 @@ Usage:
 
 Outputs:
     data/raw/appstore_reviews.json   (raw records, gitignored)
-    data/public_corpus.csv           (corpus rows with provenance)
+    data/public_corpus.csv           (App Store-only snapshot; seed for the merged corpus)
+                                     Run `python -m scripts.collect_playstore` afterwards
+                                     to rebuild data/public_corpus_merged.csv.
 """
 
 from __future__ import annotations

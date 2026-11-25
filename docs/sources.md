@@ -17,8 +17,9 @@ Respect `docs/constraints.md` (C3). Public sources only. No logged-in Urban Comp
 | Date | Source | Method | Volume | Provenance |
 |---|---|---|---|---|
 | 2026-11-23 | App Store (India) — Urban Company app id `1032480595` | Apple public customer-reviews RSS/JSON (`itunes.apple.com/in/rss/customerreviews/...`), pages 1–10, no login | 500 fetched → 465 kept after ingest (PII redaction, <20-char drop, dedupe) | `source_url` = public App Store reviews page; raw saved to `data/raw/appstore_reviews.json` |
+| 2026-11-25 | Google Play (India) — `com.urbanclap.urbanclap` | Public Play Store review endpoint via `google-play-scraper`, English/India, newest first, no login | 250 fetched → 163 added after dedupe; merged corpus 663 rows | `source_url` = public Play Store listing; raw saved to `data/raw/playstore_reviews.json` |
 
-Collection script: `scripts/collect_appstore.py` (public endpoint only; no UC scraping). This is a **single-source, complaint-heavy** corpus; the bias report and deck state that limitation explicitly. Other source classes below remain available to add via the Discovery Engine paste/upload, but are not yet collected.
+Collection scripts: `scripts/collect_appstore.py` and `scripts/collect_playstore.py` (public endpoints only; no UC account/app scraping). The active corpus is `data/public_corpus_merged.csv`; `data/public_corpus.csv` is retained as the App Store-only snapshot. `scripts/probe_public_sources.py` records public-source availability in `outputs/source_availability.json`: Trustpilot and Reddit search returned HTTP 403 from this environment and contributed **no** data. The corpus is now **two-source but still app-store/complaint-heavy**; the bias report, deck, and evidence log state that limitation explicitly. Remaining source classes can be added via the Discovery Engine paste/upload path or new collectors.
 
 ## Not accessed
 - Urban Company logged-in app/web account surfaces.
