@@ -347,9 +347,10 @@ def render() -> None:
         st.markdown(
             """
             1. **Plan ahead:** Complete Step 1 profile and build a 90-day calendar in Step 2. Add your own need.  
-            2. **Route a need:** In Step 3, try: `AC not cooling`, `tap dripping`, and `something feels off in my kitchen but not sure what`.  
+            2. **Route a need:** In Step 3, try: <span style="background:#EBDFF0; color:#500C6B; padding:2px 6px; border-radius:6px;">AC not cooling, tap dripping, and something feels off in my kitchen but not sure what.</span>  
             3. **Reflect:** In Step 4, enter a post-service note, download the private checklist, and submit feedback.
-            """
+            """,
+            unsafe_allow_html=True,
         )
 
     _stepper()
