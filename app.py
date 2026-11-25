@@ -46,6 +46,14 @@ st.markdown(
       [data-testid="stTopNavSection"] {
         background-color: #EBDFF0 !important;
       }
+      [data-testid="stTopNavLink"],
+      [data-testid="stTopNavDropdownLink"],
+      [data-testid="stTopNavSection"],
+      [data-testid="stTopNavLink"] *,
+      [data-testid="stTopNavDropdownLink"] *,
+      [data-testid="stTopNavSection"] * {
+        color: #500C6B !important;
+      }
       [data-testid="stTopNavLink"]:hover,
       [data-testid="stTopNavDropdownLink"]:hover,
       [data-testid="stTopNavSection"]:hover {
