@@ -367,8 +367,5 @@ def render() -> None:
 
     _nav_buttons()
 
-    st.divider()
-    st.caption("Public prototype · No bookings · No account access · Public information only. Offline mode uses deterministic logic.")
-
 
 render()

@@ -32,6 +32,19 @@ def _load_default_corpus(use_sample: bool = False):
 def render() -> None:
     st.title("AI Discovery Engine")
     st.caption("Public-source feedback coding into fixed opportunity themes. No logged-in UC scraping.")
+    with st.container(border=True):
+        st.markdown("**Discovery controls**")
+        ctrl_left, ctrl_right = st.columns([2, 1])
+        with ctrl_left:
+            use_sample = st.toggle("Use bundled illustrative sample", value=False)
+            run_btn = st.button("Run engine", type="primary", width="stretch")
+        with ctrl_right:
+            st.caption("LLM status")
+            if llm.available():
+                st.success(f"Live LLM: {llm.active_model()}")
+            else:
+                st.info("Offline deterministic fallback (no GEMINI_API_KEY).")
+
     with st.expander("Eligible public sources and current coverage"):
         st.markdown(
             """
@@ -41,17 +54,6 @@ def render() -> None:
             """
         )
         st.caption("Current corpus: App Store (India) only — single-source and complaint-heavy. See docs/sources.md.")
-
-    with st.sidebar:
-        st.subheader("Discovery controls")
-        use_sample = st.toggle("Use bundled illustrative sample", value=False)
-        run_btn = st.button("Run engine", type="primary", width="stretch")
-        st.divider()
-        st.write("LLM status")
-        if llm.available():
-            st.success(f"Live LLM: {llm.active_model()}")
-        else:
-            st.info("Offline deterministic fallback (no GEMINI_API_KEY).")
 
     uploaded = st.file_uploader("Upload public corpus CSV", type=["csv"])
     with st.expander("Paste public text (optional)"):

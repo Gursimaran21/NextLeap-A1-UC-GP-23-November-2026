@@ -31,15 +31,16 @@ st.markdown(
     <style>
       html, body, [class*="css"] { font-size: 16px; color: #12212B; background: #FFFFFF; }
       .block-container { padding-top: 2rem; padding-bottom: 2rem; }
-      [data-testid="stSidebar"] { background-color: #F3F6F5; }
-      [data-testid="stSidebar"] * { color: #12212B; }
-      a, button, input, textarea, [role="tab"] { outline-color: #0B6E4F !important; }
+      a, button, input, textarea, [role="tab"] { outline-color: #500C6B !important; }
       a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [role="tab"]:focus-visible {
-        outline: 3px solid #0B6E4F !important;
+        outline: 3px solid #500C6B !important;
         outline-offset: 2px;
       }
       .stAlert { border-radius: 8px; }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
+      [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
+        background-color: #500C6B !important;
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -58,14 +59,16 @@ pages = [
     st.Page("views/10_Deck.py", title="Deck", icon="📊"),
 ]
 
-with st.sidebar:
-    st.markdown("### UC Graduation Project")
-    st.caption("Nov 2026 · PMF Cohort 52")
-    st.divider()
-    st.markdown(
-        '<div class="small-muted">Public prototype · No bookings · No account access · Public information only</div>',
-        unsafe_allow_html=True,
-    )
-
-pg = st.navigation(pages)
+pg = st.navigation(pages, position="top")
 pg.run()
+
+st.markdown(
+    """
+    <div style="margin-top:2rem; padding:14px 18px; background:#F7F1F9; border:1px solid #E6D9EA;
+                border-radius:12px; text-align:center; color:#52606A; font-size:0.82rem; line-height:1.5;">
+      <strong style="color:#500C6B;">Urban Company - Home Care Companion</strong> · Graduation Project · Nov 2026 · PMF Cohort 52<br>
+      Public prototype · No bookings · No account access · Public information only · No personal details
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
