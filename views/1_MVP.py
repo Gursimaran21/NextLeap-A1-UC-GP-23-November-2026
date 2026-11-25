@@ -61,10 +61,9 @@ def _about_html() -> str:
         for num, title, detail in pillars
     )
     return f"""
-    <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:stretch; background:#F3F8F5;
-                border:1px solid #D4E6DC; border-radius:18px; padding:26px;
+    <div style="background:#F3F8F5; border:1px solid #D4E6DC; border-radius:18px; padding:26px;
                 box-shadow:0 16px 36px rgba(15,27,38,0.08);">
-      <div style="flex:1 1 420px; min-width:300px;">
+      <div style="max-width:760px;">
         <div style="display:inline-block; background:#E6F3ED; color:#0B6E4F; border:1px solid #BFE0D1;
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                     text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Companion</div>
@@ -84,7 +83,7 @@ def _about_html() -> str:
           booking, messaging or account access.
         </div>
       </div>
-      <div style="flex:0 0 300px; width:300px; height:400px; border-radius:14px; overflow:hidden;">
+      <div style="width:300px; height:400px; margin:22px auto 0; border-radius:14px; overflow:hidden;">
         <img src="data:image/jpeg;base64,{encoded}" alt="Home care planning visual"
              style="display:block; width:100%; height:100%; object-fit:cover; border-radius:14px;" />
       </div>
