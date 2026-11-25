@@ -48,6 +48,7 @@ def _about_html() -> str:
         ("01", "Need recognition", "Notice what the home needs before it becomes urgent."),
         ("02", "Post-service continuity", "Reflect, plan follow-ups and keep notes private."),
         ("03", "Service clarity", "Understand the options, from DIY to professional help."),
+        ("04", "Informed Choice", "Choose the right next step based on need, urgency and safety."),
     ]
     pillar_html = "".join(
         '<div style="display:flex; gap:10px; align-items:flex-start;">'
