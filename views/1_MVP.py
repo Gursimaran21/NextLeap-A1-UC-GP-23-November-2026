@@ -262,8 +262,8 @@ def render() -> None:
         "- **Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
         "category, or wait/clarify, and explains why each route is chosen.\n"
         "- **Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
-        "locally.\n"
-        "- Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
+        "locally.\n\n"
+        "Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
         "and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal "
         "details are requested and no external service is contacted."
     )
