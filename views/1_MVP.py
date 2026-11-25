@@ -65,7 +65,7 @@ def _about_html() -> str:
                 border:1px solid #E6D9EA; border-radius:18px; padding:26px;
                 box-shadow:0 16px 36px rgba(15,27,38,0.08);">
       <div style="flex:1 1 420px; min-width:300px;">
-        <div style="display:inline-block; background:#E6F3ED; color:#0B6E4F; border:1px solid #BFE0D1;
+        <div style="display:inline-block; background:#F9F4FA; color:#500C6B; border:1px solid #D9C6E0;
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                     text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Companion</div>
         <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
