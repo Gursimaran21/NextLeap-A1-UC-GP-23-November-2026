@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pandas as pd
 import streamlit as st
 
 from src import config
@@ -13,6 +14,28 @@ def render() -> None:
 
     st.subheader("Exact metric definition")
     st.info(config.METRIC_DEFINITION)
+
+    st.subheader("Business metric → product outcomes → customer behaviours → measurable indicators")
+    chain = [
+        ("Business metric", "90-day repeat completion rate for eligible anchor customers"),
+        ("Product outcomes", "Need recognition, mental availability, category clarity, choice confidence, frictionless completion"),
+        ("Customer behaviours", "D1–D6: what the customer actually does or decides"),
+        ("Measurable indicators", "Customer self-report (interviews) or public traces only — no internal UC data"),
+    ]
+    for label, detail in chain:
+        st.markdown(f"**{label}:** {detail}")
+
+    tree = pd.DataFrame([
+        {
+            "stage": f"{d['id']} · {d['stage']}",
+            "customer_behaviour": d["question"],
+            "product_outcome": d["product_outcome"],
+            "measurable_indicator": d["measurable_indicator"],
+            "influenceable": "Yes" if d.get("influenceable") else "No",
+        }
+        for d in config.DECOMPOSITION
+    ])
+    st.dataframe(tree, width="stretch", hide_index=True)
 
     st.subheader("D1–D6 decomposition")
     for d in config.DECOMPOSITION:

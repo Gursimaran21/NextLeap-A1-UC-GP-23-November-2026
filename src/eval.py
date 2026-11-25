@@ -42,10 +42,10 @@ def load_golden(path: str | Path | None = None) -> pd.DataFrame:
     df["human_return_signal"] = df["human_return_signal"].fillna("").astype(str).str.strip()
     df["human_note"] = df["human_note"].fillna("").astype(str).str.strip()
 
-    labelled = df[df["human_primary_theme"].map(_is_labelled)]
-    # Regenerate only when the template is missing/short or completely unlabelled.
-    # Never overwrite partially labelled rows (protects manual labelling progress).
-    if len(df) < config.GOLDEN_N or len(labelled) == 0:
+    # Regenerate only when the template is missing/short. Browsing the app must
+    # never rewrite an existing 20-row golden set (even before labels exist),
+    # so manual labelling progress and source text stay untouched.
+    if len(df) < config.GOLDEN_N:
         template = _generate_template()
         template.to_csv(gpath, index=False)
         print(

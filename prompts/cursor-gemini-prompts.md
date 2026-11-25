@@ -395,7 +395,7 @@ Show all files.
 Respect docs/constraints.md. Create src/deck.py and views/10_Deck.py.
 
 src/deck.py: SLIDES = list of 10 dicts with {n, title, key_message, bullets, visual, footnote_links, source_refs}. Titles MUST be full sentences stating the key message (no "Problem", "Solution"). Slide titles exactly:
-1. "One in three repeat bookings is decided in the 90 days after the first service, not during it" (title slide also includes "Urban Company · Consumer Growth · Nov 2026" and NO fellow name)
+1. "The 90-day repeat window opens after the service, not during it" (title slide also includes "Urban Company · Consumer Growth · Nov 2026" and NO fellow name; do NOT assert an unsourced "one in three" statistic)
 2. "The 90-day repeat rate is six customer decisions, only four of which the product can influence"
 3. "Our discovery engine codes public conversations into 11 opportunity themes and corrects for two known biases" (the required 1-slide engine explanation)
 4. "Continuity signals outweigh service-quality complaints in the public corpus"

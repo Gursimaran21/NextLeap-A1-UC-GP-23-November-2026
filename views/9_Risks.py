@@ -11,6 +11,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "False need creation / pushy nudges",
             "likelihood": "Medium",
+            "severity": "High",
             "impact": "High",
             "mitigation": "No-need/wait routes, confidence labels, anti-nudge guardrails, no booking CTAs.",
             "early_warning": "Rising non-UC-to-UC conversion pressure complaints; low 'matched real need' feedback.",
@@ -20,6 +21,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "Wrong or unsafe routing",
             "likelihood": "Medium",
+            "severity": "High",
             "impact": "High",
             "mitigation": "Deterministic safety rules, clarifying questions, immediate-help route, human review of golden tasks.",
             "early_warning": "Golden-task routing errors; user reports of unsafe/misaligned advice.",
@@ -29,6 +31,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "PII leakage in user inputs or logs",
             "likelihood": "Low",
+            "severity": "High",
             "impact": "High",
             "mitigation": "No PII fields, redaction in ingest, local-only checklist, QA checks.",
             "early_warning": "QA PII scan hits; user enters phone/address in free text.",
@@ -38,6 +41,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "Bias from public vocal-negative data",
             "likelihood": "High",
+            "severity": "Medium",
             "impact": "Medium",
             "mitigation": "Bias report, source mix, golden set review, interviews as counterweight.",
             "early_warning": "Overrepresentation of T8/T9; low silent-nonreturner coverage.",
@@ -47,6 +51,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "Low adoption / perceived as extra work",
             "likelihood": "Medium",
+            "severity": "Medium",
             "impact": "Medium",
             "mitigation": "Keep flow short, clear value in Step 2/3, optional reflection, no login.",
             "early_warning": "High drop-off after Step 1; low calendar/reflection completion.",
@@ -56,6 +61,7 @@ def _risk_table() -> pd.DataFrame:
         {
             "risk": "Metric gaming / wrong success signal",
             "likelihood": "Low",
+            "severity": "Medium",
             "impact": "Medium",
             "mitigation": "Use guardrails (no-need rate, non-UC route rate, 2-week follow-up), exclude redo/refund/warranty.",
             "early_warning": "Repeat rate up but user trust/fit scores down.",
@@ -77,7 +83,10 @@ def render() -> None:
                 f"<strong>{r['label']}</strong> · <strong>{r['risk']}</strong></div>",
                 unsafe_allow_html=True,
             )
-            st.write(f"**Likelihood:** {r['likelihood']}  |  **Impact:** {r['impact']}")
+            st.write(
+                f"**Likelihood:** {r['likelihood']}  |  **Severity:** {r['severity']}  |  "
+                f"**Impact:** {r['impact']}"
+            )
             st.write(f"**Mitigation:** {r['mitigation']}")
             st.write(f"**Early-warning signal:** {r['early_warning']}")
 

@@ -9,7 +9,7 @@ from . import config
 SLIDES: list[dict] = [
     {
         "n": 1,
-        "title": "One in three repeat bookings is decided in the 90 days after the first service, not during it",
+        "title": "The 90-day repeat window opens after the service, not during it",
         "key_message": "Repeat continuity is a post-service decision window; the MVP targets that window without incentives or transactions.",
         "bullets": [
             "Urban Company · Consumer Growth · Nov 2026",

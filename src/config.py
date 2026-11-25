@@ -213,6 +213,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "Seasonal/service cadence references in public discussions; not directly observable.",
         "influenceable": False,
         "publicly_measurable": False,
+        "product_outcome": "Anticipate genuine needs without creating them",
+        "measurable_indicator": "Public cadence/seasonality references (not directly observable)",
         "notes": "Mostly exogenous; product can anticipate but cannot create genuine need.",
     },
     {
@@ -223,6 +225,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "Posts/comments about forgotten maintenance, seasonal timing, or delayed repairs.",
         "influenceable": True,
         "publicly_measurable": False,
+        "product_outcome": "Timely need recognition",
+        "measurable_indicator": "Interview recall of missed or delayed maintenance",
         "notes": "Customer-side reminders/education can help without creating false need.",
     },
     {
@@ -233,6 +237,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "Mentions of alternatives used; limited direct signal.",
         "influenceable": True,
         "publicly_measurable": False,
+        "product_outcome": "Post-service continuity / top-of-mind",
+        "measurable_indicator": "Interview consideration and recall questions",
         "notes": "Post-service continuity can improve recall.",
     },
     {
@@ -243,6 +249,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "Reviews/comments asking whether UC does X.",
         "influenceable": True,
         "publicly_measurable": False,
+        "product_outcome": "Category clarity",
+        "measurable_indicator": "Interview awareness questions; public 'does UC do X?' posts",
         "notes": "Customer-side information can clarify category fit.",
     },
     {
@@ -253,6 +261,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "Public posts comparing local vendors, WhatsApp groups, DIY.",
         "influenceable": True,
         "publicly_measurable": False,
+        "product_outcome": "Confident choice vs alternatives",
+        "measurable_indicator": "Interview alternatives used; public comparison posts",
         "notes": "Must respect C1: no discounts/incentives; influence via confidence/planning value.",
     },
     {
@@ -263,6 +273,8 @@ DECOMPOSITION: list[dict[str, object]] = [
         "public_proxy": "App reviews about booking/payment/support friction.",
         "influenceable": True,
         "publicly_measurable": False,
+        "product_outcome": "Frictionless completion (customer-side clarity)",
+        "measurable_indicator": "Public reviews about booking/payment/support friction",
         "notes": "Some parts are product/ops; keep solution customer-side and avoid bad-experience-only framing.",
     },
 ]
