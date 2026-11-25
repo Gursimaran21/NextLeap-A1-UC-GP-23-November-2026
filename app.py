@@ -41,6 +41,15 @@ st.markdown(
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
         background-color: #500C6B !important;
       }
+      [data-testid="stTopNavLink"][href$="/"],
+      [data-testid="stTopNavDropdownLink"][href$="/"] {
+        background-color: #EBDFF0 !important;
+      }
+      [data-testid="stTopNavLink"]:hover,
+      [data-testid="stTopNavDropdownLink"]:hover,
+      [data-testid="stTopNavSection"]:hover {
+        background-color: #F7F1F9 !important;
+      }
     </style>
     """,
     unsafe_allow_html=True,
