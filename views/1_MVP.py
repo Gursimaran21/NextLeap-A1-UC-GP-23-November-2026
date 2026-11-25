@@ -14,7 +14,7 @@ from src import config, llm as llm_mod, mvp
 
 
 LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "urban_company_logo.jpg"
-ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background.jpg"
+ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background_1.jpg"
 
 
 def _header_html() -> str:
