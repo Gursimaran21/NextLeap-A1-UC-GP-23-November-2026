@@ -246,7 +246,7 @@ def render() -> None:
     _init_state()
     logo_col, title_col = st.columns([1, 8])
     with logo_col:
-        st.image(str(LOGO_PATH), width=110)
+        st.image(str(LOGO_PATH), width=64)
     with title_col:
         st.title("Urban Company - Home Care Companion")
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
