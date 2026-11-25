@@ -39,7 +39,7 @@ def _about_html() -> str:
     )
     tags = ["Need recognition", "Post-service continuity", "Service clarity", "Informed choice"]
     tag_html = "".join(
-        '<span style="background:#E6F3ED; border:1px solid #BFE0D1; color:#0B6E4F; '
+        '<span style="background:#EBDFF0; border:1px solid #D9C6E0; color:#500C6B; '
         'padding:5px 11px; border-radius:999px; font-size:11px; '
         f'letter-spacing:0.02em; font-weight:600;">{tag}</span>'
         for tag in tags
