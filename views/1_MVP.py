@@ -69,9 +69,9 @@ def _about_html() -> str:
         booking, messaging, or customer-account access capabilities.
       </p>
       <div style="display:flex; flex-wrap:wrap; gap:8px;">{tag_html}</div>
-      <div style="text-align:right; font-size:11px; opacity:0.72; margin-top:18px;">
+      <!-- <div style="text-align:right; font-size:11px; opacity:0.72; margin-top:18px;">
         Background image: Urban Company UAE (Instagram)
-      </div>
+      </div>-->
     </div>
     """
 
