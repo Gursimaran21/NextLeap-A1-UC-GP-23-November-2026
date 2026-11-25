@@ -31,7 +31,7 @@ def _header_html() -> str:
 
 
 def _about_html() -> str:
-    """Render the About section as a photo-backed, readable hero card."""
+    """Render a calm, title-led About card with a dedicated home-care visual."""
     encoded = base64.b64encode(ABOUT_BG_PATH.read_bytes()).decode("ascii")
     third_paragraph = (
         "It supports Urban Company's 90-day repeat-booking objective without "
@@ -39,36 +39,59 @@ def _about_html() -> str:
     )
     tags = ["Need recognition", "Post-service continuity", "Service clarity", "Informed choice"]
     tag_html = "".join(
-        '<span style="background:rgba(255,255,255,0.16); border:1px solid '
-        'rgba(255,255,255,0.32); padding:5px 11px; border-radius:999px; '
-        f'font-size:12px; letter-spacing:0.02em;">{tag}</span>'
+        '<span style="background:#E6F3ED; border:1px solid #BFE0D1; color:#0B6E4F; '
+        'padding:5px 11px; border-radius:999px; font-size:11px; '
+        f'letter-spacing:0.02em; font-weight:600;">{tag}</span>'
         for tag in tags
     )
+    pillars = [
+        ("01", "Need recognition", "Notice what the home needs before it becomes urgent."),
+        ("02", "Service clarity", "Understand the options, from DIY to professional help."),
+        ("03", "Post-service continuity", "Reflect, plan follow-ups and keep notes private."),
+    ]
+    pillar_html = "".join(
+        '<div style="display:flex; gap:10px; align-items:flex-start;">'
+        '<span style="flex:0 0 26px; height:26px; border-radius:50%; background:#0B6E4F; '
+        'color:#ffffff; font-size:11px; font-weight:700; display:flex; '
+        f'align-items:center; justify-content:center;">{num}</span>'
+        '<div><div style="font-size:13px; font-weight:700; color:#12212B;">'
+        f'{title}</div><div style="font-size:12px; line-height:1.45; color:#52606A;">'
+        f'{detail}</div></div></div>'
+        for num, title, detail in pillars
+    )
     return f"""
-    <div style="background-image: linear-gradient(90deg, rgba(15,27,38,0.94) 0%, rgba(15,27,38,0.82) 55%, rgba(15,27,38,0.46) 100%), url('data:image/jpeg;base64,{encoded}');
-                background-size: cover; background-position: center 15%; border-radius:18px;
-                padding:32px 34px; min-height:260px; color:#ffffff;
-                box-shadow:0 18px 40px rgba(15,27,38,0.16);">
-      <h2 style="margin:0 0 14px 0; font-size:1.6rem; line-height:1.25; font-weight:700;">
-        About Urban Company - Home Care Companion
-      </h2>
-      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">
-        Urban Company - Home Care Companion is an AI-powered digital experience that helps urban households
-        recognise, plan and manage home-care needs through personalised guidance.
-      </p>
-      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">
-        It focuses on need recognition, post-service continuity, service clarity and informed decisions
-        between DIY, local help and professional services.
-      </p>
-      <p style="margin:0 0 11px 0; font-size:0.98rem; line-height:1.62;">{third_paragraph}</p>
-      <p style="margin:0 0 16px 0; font-size:0.98rem; line-height:1.62;">
-        <strong style="font-weight:700;">Scope:</strong> An independent customer-side experience with no
-        booking, messaging, or customer-account access capabilities.
-      </p>
-      <div style="display:flex; flex-wrap:wrap; gap:8px;">{tag_html}</div>
-      <!-- <div style="text-align:right; font-size:11px; opacity:0.72; margin-top:18px;">
-        Background image: Urban Company UAE (Instagram)
-      </div>-->
+    <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:stretch; background:#FFFFFF;
+                border:1px solid #DCE7E2; border-radius:18px; padding:26px;
+                box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+      <div style="flex:1 1 420px; min-width:300px;">
+        <div style="display:inline-block; background:#E6F3ED; color:#0B6E4F; border:1px solid #BFE0D1;
+                    padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Companion</div>
+        <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+          About Urban Company - Home Care Companion
+        </h2>
+        <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
+          A calm planning companion for urban households. It helps you recognise home-care needs,
+          understand your options and plan what comes next.
+        </p>
+        <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">{third_paragraph}</p>
+        <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">{tag_html}</div>
+        <div style="border-top:1px solid #E7EFEB; padding-top:12px; font-size:12px; line-height:1.55;
+                    color:#52606A;">
+          <strong style="color:#12212B;">Scope:</strong> An independent customer-side experience with no
+          booking, messaging or account access.
+        </div>
+      </div>
+      <div style="flex:1 1 320px; min-width:260px; min-height:300px; border-radius:14px; position:relative;
+                  background-image: linear-gradient(180deg, rgba(255,255,255,0) 55%, rgba(18,33,43,0.62) 100%),
+                  url('data:image/jpeg;base64,{encoded}');
+                  background-size:cover; background-position:center;">
+        <div style="position:absolute; left:18px; right:18px; bottom:16px; color:#ffffff;
+                    font-size:13px; line-height:1.45; font-weight:600;">
+          A clearer way to care for your home, one decision at a time.
+        </div>
+      </div>
     </div>
     """
 
