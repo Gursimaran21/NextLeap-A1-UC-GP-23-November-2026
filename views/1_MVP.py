@@ -240,9 +240,33 @@ def _render_reflection() -> None:
 
 def render() -> None:
     _init_state()
-    st.title("Home Care Companion")
+    st.title("Urban Company - Home Care Companion")
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
     st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
+
+    st.subheader("About Urban Company - Home Care Companion")
+    st.markdown(
+        "**Urban Company - Home Care Companion is the solution proposed in this graduation project.** "
+        "It is a customer-side prototype for urban households: it helps them notice, plan, and handle genuine "
+        "home-care needs after a service, instead of leaving the next need to chance. The AI discovery engine "
+        "and the metric decomposition pointed to need recognition, post-service continuity, category clarity, "
+        "and confidence in choosing between DIY, local help, and a professional category as the influenceable "
+        "gaps. Changes to price, plans, incentive mechanics, or management operations are outside the project "
+        "scope. This page cannot complete a booking, send a message, or act on any account."
+    )
+
+    st.subheader("About this page")
+    st.markdown(
+        "This page is the working MVP, split into four steps. **Step 1** collects an anonymous household "
+        "profile. **Step 2** builds a 90-day planning calendar from public reference guidance and your own "
+        "notes. **Step 3** routes a described need to DIY, local/neighbour, a relevant service category, or "
+        "wait/clarify, and explains why each route is chosen. **Step 4** captures a post-service reflection "
+        "and downloads a private checklist locally. Every step runs offline with deterministic logic; a "
+        "configured Gemini key may improve wording, but routing and safety rules stay local. Each action is "
+        "written to a tool trace so the AI audit can check tool choice. No personal details are requested "
+        "and no external service is contacted."
+    )
+
     with st.expander("Demo tasks for mentors"):
         st.markdown(
             """
