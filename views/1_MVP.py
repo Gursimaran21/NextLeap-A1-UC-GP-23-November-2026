@@ -49,9 +49,6 @@ def _about_html() -> str:
                 background-size: cover; background-position: 65% center; border-radius:18px;
                 padding:32px 34px; min-height:260px; color:#ffffff;
                 box-shadow:0 18px 40px rgba(15,27,38,0.16);">
-      <div style="display:inline-block; background:rgba(255,255,255,0.16); border:1px solid rgba(255,255,255,0.34);
-                  padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.1em;
-                  text-transform:uppercase; margin-bottom:14px;">Solution overview</div>
       <h2 style="margin:0 0 14px 0; font-size:1.6rem; line-height:1.25; font-weight:700;">
         About Urban Company - Home Care Companion
       </h2>
