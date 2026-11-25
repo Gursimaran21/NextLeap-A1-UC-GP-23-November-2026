@@ -65,7 +65,7 @@ st.markdown(
 )
 
 pages = [
-    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon=":material/home_repair_service:", default=True),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),
