@@ -77,6 +77,23 @@ def render() -> None:
             if links:
                 st.caption("Supporting artefacts / sources: " + " · ".join(links))
 
+    st.subheader("Required deck topics (R2–R8)")
+    st.markdown(
+        """
+        | Required topic | Slide |
+        |---|---|
+        | Metric decomposition | 2 |
+        | AI discovery engine and findings | 3–4 |
+        | User research | 5 |
+        | Target segment | 6 |
+        | Root cause / problem definition | 7 |
+        | Solution rationale | 8 |
+        | MVP and user testing | 8–9 |
+        | Success metrics | 10 |
+        | Risks and limitations | 4, 10 |
+        """
+    )
+
     pdf_path = config.DECK_PDF
     if pdf_path.exists():
         st.download_button(

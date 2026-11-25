@@ -64,6 +64,22 @@ def render() -> None:
             "target": ">=90%",
             "measurement_source": "Golden task audit + interviews.",
         },
+        {
+            "type": "Leading indicator",
+            "metric": "Adoption / continued usage",
+            "definition": "% of pilot users who return to the experience for a second planning or decision task.",
+            "rationale": "Continued voluntary use signals durable customer value, not one-off curiosity.",
+            "target": "Directional; baseline TBD with real users",
+            "measurement_source": "Anonymous session counts and opt-in feedback; no account linkage.",
+        },
+        {
+            "type": "Guardrail",
+            "metric": "Customer trust / satisfaction",
+            "definition": "Share of feedback marking the experience useful and matching a real need.",
+            "rationale": "Trust must be maintained even if leading indicators improve.",
+            "target": "Directional; no regression",
+            "measurement_source": "Two-question MVP feedback in outputs/mvp_feedback.jsonl.",
+        },
     ])
     st.dataframe(metrics, width="stretch", hide_index=True)
 

@@ -32,6 +32,15 @@ def _load_default_corpus(use_sample: bool = False):
 def render() -> None:
     st.title("AI Discovery Engine")
     st.caption("Public-source feedback coding into fixed opportunity themes. No logged-in UC scraping.")
+    with st.expander("Eligible public sources and current coverage"):
+        st.markdown(
+            """
+            Eligible: Apple App Store, Google Play, Trustpilot/consumer forums, Reddit (Indian city/household communities),
+            public social conversations, YouTube comments, UC public shareholder letters, public earnings-call transcripts,
+            and other public home-service conversations. No logged-in or private UC surfaces.
+            """
+        )
+        st.caption("Current corpus: App Store (India) only — single-source and complaint-heavy. See docs/sources.md.")
 
     with st.sidebar:
         st.subheader("Discovery controls")

@@ -242,6 +242,7 @@ def render() -> None:
     _init_state()
     st.title("Home Care Companion")
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
+    st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
     with st.expander("Demo tasks for mentors"):
         st.markdown(
             """

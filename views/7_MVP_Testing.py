@@ -10,9 +10,19 @@ from src import config
 
 def render() -> None:
     st.title("MVP Testing")
-    st.caption("Lightweight concept/usability test with 3 return users. No PII.")
+    st.caption("At least three real tasks with users from the target segment. No PII, no account actions.")
 
-    st.subheader("3-return-user test plan")
+    st.subheader("Testing methodology (R6)")
+    st.markdown(
+        """
+        - Participants: >=3 users from the target segment; no names or contact details recorded.
+        - Method: assign real tasks, observe interaction, note confusion and time-on-task, then ask about usefulness and relevance.
+        - Evidence: task outcome, tool trace from `outputs/tool_trace.jsonl`, and feedback from `outputs/mvp_feedback.jsonl`.
+        - Safety: confirm no PII was collected and no booking/messaging/account action was attempted.
+        """
+    )
+
+    st.subheader("3-user test plan")
     tests = [
         {
             "user": "R_T1 (placeholder)",
@@ -30,7 +40,7 @@ def render() -> None:
         },
         {
             "user": "R_T3 (placeholder)",
-            "task": "Complete post-service reflection and download private checklist.",
+            "task": "Complete post-service reflection and download the private checklist.",
             "expected_tool_trace": "capture_reflection -> local checklist download; no upload",
             "observed": "[Fill after test]",
             "change_next_iteration": "[Fill after test]",
@@ -47,13 +57,27 @@ def render() -> None:
             st.write("**Observed:**", t["observed"])
             st.write("**Change for next iteration:**", t["change_next_iteration"])
 
+    st.subheader("Synthesis (pending real tests)")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**What worked well**")
+        st.markdown("- [Fill after tests]")
+        st.markdown("**User feedback on usefulness / relevance**")
+        st.markdown("- [Fill after tests]")
+    with c2:
+        st.markdown("**What did not work / issues identified**")
+        st.markdown("- [Fill after tests]")
+        st.markdown("**Changes proposed for next iteration**")
+        st.markdown("- [Fill after tests]")
+
     st.subheader("Evidence capture checklist")
     st.markdown(
         """
         - Record task success/failure and time-on-task.
-        - Capture tool trace from `outputs/tool_trace.jsonl`.
+        - Capture the tool trace from `outputs/tool_trace.jsonl`.
         - Note confusion, trust concerns, and false positives/negatives.
         - Confirm no PII was collected; no booking/account actions were attempted.
+        - Do not fill placeholders with invented observations.
         """
     )
 

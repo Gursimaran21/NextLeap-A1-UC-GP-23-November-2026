@@ -301,8 +301,8 @@ def bias_report(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def run(corpus_path: str | Path | None = None, llm: Any = None) -> dict[str, Any]:
-    """Run discovery engine on corpus and write outputs/discovery_results.json."""
+def run(corpus_path: str | Path | None = None, llm: Any = None, out_path: str | Path | None = None) -> dict[str, Any]:
+    """Run discovery engine on corpus; write to out_path (canonical by default)."""
     config.ensure_dirs()
     from .ingest import load_corpus  # local import to avoid cycles
 
@@ -323,18 +323,27 @@ def run(corpus_path: str | Path | None = None, llm: Any = None) -> dict[str, Any
         "bias_report": bias_report(coded),
         "items": coded.to_dict(orient="records"),
     }
-    config.DISCOVERY_JSON.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    out = Path(out_path) if out_path else config.DISCOVERY_JSON
+    out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     return result
 
 
 if __name__ == "__main__":
     config.ensure_dirs()
     sample = config.DATA_DIR / "public_corpus_sample.csv"
-    if not sample.exists():
-        from .ingest import build_sample_corpus
+    if config.CORPUS.exists():
+        corpus_path = config.CORPUS
+        out_path = config.DISCOVERY_JSON
+    else:
+        if not sample.exists():
+            from .ingest import build_sample_corpus
 
-        build_sample_corpus(sample, write=True)
-    res = run(sample, llm=None)
+            build_sample_corpus(sample, write=True)
+        corpus_path = sample
+        # Demo runs must never overwrite canonical real-corpus evidence.
+        out_path = config.OUTPUTS_DIR / "discovery_results_sample.json"
+        print("Real corpus unavailable; using illustrative sample in a separate output file.")
+    res = run(corpus_path, llm=None, out_path=out_path)
     rows = res["aggregate"]["theme_distribution"]
     print("Theme distribution:")
     for r in sorted(rows, key=lambda x: x["count"], reverse=True):

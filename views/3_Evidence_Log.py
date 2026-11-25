@@ -26,7 +26,7 @@ def render() -> None:
     if config.DISCOVERY_JSON.exists():
         results = json.loads(config.DISCOVERY_JSON.read_text(encoding="utf-8"))
     else:
-        results = engine.run(sample_path, llm=None)
+        results = engine.run(sample_path, llm=None, out_path=config.OUTPUTS_DIR / "discovery_results_sample.json")
 
     coded = pd.DataFrame(results.get("items", []))
     golden = eval_mod.load_golden()
@@ -40,7 +40,8 @@ def render() -> None:
         st.success("Golden set uploaded.")
 
     if st.button("Recompute agreement"):
-        results = engine.run(sample_path, llm=None) if not config.DISCOVERY_JSON.exists() else results
+        if not config.DISCOVERY_JSON.exists():
+            engine.run(sample_path, llm=None, out_path=config.OUTPUTS_DIR / "discovery_results_sample.json")
         coded = pd.DataFrame(results.get("items", []))
         golden = eval_mod.load_golden()
         st.session_state["eval_result"] = eval_mod.evaluate(coded, golden)

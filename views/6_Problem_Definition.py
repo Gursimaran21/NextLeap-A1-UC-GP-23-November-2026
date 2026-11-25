@@ -51,6 +51,12 @@ def render() -> None:
         """
     )
 
+    st.info(
+        "Evidence status: segment and product outcome come from the metric and discovery stages. "
+        "Journey scenario, root cause, workarounds, and user value await interview validation "
+        "(see views/5_User_Research.py)."
+    )
+
     st.subheader("What we are not solving")
     st.markdown(
         """
