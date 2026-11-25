@@ -5,10 +5,14 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 import streamlit as st
 
 from src import config, llm as llm_mod, mvp
+
+
+LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "urban_company_logo.jpg"
 
 
 STEPS = [
@@ -240,7 +244,11 @@ def _render_reflection() -> None:
 
 def render() -> None:
     _init_state()
-    st.title("Urban Company - Home Care Companion")
+    logo_col, title_col = st.columns([1, 8])
+    with logo_col:
+        st.image(str(LOGO_PATH), width=110)
+    with title_col:
+        st.title("Urban Company - Home Care Companion")
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
     st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
 
