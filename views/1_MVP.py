@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -13,6 +14,19 @@ from src import config, llm as llm_mod, mvp
 
 
 LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "urban_company_logo.jpg"
+
+
+def _header_html() -> str:
+    """Inline the logo and title in one vertically centred row."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/jpeg;base64,{encoded}" alt="Urban Company logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "Urban Company - Home Care Companion</h1>"
+        "</div>"
+    )
 
 
 STEPS = [
@@ -244,11 +258,7 @@ def _render_reflection() -> None:
 
 def render() -> None:
     _init_state()
-    logo_col, title_col = st.columns([1, 8])
-    with logo_col:
-        st.image(str(LOGO_PATH), width=64)
-    with title_col:
-        st.title("Urban Company - Home Care Companion")
+    st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
     st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
 
