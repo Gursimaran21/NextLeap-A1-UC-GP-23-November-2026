@@ -84,8 +84,8 @@ def _about_html() -> str:
           booking, messaging or account access.
         </div>
       </div>
-      <div style="flex:1 1 300px; min-width:300px; display:flex; align-items:center; justify-content:center;">
-        <div style="width:300px; height:400px; border-radius:14px; overflow:hidden;">
+      <div style="flex:1 1 340px; min-width:340px; display:flex; align-items:center; justify-content:center;">
+        <div style="width:340px; height:453px; border-radius:14px; overflow:hidden;">
           <img src="data:image/jpeg;base64,{encoded}" alt="Home care planning visual"
                style="display:block; width:100%; height:100%; object-fit:cover; border-radius:14px;" />
         </div>
