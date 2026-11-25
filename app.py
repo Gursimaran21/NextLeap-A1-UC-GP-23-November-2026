@@ -59,6 +59,9 @@ st.markdown(
       [data-testid="stTopNavSection"]:hover {
         background-color: #F7F1F9 !important;
       }
+      [data-testid="stHeader"] .rc-overflow {
+        justify-content: center !important;
+      }
     </style>
     """,
     unsafe_allow_html=True,
