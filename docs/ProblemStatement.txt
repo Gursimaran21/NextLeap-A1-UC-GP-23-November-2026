@@ -1,0 +1,460 @@
+# Urban Company – Graduation Project
+## Understanding and Improving Repeat Bookings Through an AI-Native Customer Experience
+
+# SECTION 1: PROJECT OVERVIEW & PROBLEM STATEMENT
+
+## 1.1 Business Context
+
+Urban Company is a technology-enabled platform that connects customers with professionals for various home services, including deep cleaning, AC servicing, plumbing, electrical repairs, salon services and other household requirements.
+
+A customer may book a service, receive the service successfully and complete the payment. However, completing one successful booking does not necessarily mean that the customer will return to Urban Company for their next service requirement.
+
+While some customers complete another booking within 90 days, others do not return during this period.
+
+As a Product Manager on Urban Company's Consumer Growth Team, the objective is to understand the factors influencing this behaviour and identify opportunities to improve repeat bookings through customer-centric product experiences.
+
+## 1.2 Business Objective
+
+Increase the percentage of customers who complete another service booking within 90 days of their initial completed booking.
+
+### Business Metric Definition
+
+- Select a particular month for analysis.
+- Count each customer once, based on their first completed booking in a core category during the selected month.
+- This booking is considered the anchor booking.
+- A repeat booking is any subsequent completed booking in any category within 90 days of the anchor booking.
+- InstaHelp (quick-service housekeeping) is excluded.
+- Redos, warranty claims and bookings that end in a refund do not count as repeat bookings.
+
+## 1.3 Problem Statement
+
+Customers who complete an Urban Company service booking may not necessarily consider the platform when they have another household service requirement.
+
+Even when their previous booking was completed successfully, customers may choose local service providers, rely on recommendations from friends or neighbours, explore alternative platforms, or postpone their household service requirements.
+
+The underlying reasons behind these decisions are not yet clearly understood.
+
+There is an opportunity to investigate how customers recognise household service needs, plan their requirements, evaluate service providers, make booking decisions and decide whether to return to Urban Company.
+
+The challenge is to identify the customer behaviours, unmet needs and barriers that influence repeat booking decisions, including situations where customers have had no negative experience with their previous booking.
+
+## 1.4 Key Problem to Investigate
+
+**Why do customers who successfully complete an Urban Company booking not necessarily return to the platform for another service within 90 days, and what customer needs or barriers influence their decision to return or choose an alternative?**
+
+## 1.5 Research Objectives
+
+The project will investigate four key areas.
+
+### A. Customer Behaviour
+- How do customers identify and recognise their household service requirements?
+- Are household services generally planned in advance or requested only when an immediate need arises?
+- What influences customers to book a service through Urban Company for the first time?
+
+### B. Post-Booking Experience
+- What do customers expect after completing a service?
+- Do customers have additional household service requirements following their initial booking?
+- How do customers decide what to do when another service requirement arises?
+
+### C. Repeat Booking Decisions
+- What motivates customers to return to Urban Company?
+- Why do some customers choose local providers, other platforms or personal recommendations instead?
+- What prevents customers from considering Urban Company for subsequent service requirements?
+- Does a satisfactory previous experience influence their next booking decision?
+
+### D. Customer Segmentation
+- How do repeat booking behaviours differ across service categories?
+- Are there differences between customers across cities and household types?
+- Do customers who book frequently behave differently from customers who book occasionally?
+
+## 1.6 Expected Product Opportunity
+
+Identify a customer-centric product opportunity that addresses a validated customer need and makes Urban Company more relevant when customers have subsequent household service requirements.
+
+The proposed experience should provide meaningful value to customers while supporting Urban Company's repeat-booking objective.
+
+The final product opportunity and solution will be determined through AI-powered discovery, metric decomposition, customer interviews and MVP validation.
+
+## 1.7 Product Constraints
+
+The proposed solution must:
+
+- Work from the customer's perspective.
+- Not depend on discounts, coupons or memberships.
+- Not involve pricing changes.
+- Not change service professionals' earnings or management.
+- Not automatically book services or take actions on a customer's Urban Company account.
+- Not message Urban Company or service professionals.
+- Not scrape Urban Company or access restricted customer information.
+- Address genuine customer needs rather than encourage unnecessary service bookings.
+
+---
+
+# SECTION 2: EIGHT PROJECT REQUIREMENTS
+
+## Requirement 1: Build an AI-Powered Discovery Engine
+
+### Objective
+Build an AI-powered system that analyses publicly available customer feedback and conversations to identify potential problems, unmet needs and opportunities influencing repeat bookings.
+
+### Data Sources
+
+Analyse publicly accessible information from sources such as:
+
+- Apple App Store reviews.
+- Google Play Store reviews.
+- Trustpilot and consumer complaint forums.
+- Reddit discussions from Indian city and household communities.
+- Public social media conversations about home services.
+- YouTube comments on home-service and cleaning videos.
+- Urban Company's public shareholder letters.
+- Public earnings-call transcripts.
+- Other publicly available conversations about booking home services in India.
+
+### What the Discovery Engine Should Identify
+
+- Customer expectations after completing a service.
+- How customers identify and plan their household service requirements.
+- Why customers return or do not return.
+- Customer preferences for local service providers, recommendations and alternative platforms.
+- Common customer frustrations and unmet needs.
+- Differences across service categories, cities and household types.
+- Potential product opportunities that could influence repeat bookings.
+
+### Expected Output
+
+The discovery engine should:
+
+1. Collect and analyse publicly available feedback.
+2. Identify and classify customer themes.
+3. Quantify recurring themes where possible.
+4. Compare potential opportunity areas.
+5. Generate evidence-backed insights.
+6. Validate AI-generated insights against manually labelled examples.
+7. Account for public-review bias and the lack of feedback from customers who simply never return.
+
+**Important:** The engine must go beyond sentiment analysis and review summarisation.
+
+---
+
+## Requirement 2: Break Down the Business Metric
+
+### Objective
+Decompose the primary business metric into measurable product outcomes and customer behaviours.
+
+### Primary Business Metric
+
+Percentage of customers who complete another booking within 90 days of their anchor booking.
+
+### Areas to Investigate
+
+- What customer behaviours influence repeat bookings?
+- Which parts of the metric can the product influence from the customer's side?
+- What product outcomes could influence these behaviours?
+- How can these outcomes be measured using customer-reported information or publicly available data?
+- Does repeat-booking behaviour differ across service categories, cities or household types?
+
+### Expected Output
+
+Create a metric tree showing:
+
+Business Metric → Product Outcomes → Customer Behaviours → Measurable Indicators.
+
+Use the metric decomposition alongside the discovery engine findings to identify the highest-potential opportunity areas.
+
+---
+
+## Requirement 3: Validate the Opportunity Through User Research
+
+### Objective
+Validate AI-generated insights through interviews with actual Urban Company customers.
+
+### Research Requirements
+
+- Conduct interviews with 5–6 actual Urban Company users.
+- Respondents must have completed an Urban Company booking within the last six months.
+- Include customers who booked again within 90 days.
+- Include customers who did not book again within 90 days.
+- Cover more than one service category.
+- Record the total number of bookings made by each respondent.
+
+### Interview Areas
+
+Understand:
+
+1. How customers decided to book their initial service.
+2. How they discovered Urban Company.
+3. What happened after the service was completed.
+4. What customers expected from the service.
+5. What additional household service requirements they had afterwards.
+6. How they handled subsequent service requirements.
+7. Whether they considered Urban Company again.
+8. What motivated them to return or prevented them from returning.
+9. Whether household services are generally planned, reactive or avoided.
+
+### Expected Output
+
+- Interview questionnaire.
+- Anonymised respondent profiles.
+- Interview findings.
+- Comparison of repeat and non-repeat customers.
+- Common behavioural patterns.
+- Insights that validate or challenge AI discovery findings.
+
+**Privacy restriction:** Do not collect booking screenshots, invoices, addresses, phone numbers or other personal documents.
+
+---
+
+## Requirement 4: Define the Problem
+
+### Objective
+Identify a specific, evidence-backed customer problem based on AI discovery and primary research.
+
+### Define the Following
+
+1. Target user segment.
+2. Customer journey scenario.
+3. Product outcome to influence.
+4. Root cause of the problem.
+5. Existing customer workarounds.
+6. User value created by solving the problem.
+7. Business value created for Urban Company.
+
+### Required Problem Evolution
+
+Show how your thinking developed through:
+
+Business Metric → Product Outcomes → AI Discovery → Primary Research → Problem Definition.
+
+Explain how customer interviews validated or challenged the insights generated by the discovery engine.
+
+### Important Consideration
+
+Do not define the problem simply as:
+
+- Customers had a bad experience.
+- Customers need discounts or offers to return.
+
+Investigate why customers might not return even when their previous service booking was completed successfully.
+
+---
+
+## Requirement 5: Build and Deploy an AI-Native MVP
+
+### Objective
+Design, develop and deploy a functional MVP that addresses the validated customer problem.
+
+### Possible MVP Formats
+
+- AI-powered application feature.
+- AI-powered workflow.
+- AI agent.
+- Standalone customer experience connected to the home-services journey.
+
+### MVP Requirements
+
+- Must address the validated customer problem.
+- Must provide a functional experience.
+- Must work using customer-provided information and publicly available information.
+- Must be deployed to production.
+- Must be accessible to mentors for real-task testing.
+
+### Restrictions
+
+The MVP must not:
+
+- Book services automatically.
+- Message Urban Company or service professionals.
+- Take actions on a customer's Urban Company account.
+- Scrape Urban Company.
+
+The solution should be selected only after completing the discovery and user research stages.
+
+---
+
+## Requirement 6: Test the MVP With Users
+
+### Objective
+Validate the MVP with actual users from the selected target segment.
+
+### Testing Requirements
+
+- Test the MVP with at least three users.
+- Use participants from the target customer segment.
+- Ask users to complete real tasks using the MVP.
+- Observe their interaction and identify usability issues.
+- Collect feedback on usefulness and relevance.
+
+### Expected Output
+
+Document:
+
+- User testing methodology.
+- Tasks assigned to participants.
+- User feedback.
+- Issues identified.
+- What worked well.
+- What did not work.
+- Changes proposed for the next iteration.
+
+---
+
+## Requirement 7: Define Success Metrics
+
+### Objective
+Define how the proposed solution will be measured against the business objective.
+
+### Primary Business Metric
+
+Percentage of customers who complete another booking within 90 days of their anchor booking.
+
+### Additional Metrics
+
+Define:
+
+**A. Leading Indicators**
+- Indicators that demonstrate whether the MVP is solving the identified customer problem.
+- Customer engagement with the experience.
+- Successful completion of relevant customer tasks.
+- Customer adoption and continued usage.
+
+**B. Guardrail Metrics**
+- Ensure customers are not encouraged to book unnecessary services.
+- Ensure the solution does not create misleading recommendations.
+- Ensure customer trust and satisfaction are maintained.
+
+**C. AI Performance Metrics**
+- Accuracy of AI-generated recommendations.
+- Correct selection of tools by the AI agent.
+- Whether the agent chooses the right tool at the right moment.
+- Whether the AI recognises when no action or recommendation is required.
+- Frequency of incorrect or unnecessary recommendations.
+
+### Expected Output
+
+Create a success metrics framework that includes:
+
+- Metric name.
+- Definition.
+- Measurement method.
+- Target or expected direction.
+- Rationale.
+
+---
+
+## Requirement 8: Identify Risks and Mitigation Steps
+
+### Objective
+Identify the potential reasons why the proposed solution might fail and define ways to reduce those risks.
+
+### Areas to Consider
+
+- Incorrect AI-generated recommendations.
+- Incomplete or outdated customer information.
+- Customer privacy and data protection.
+- Low customer adoption.
+- Poor user experience.
+- Over-reliance on AI.
+- Unnecessary service recommendations.
+- Limited availability of reliable public information.
+- Differences in customer behaviour across service categories and cities.
+
+### Expected Output
+
+Prepare a risk and mitigation table containing:
+
+- Risk description.
+- Potential impact.
+- Likelihood.
+- Severity.
+- Mitigation strategy.
+
+Focus on risks that are specific to the selected MVP rather than listing only generic AI risks.
+
+---
+
+# SECTION 3: FINAL PROJECT DELIVERABLES
+
+## Deliverable 1: AI Discovery Engine
+
+Provide:
+
+- Public link where the discovery workflow can be tested.
+- One slide in the final presentation explaining how the workflow operates.
+
+## Deliverable 2: Final Presentation
+
+Submit a PDF presentation containing a maximum of 10 slides.
+
+The presentation must cover:
+
+1. Business metric decomposition.
+2. AI discovery engine and findings.
+3. User research.
+4. Selected target segment.
+5. Root cause and problem definition.
+6. Solution rationale.
+7. MVP and user testing.
+8. Success metrics.
+9. Risks and limitations.
+
+The title slide counts towards the 10-slide limit.
+
+## Deliverable 3: Deployed AI-Native MVP
+
+Provide:
+
+- Publicly accessible MVP link.
+- Functional prototype, workflow or agent.
+- Ability for another person to interact with and test the experience.
+
+## Deliverable 4: AI Evidence Log
+
+Create one document with view access for anyone who has the link.
+
+It must include:
+
+1. Sources analysed by the discovery engine.
+2. Volume of data analysed.
+3. Approximately 20 manually labelled golden-set examples.
+4. Comparison of AI-generated classifications against manual labels.
+5. Agreement rate and examples where the AI failed.
+6. Two to three examples where AI outputs were rejected or corrected, with explanations.
+
+---
+
+# SECTION 4: PROJECT EXECUTION PRINCIPLES
+
+The project should follow an evidence-first Product Management approach.
+
+1. Do not assume the customer problem before analysing the evidence.
+2. Do not select the MVP before completing primary research.
+3. Distinguish customer problems from business objectives.
+4. Support product decisions with evidence from discovery and interviews.
+5. Validate AI-generated insights instead of accepting them blindly.
+6. Focus on meaningful customer value rather than artificially increasing bookings.
+7. Ensure the final MVP is functional, deployed and testable.
+
+## Overall Project Framework
+
+Business Objective
+↓
+Business Metric Decomposition
+↓
+AI-Powered Discovery Engine
+↓
+Opportunity Identification
+↓
+Primary Customer Research
+↓
+Validated Problem Definition
+↓
+AI-Native MVP Development
+↓
+User Testing and Iteration
+↓
+Success Metrics
+↓
+Risk Assessment and Final Presentation
+
+**Final Goal:** Identify a genuine customer problem affecting repeat booking behaviour, build an AI-native product experience to address it, and demonstrate through research and user testing how the solution can create customer value while supporting Urban Company's 90-day repeat-booking objective.
