@@ -46,7 +46,7 @@ def _about_html() -> str:
     )
     return f"""
     <div style="background-image: linear-gradient(90deg, rgba(15,27,38,0.94) 0%, rgba(15,27,38,0.82) 55%, rgba(15,27,38,0.46) 100%), url('data:image/jpeg;base64,{encoded}');
-                background-size: 200% auto; background-position: 5% 30%; border-radius:18px;
+                background-size: cover; background-position: center 15%; border-radius:18px;
                 padding:32px 34px; min-height:260px; color:#ffffff;
                 box-shadow:0 18px 40px rgba(15,27,38,0.16);">
       <h2 style="margin:0 0 14px 0; font-size:1.6rem; line-height:1.25; font-weight:700;">
