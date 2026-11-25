@@ -64,15 +64,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-_NAV_ICON = "![Urban Company Home Care Companion](app/static/Urban%20Company%20Home%20Care%20Companion-2.png)"
-
 pages = [
-    st.Page(
-        "views/1_MVP.py",
-        title=f"{_NAV_ICON} Urban Company - Home Care Companion",
-        icon="",
-        default=True,
-    ),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),
