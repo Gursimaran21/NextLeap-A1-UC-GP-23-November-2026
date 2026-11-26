@@ -1,6 +1,6 @@
 """Urban Company Graduation Project - Streamlit router.
 
-Respect docs/constraints.md. MVP is the default/root page.
+Respect docs/constraints.md. Urban Company is the default/root page.
 """
 
 from __future__ import annotations
@@ -68,8 +68,8 @@ st.markdown(
 )
 
 pages = [
-    st.Page("views/0_Urban_Company.py", title="Urban Company"),
-    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", default=True),
+    st.Page("views/0_Urban_Company.py", title="Urban Company", default=True),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion"),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown"),
