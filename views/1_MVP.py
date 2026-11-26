@@ -729,7 +729,7 @@ def _render_profile() -> dict:
             else:
                 default_list = default if isinstance(default, list) else []
                 profile[qid] = st.multiselect(label, opts, default=[d for d in default_list if d in opts], key=widget_key)
-        save_col, reset_col = st.columns([1, 1])
+        save_col, reset_col, _ = st.columns([1, 1, 6])
         with save_col:
             submitted = st.form_submit_button("Save profile", width="stretch")
         with reset_col:
@@ -778,7 +778,7 @@ def _render_profile() -> dict:
             default=saved_no_need,
             key=f"hist_no_need_{history_version}",
         )
-        save_col, reset_col = st.columns([1, 1])
+        save_col, reset_col, _ = st.columns([1, 1, 6])
         with save_col:
             save_history = st.form_submit_button("Save household history", width="stretch")
         with reset_col:
