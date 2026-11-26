@@ -101,7 +101,7 @@ def _about_html() -> str:
     """Title-led About card with a home-care visual, like the MVP page."""
     encoded = base64.b64encode(ABOUT_BG_PATH.read_bytes()).decode("ascii")
     tags = [
-        "Home services",
+        "Home Services",
         "Beauty & Wellness",
         "Home Repairs",
         "Insta Help",
