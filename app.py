@@ -88,7 +88,7 @@ st.markdown(
     """
     <div style="margin-top:2rem; padding:14px 18px; background:#F7F1F9; border:1px solid #E6D9EA;
                 border-radius:12px; text-align:center; color:#52606A; font-size:0.82rem; line-height:1.5;">
-      <strong style="color:#500C6B;">Urban Company - Home Care Companion</strong> · NextLeap Graduation Project · Nov 2026 · PMF Cohort 52<br>
+      <strong style="color:#500C6B;">Urban Company</strong> · NextLeap Graduation Project · Nov 2026 · PMF Cohort 52<br>
       Public prototype · No bookings · No account access · Public information only · No personal details
     </div>
     """,
