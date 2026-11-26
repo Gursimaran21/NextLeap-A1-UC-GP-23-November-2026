@@ -71,6 +71,8 @@ st.markdown(
       }
       [data-testid="stHeader"] {
         min-height: 5.5rem !important;
+        background-color: #F7F1F9 !important;
+        border-bottom: 1px solid #E6D9EA !important;
       }
       .stLogo,
       [data-testid="stLogo"] {
