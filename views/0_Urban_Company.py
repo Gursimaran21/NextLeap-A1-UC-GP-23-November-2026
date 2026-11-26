@@ -224,7 +224,7 @@ def _home_services_html() -> str:
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Services</div>
               <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                Home services at your doorstep - planned around your home, not just when something breaks
+                Home Services at your Doorstep
               </h2>
               <p style="margin:0 0 18px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
                 Keep track of what you have had done, spot upcoming care needs early, and decide
@@ -243,12 +243,12 @@ def _home_services_html() -> str:
 def _at_a_glance_html() -> str:
     """Render headline figures in an About Us-style card."""
     metrics = [
-        ("Service rating", "4.8", "Public website figure"),
-        ("Customers globally", "12M+", "Public website figure"),
-        ("Repeat share of NTV", f"~{config.REPEAT_NTV_PCT}%", "From project brief"),
+        ("Service rating", "4.8"),
+        ("Customers globally", "12M+"),
+        ("Repeat share of NTV", f"~{config.REPEAT_NTV_PCT}%"),
     ]
     tiles = []
-    for label, value, note in metrics:
+    for label, value in metrics:
         tiles.append(
             "\n".join(
                 line.strip()
@@ -258,7 +258,6 @@ def _at_a_glance_html() -> str:
                                 padding:18px; text-align:center;">
                       <div style="font-size:2rem; font-weight:700; color:#500C6B; line-height:1.1;">{value}</div>
                       <div style="margin-top:8px; font-size:13px; font-weight:700; color:#12212B;">{label}</div>
-                      <div style="margin-top:4px; font-size:11px; color:#52606A;">{note}</div>
                     </div>
                     """
                 ).strip().splitlines()
@@ -274,14 +273,10 @@ def _at_a_glance_html() -> str:
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">Key Figures</div>
               <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                At a glance
+                At a Glance
               </h2>
               <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;">
                 {''.join(tiles)}
-              </div>
-              <div style="margin-top:14px; font-size:11px; line-height:1.55; color:#52606A;">
-                Service rating and customer count are public website figures as on 31 Dec 2024.
-                The ~{config.REPEAT_NTV_PCT}% repeat share comes from the project brief and is not recomputed here.
               </div>
             </div>
             """
