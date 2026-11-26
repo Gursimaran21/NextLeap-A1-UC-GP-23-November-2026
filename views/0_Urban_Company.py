@@ -13,7 +13,7 @@ import streamlit as st
 from src import config
 
 LOGO_PATH = config.ROOT / "assets" / "urban_company_logo.jpg"
-ABOUT_BG_PATH = config.ROOT / "assets" / "about_background_1.jpg"
+ABOUT_BG_PATH = config.ROOT / "assets" / "Urban Company" / "uc-img-6.jpg"
 
 BUSINESS_UNITS = [
     (
@@ -22,7 +22,7 @@ BUSINESS_UNITS = [
     ),
     (
         "Insta Help",
-        "Instant, verified household help. Excluded from this project's core-category metric.",
+        "Instant, verified household help.",
     ),
     (
         "Native",
