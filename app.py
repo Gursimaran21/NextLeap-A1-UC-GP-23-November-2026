@@ -67,6 +67,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+SHOW_DECK_PAGE = False
+
 pages = [
     st.Page("views/0_Urban_Company.py", title="Urban Company", default=True),
     st.Page("views/11_Competitors.py", title="Competitors"),
@@ -80,8 +82,9 @@ pages = [
     st.Page("views/7_MVP_Testing.py", title="MVP Testing"),
     st.Page("views/8_Success_Metrics.py", title="Success Metrics"),
     st.Page("views/9_Risks.py", title="Risks"),
-    st.Page("views/10_Deck.py", title="Deck"),
 ]
+if SHOW_DECK_PAGE:
+    pages.append(st.Page("views/10_Deck.py", title="Deck"))
 
 pg = st.navigation(pages, position="top")
 pg.run()
