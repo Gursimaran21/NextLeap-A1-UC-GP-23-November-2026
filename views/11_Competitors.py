@@ -179,9 +179,9 @@ IMPLICATIONS = [
         "a marketplace that only succeeds when a job is created.",
     ),
     (
-        "Hypothesis, not proof",
-        "This public scan supports the relevance of the 90-day repeat-service hypothesis. It does not prove "
-        "that the MVP changes behaviour; interviews and user tests are still required.",
+        "A clear next step",
+        "The public scan points to a practical next step: test whether Insta Talk improves need recognition, "
+        "safe routing and aftercare continuity through interviews and hands-on sessions.",
     ),
 ]
 
