@@ -261,7 +261,7 @@ STEP_EXPLANATIONS = [
 END_TO_END_STEPS = [
     "User opens the app and starts on Urban Company.",
     "User selects About Insta Talk & Steps to understand the journey.",
-    "User moves to Insta Talk and sees the Demo Tasks for Mentors.",
+    "User moves to Insta Talk and sees the Insta Talk Demo.",
     "The stepper tracks progress across four steps.",
     "Step 1 saves an anonymous profile and optional history.",
     "Step 2 builds a private 90-day plan.",

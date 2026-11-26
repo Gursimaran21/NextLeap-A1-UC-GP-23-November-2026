@@ -175,7 +175,7 @@ DEMO_TASKS = [
 
 
 def _demo_tasks_html() -> str:
-    """Render Demo Tasks for Mentors as an About Us-style card grid."""
+    """Render the Insta Talk Demo as an About Us-style card grid."""
     cards = []
     for i, (title, detail) in enumerate(DEMO_TASKS, start=1):
         cards.append(
@@ -210,9 +210,9 @@ def _demo_tasks_html() -> str:
                         box-shadow:0 16px 36px rgba(15,27,38,0.08);">
               <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">For Mentors</div>
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Insta Talk Demo</div>
               <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                Demo Tasks for Mentors
+                Insta Talk Demo
               </h2>
               <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
                 {''.join(cards)}
