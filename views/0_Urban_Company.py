@@ -6,9 +6,13 @@ Public information only. Respects docs/constraints.md (C1/C2/C3).
 
 from __future__ import annotations
 
+import base64
+
 import streamlit as st
 
 from src import config
+
+LOGO_PATH = config.ROOT / "assets" / "urban_company_logo.jpg"
 
 BUSINESS_UNITS = [
     (
@@ -39,6 +43,19 @@ SERVICE_GROUPS = [
 ]
 
 
+def _header_html() -> str:
+    """Inline the logo and title in one vertically centred row, like the MVP page."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/jpeg;base64,{encoded}" alt="Urban Company logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "Urban Company</h1>"
+        "</div>"
+    )
+
+
 def _card(title: str, body: str) -> None:
     with st.container(border=True):
         st.markdown(f"**{title}**")
@@ -46,11 +63,7 @@ def _card(title: str, body: str) -> None:
 
 
 def render() -> None:
-    logo_col, title_col = st.columns([1, 6], vertical_alignment="center")
-    with logo_col:
-        st.image(str(config.ROOT / "assets" / "urban_company_logo.jpg"), width=96)
-    with title_col:
-        st.title("Urban Company")
+    st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption(
         "Public company context · Home Care Companion graduation project · Nov 2026"
     )
