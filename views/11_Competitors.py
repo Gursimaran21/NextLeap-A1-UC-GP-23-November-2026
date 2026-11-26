@@ -406,11 +406,6 @@ def render() -> None:
               <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;">
                 {watch_cards}
               </div>
-              <div style="margin-top:14px; padding-top:12px; border-top:1px solid #E6D9EA;
-                          font-size:11px; line-height:1.6; color:#52606A;">
-                These are monitoring questions, not predictions. They help the team revisit the competitor view
-                as new public information appears.
-              </div>
             </div>
             """
         ),
