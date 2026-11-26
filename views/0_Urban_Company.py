@@ -111,9 +111,9 @@ def _about_html() -> str:
         <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">{tag_html}</div>
       </div>
       <div style="flex:1 1 340px; min-width:340px; display:flex; align-items:center; justify-content:center;">
-        <div style="width:340px; height:453px; border-radius:14px; overflow:hidden;">
+        <div style="width:100%; border-radius:14px; overflow:hidden;">
           <img src="data:image/jpeg;base64,{encoded}" alt="Home care planning visual"
-               style="display:block; width:100%; height:100%; object-fit:cover; border-radius:14px;" />
+               style="display:block; width:100%; height:auto; object-fit:contain; border-radius:14px;" />
         </div>
       </div>
     </div>
