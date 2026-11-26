@@ -20,7 +20,7 @@ except Exception:
 from src import config
 
 st.set_page_config(
-    page_title="Urban Company - Home Care Companion",
+    page_title="Home Care Assistant",
     page_icon="🏠",
     layout="wide",
 )

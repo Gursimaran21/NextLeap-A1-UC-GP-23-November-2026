@@ -26,7 +26,7 @@ def _header_html() -> str:
         f'<img src="data:image/jpeg;base64,{encoded}" alt="Urban Company logo" '
         'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
         '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
-        "Urban Company - Home Care Companion</h1>"
+        "Home Care Assistant</h1>"
         "</div>"
     )
 
@@ -70,7 +70,7 @@ def _about_html() -> str:
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                     text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Companion</div>
         <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-          About Urban Company - Home Care Companion
+          About Home Care Assistant
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           A calm planning companion for urban households. It helps you recognise home-care needs,
