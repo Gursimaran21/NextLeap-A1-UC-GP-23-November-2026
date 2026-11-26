@@ -618,11 +618,59 @@ def _init_state() -> None:
 
 def _stepper() -> None:
     step = int(st.session_state.mvp_step)
-    st.progress(step / len(STEPS))
-    cols = st.columns(len(STEPS))
-    for i, (col, label) in enumerate(zip(cols, STEPS), start=1):
-        prefix = "✅" if i < step else ("👉" if i == step else "▫️")
-        col.markdown(f"**{prefix} Step {i}: {label}**")
+    cards = []
+    for i, label in enumerate(STEPS, start=1):
+        if i < step:
+            status, badge, bg, border = "Completed", "✅", "#EAF6EE", "#BFE3C8"
+            circle_bg, circle_fg, text_fg, badge_bg = "#2E7D46", "#FFFFFF", "#1F5130", "#D6F0DC"
+        elif i == step:
+            status, badge, bg, border = "In progress", "👉", "#EBDFF0", "#D9C6E0"
+            circle_bg, circle_fg, text_fg, badge_bg = "#500C6B", "#FFFFFF", "#500C6B", "#F1E4F5"
+        else:
+            status, badge, bg, border = "Upcoming", "▫️", "#F8F9FA", "#E3E6E8"
+            circle_bg, circle_fg, text_fg, badge_bg = "#E3E6E8", "#7A858D", "#7A858D", "#EEF0F2"
+        cards.append(
+            _clean_html(
+                f"""
+                <div style="position:relative; z-index:1; flex:1 1 0; min-width:0;
+                            background:{bg}; border:1px solid {border}; border-radius:14px; padding:12px;
+                            box-shadow:0 8px 20px rgba(15,27,38,0.05);">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                    <span style="flex:0 0 26px; height:26px; border-radius:50%; background:{circle_bg};
+                                 color:{circle_fg}; font-size:12px; font-weight:700; display:flex;
+                                 align-items:center; justify-content:center;">{i}</span>
+                    <span style="background:{badge_bg}; color:{text_fg}; border-radius:999px;
+                                 padding:3px 8px; font-size:11px; font-weight:700;
+                                 white-space:nowrap;">{badge}</span>
+                  </div>
+                  <div style="margin-top:8px; font-size:10px; letter-spacing:0.08em;
+                              text-transform:uppercase; font-weight:700; color:{text_fg};
+                              opacity:0.75;">{status}</div>
+                  <div style="margin-top:4px; font-size:12px; font-weight:700; line-height:1.35;
+                              color:{text_fg};">Step {i}: {label}</div>
+                </div>
+                """
+            )
+        )
+    line_pct = 0.0 if len(STEPS) <= 1 else (step - 1) / (len(STEPS) - 1) * 75
+    st.markdown(
+        _clean_html(
+            f"""
+            <div style="margin-top:4px; padding:2px 0 12px 0;">
+              <div style="position:relative;">
+                <div style="position:absolute; top:25px; left:12.5%; right:12.5%; height:2px;
+                            background:#E3E6E8; z-index:0;"></div>
+                <div style="position:absolute; top:25px; left:12.5%; height:2px;
+                            width:{line_pct:.1f}%; background:#500C6B; z-index:0;"></div>
+                <div style="display:flex; gap:10px; align-items:stretch;">
+                  {''.join(cards)}
+                </div>
+              </div>
+            </div>
+            """
+        ),
+        unsafe_allow_html=True,
+    )
 
 
 def _nav_buttons() -> None:
