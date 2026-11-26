@@ -184,13 +184,12 @@ def _about_html() -> str:
           About Insta Talk
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
-          A voice-enabled guidance companion for urban households. It helps you recognise home-care
+          A voice-enabled guidance assistant for urban households. It helps you recognise home-care
           needs, choose a safe next step and plan what comes next.
         </p>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           Insta Talk uses local, deterministic rules first. It can explain, decide, prepare, support
-          aftercare, say no action or frame the next 90 days. Public evidence grounds the guidance;
-          a configured Gemini key may only improve wording.
+          aftercare, say no action or frame the next 90 days.
         </p>
         <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">{third_paragraph}</p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
