@@ -20,7 +20,7 @@ except Exception:
 from src import config
 
 st.set_page_config(
-    page_title="Home Care Assistant",
+    page_title="Insta Talk",
     page_icon="🏠",
     layout="wide",
 )
@@ -69,7 +69,7 @@ st.markdown(
 
 pages = [
     st.Page("views/0_Urban_Company.py", title="Urban Company", default=True),
-    st.Page("views/1_MVP.py", title="Home Care Assistant"),
+    st.Page("views/1_MVP.py", title="Insta Talk"),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown"),

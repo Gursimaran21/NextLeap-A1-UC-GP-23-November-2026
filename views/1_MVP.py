@@ -119,10 +119,10 @@ def _header_html() -> str:
     encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
     return (
         '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
-        f'<img src="data:image/png;base64,{encoded}" alt="Home Care Assistant logo" '
+        f'<img src="data:image/png;base64,{encoded}" alt="Insta Talk logo" '
         'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
         '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
-        "Home Care Assistant</h1>"
+        "Insta Talk</h1>"
         "</div>"
     )
 
@@ -164,9 +164,9 @@ def _about_html() -> str:
       <div style="flex:1 1 420px; min-width:300px;">
         <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Assistant</div>
+                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Insta Talk</div>
         <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-          About Home Care Assistant
+          About Insta Talk
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           A calm planning assistant for urban households. It helps you recognise home-care needs,
@@ -333,7 +333,7 @@ STEP_EXPLANATIONS = [
 
 END_TO_END_STEPS = [
     "User opens the app and starts on Urban Company.",
-    "User selects Home Care Assistant.",
+    "User selects Insta Talk.",
     "The page shows About, the four-step explanation and mentor demo tasks.",
     "The stepper tracks progress across four steps.",
     "Step 1 saves an anonymous profile and optional history.",
@@ -383,9 +383,9 @@ EXAMPLES = [
 ]
 
 KEY_IDEA = (
-    "Home Care Assistant helps users notice, understand and plan. Insta Talk makes that guidance "
-    "conversational and voice-enabled. It supports the 90-day repeat-service hypothesis through "
-    "need recognition, clarity and continuity — not through booking or sales pressure."
+    "Insta Talk helps users notice, understand and plan. Its voice-enabled guidance makes that "
+    "support conversational. It supports the 90-day repeat-service hypothesis through need "
+    "recognition, clarity and continuity — not through booking or sales pressure."
 )
 
 
@@ -445,7 +445,7 @@ def _steps_html() -> str:
                       padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                       text-transform:uppercase; font-weight:700; margin-bottom:12px;">How it works</div>
           <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-            Your Home Care Assistant in Simple Steps
+            Your Insta Talk in Simple Steps
           </h2>
           <div style="display:grid; grid-template-columns:1fr; gap:14px;">
             {''.join(step_cards)}
