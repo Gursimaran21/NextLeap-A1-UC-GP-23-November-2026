@@ -109,7 +109,7 @@ st.markdown(
       [data-testid="stHeader"] {
         min-height: 5.5rem !important;
         background-color: transparent !important;
-        border-bottom: 1px solid #E6D9EA !important;
+        border-bottom: none !important;
       }
       .stLogo,
       [data-testid="stLogo"] {
