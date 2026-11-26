@@ -46,7 +46,11 @@ def _card(title: str, body: str) -> None:
 
 
 def render() -> None:
-    st.title("Urban Company")
+    logo_col, title_col = st.columns([1, 6], vertical_alignment="center")
+    with logo_col:
+        st.image(str(config.ROOT / "assets" / "urban_company_logo.jpg"), width=96)
+    with title_col:
+        st.title("Urban Company")
     st.caption(
         "Public company context · Home Care Companion graduation project · Nov 2026"
     )
