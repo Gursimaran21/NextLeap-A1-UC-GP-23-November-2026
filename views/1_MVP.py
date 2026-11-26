@@ -128,13 +128,22 @@ def _header_html() -> str:
 
 
 def _about_html() -> str:
-    """Render a calm, title-led About card with a dedicated home-care visual."""
+    """Render a calm, title-led About card with Insta Talk guidance copy."""
     encoded = base64.b64encode(ABOUT_BG_PATH.read_bytes()).decode("ascii")
     third_paragraph = (
         "It supports Urban Company's 90-day repeat-booking objective without "
         + "dis" + "counts, pricing changes or operational changes."
     )
-    tags = ["Need recognition", "Post-service continuity", "Informed choice", "Service clarity"]
+    tags = [
+        "Need recognition",
+        "Post-service continuity",
+        "Informed choice",
+        "Service clarity",
+        "Voice guidance",
+        "Safety-first routing",
+        "No action",
+        "Public grounding",
+    ]
     tag_html = "".join(
         '<span style="background:#EBDFF0; border:1px solid #D9C6E0; color:#500C6B; '
         'padding:5px 11px; border-radius:999px; font-size:11px; '
@@ -143,9 +152,15 @@ def _about_html() -> str:
     )
     pillars = [
         ("01", "Need recognition", "Notice what the home needs before it becomes urgent."),
-        ("02", "Post-service continuity", "Reflect, plan follow-ups and keep notes private."),
-        ("03", "Informed choice", "Choose the right next step - DIY, local help, professional service or wait - based on their needs, urgency and safety."),
+        ("02", "Post-service continuity", "Reflect after a service and keep private notes for next time."),
+        (
+            "03",
+            "Informed choice",
+            "Choose the right next step - DIY, local help, professional service, wait or no action - based on urgency and safety.",
+        ),
         ("04", "Service clarity", "Understand the options, from DIY to professional help."),
+        ("05", "Voice guidance", "Speak or type a need. Replies can also be read aloud by the browser."),
+        ("06", "Safety-first routing", "Urgent signals go to immediate help, never DIY or a service category."),
     ]
     pillar_html = "".join(
         '<div style="display:flex; gap:10px; align-items:flex-start;">'
@@ -169,8 +184,13 @@ def _about_html() -> str:
           About Insta Talk
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
-          A calm planning assistant for urban households. It helps you recognise home-care needs,
-          understand your options and plan what comes next.
+          A voice-enabled guidance companion for urban households. It helps you recognise home-care
+          needs, choose a safe next step and plan what comes next.
+        </p>
+        <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
+          Insta Talk uses local, deterministic rules first. It can explain, decide, prepare, support
+          aftercare, say no action or frame the next 90 days. Public evidence grounds the guidance;
+          a configured Gemini key may only improve wording.
         </p>
         <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">{third_paragraph}</p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
@@ -178,7 +198,7 @@ def _about_html() -> str:
         <div style="border-top:1px solid #E7EFEB; padding-top:12px; font-size:12px; line-height:1.55;
                     color:#52606A;">
           <strong style="color:#12212B;">Scope:</strong> An independent customer-side experience with no
-          booking, messaging or account access.
+          booking, messaging or account access. No personal contact details are requested.
         </div>
       </div>
       <div style="flex:1 1 340px; min-width:340px; display:flex; align-items:center; justify-content:center;">
@@ -334,7 +354,7 @@ STEP_EXPLANATIONS = [
 END_TO_END_STEPS = [
     "User opens the app and starts on Urban Company.",
     "User selects Insta Talk.",
-    "The page shows About, the four-step explanation and mentor demo tasks.",
+    "The page shows About, the four-step explanation and Demo Tasks for Mentors.",
     "The stepper tracks progress across four steps.",
     "Step 1 saves an anonymous profile and optional history.",
     "Step 2 builds a private 90-day plan.",
@@ -497,33 +517,39 @@ DEMO_TASKS = [
     (
         "Organise history",
         "In Step 1, set last AC service to '4-6 months', last deep cleaning to '7-12 months', "
-        "plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement.",
+        "plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement. "
+        "Point out that no name, phone number or address is requested.",
     ),
     (
-        "Generate a plan",
+        "Build a 90-day plan",
         "In Step 2, build the plan, generate the grounded summary, and download the Markdown "
-        "plan and .ics reminders.",
+        "plan and .ics reminders. Show one cue with its reason, source and confidence.",
     ),
     (
-        "Say no clearly",
-        "In Step 2 mark AC servicing as not needed, or in Step 3 use the 'No service needed "
-        "right now' button.",
+        "Test no-action",
+        "In Step 2 mark AC servicing as not needed, or in Step 3 choose the 'No action' mode "
+        "and enter 'No service needed right now'. Confirm that no reminder or recommendation "
+        "is added.",
     ),
     (
-        "Route a need",
+        "Route with Insta Talk",
         "In Step 3, type or speak <span style=\"background:#EBDFF0; color:#500C6B; padding:2px 6px; "
         "border-radius:6px;\">AC not cooling, tap dripping, and something feels off in my "
-        "kitchen but not sure what.</span>",
+        "kitchen but not sure what.</span> Try Explain, Decide and Prepare. Show the route, "
+        "confidence, why-not note and public basis. Then say 'Deep cleaning was 9 months ago' "
+        "to show the speak-to-plan cue.",
     ),
     (
-        "Reflect",
-        "In Step 4, enter a post-service note, download the private checklist, and submit feedback.",
+        "Test continuity",
+        "In Step 4, speak or type 'What should I remember for next time?', download the private "
+        "checklist, and submit feedback on usefulness, real need match, route clarity and "
+        "revisit intent.",
     ),
 ]
 
 
 def _demo_tasks_html() -> str:
-    """Render mentor demo tasks as an About Us-style card grid."""
+    """Render Demo Tasks for Mentors as an About Us-style card grid."""
     cards = []
     for i, (title, detail) in enumerate(DEMO_TASKS, start=1):
         cards.append(
@@ -559,7 +585,7 @@ def _demo_tasks_html() -> str:
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">For Mentors</div>
               <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                Demo tasks for mentors
+                Demo Tasks for Mentors
               </h2>
               <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
                 {''.join(cards)}
