@@ -14,7 +14,8 @@ import streamlit as st
 from src import config
 
 LOGO_PATH = config.ROOT / "assets" / "urban_company_logo.jpg"
-ABOUT_BG_PATH = config.ROOT / "assets" / "Urban Company" / "uc-img-6.jpg"
+UC_IMAGE_DIR = config.ROOT / "assets" / "Urban Company"
+ABOUT_BG_PATH = UC_IMAGE_DIR / "uc-img-6.jpg"
 ICON_DIR = config.ROOT / "assets" / "icons"
 
 BUSINESS_UNITS = [
@@ -34,6 +35,13 @@ BUSINESS_UNITS = [
         "International",
         "Services in the UAE, Singapore and KSA.",
     ),
+]
+
+BUSINESS_IMAGES = [
+    ("uc-img-1.jpg", "Urban Company India Consumer Services"),
+    ("uc-img-2.jpg", "Urban Company Insta Help"),
+    ("uc-img-3.jpg", "Urban Company Native"),
+    ("uc-img-4.jpg", "Urban Company International"),
 ]
 
 SERVICE_GROUPS = [
@@ -153,34 +161,58 @@ def _about_html() -> str:
 
 
 def _our_business_html() -> str:
-    """Render business units with the same card style as the About card."""
+    """Render business units as image-led cards in an About Us-style container."""
     cards = []
-    for i, (title, body) in enumerate(BUSINESS_UNITS):
+    for i, ((title, body), (image_file, alt)) in enumerate(
+        zip(BUSINESS_UNITS, BUSINESS_IMAGES)
+    ):
+        encoded = base64.b64encode((UC_IMAGE_DIR / image_file).read_bytes()).decode("ascii")
         cards.append(
             "\n".join(
                 line.strip()
                 for line in textwrap.dedent(
                     f"""
-                    <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
-                                padding:20px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
-                      <div style="display:flex; gap:10px; align-items:flex-start;">
-                        <span style="flex:0 0 26px; height:26px; border-radius:50%; background:#500C6B;
-                                     color:#ffffff; font-size:11px; font-weight:700; display:flex;
-                                     align-items:center; justify-content:center;">{i + 1:02d}</span>
-                        <div style="font-size:13px; font-weight:700; color:#12212B;">{title}</div>
+                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                                padding:14px; display:flex; gap:14px; align-items:center;">
+                      <div style="flex:0 0 88px; width:88px; height:88px; border-radius:12px; overflow:hidden;
+                                  background:#EBDFF0;">
+                        <img src="data:image/jpeg;base64,{encoded}" alt="{alt}"
+                             style="display:block; width:100%; height:100%; object-fit:cover;" />
                       </div>
-                      <div style="margin-top:10px; font-size:12px; line-height:1.55; color:#3B4C57;">
-                        {body}
+                      <div style="min-width:0;">
+                        <span style="display:inline-flex; align-items:center; justify-content:center;
+                                     padding:4px 10px; border-radius:999px; background:#500C6B; color:#ffffff;
+                                     font-size:11px; font-weight:700;">{i + 1:02d}</span>
+                        <div style="margin-top:6px; font-size:13px; font-weight:700; color:#12212B;">
+                          {title}
+                        </div>
+                        <div style="margin-top:6px; font-size:12px; line-height:1.5; color:#52606A;">
+                          {body}
+                        </div>
                       </div>
                     </div>
                     """
                 ).strip().splitlines()
             )
         )
-    return (
-        '<div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px;">'
-        + "".join(cards)
-        + "</div>"
+    return "\n".join(
+        line.strip()
+        for line in textwrap.dedent(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Business Units</div>
+              <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+                Our Business
+              </h2>
+              <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
+                {''.join(cards)}
+              </div>
+            </div>
+            """
+        ).strip().splitlines()
     )
 
 
@@ -293,7 +325,6 @@ def render() -> None:
 
     st.markdown(_about_html(), unsafe_allow_html=True)
 
-    st.subheader("Our Business")
     st.markdown(_our_business_html(), unsafe_allow_html=True)
 
     st.markdown(_home_services_html(), unsafe_allow_html=True)
