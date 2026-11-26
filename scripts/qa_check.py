@@ -46,9 +46,15 @@ def pdf_text(path: Path) -> str:
 def main() -> int:
     config.ensure_dirs()
 
-    # C1 forbidden phrases in src/mvp.py, views/1_MVP.py, outputs/deck.pdf text
+    # C1 forbidden phrases in guarded src modules, guarded views, outputs/deck.pdf text
     forbidden = [p.lower() for p in config.FORBIDDEN_PATTERNS]
-    for rel in ["src/mvp.py", "src/insta_talk.py", "views/1_MVP.py", "views/11_Competitors.py"]:
+    for rel in [
+        "src/mvp.py",
+        "src/insta_talk.py",
+        "views/1_MVP.py",
+        "views/11_Competitors.py",
+        "views/12_About_Insta_Talk.py",
+    ]:
         text = read_text(ROOT / rel).lower()
         hits = [p for p in forbidden if p in text]
         # mvp.py contains assembled banned-text guard tokens; ignore exact self-guard literals

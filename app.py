@@ -70,6 +70,7 @@ st.markdown(
 pages = [
     st.Page("views/0_Urban_Company.py", title="Urban Company", default=True),
     st.Page("views/11_Competitors.py", title="Competitors"),
+    st.Page("views/12_About_Insta_Talk.py", title="About Insta Talk & Steps"),
     st.Page("views/1_MVP.py", title="Insta Talk"),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log"),
