@@ -73,16 +73,17 @@ st.markdown(
         color: #FFFFFF !important;
       }
       [data-testid="stHeader"] .rc-overflow {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         justify-content: center !important;
-        flex: 1 1 auto !important;
-        width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        transform: translateX(-5rem) !important;
+        width: max-content !important;
+        max-width: calc(100% - 26rem) !important;
+        margin: 0 !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
-        max-width: none !important;
         scrollbar-width: none !important;
       }
       [data-testid="stHeader"] .rc-overflow::-webkit-scrollbar {
@@ -108,6 +109,7 @@ st.markdown(
         font-size: 0.78rem !important;
       }
       [data-testid="stHeader"] {
+        position: relative !important;
         min-height: 5.5rem !important;
         background-color: transparent !important;
         border-bottom: none !important;
