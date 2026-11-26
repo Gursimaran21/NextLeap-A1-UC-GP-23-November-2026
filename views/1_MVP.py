@@ -103,74 +103,218 @@ STEPS = [
     "After a service",
 ]
 
-STEP_DETAILS = [
+def _clean_html(value: str) -> str:
+    """Strip indentation from small inline-HTML fragments."""
+    return "\n".join(line.strip() for line in textwrap.dedent(value).strip().splitlines())
+
+
+def _detail(label: str, body: str) -> str:
+    """Render one labelled detail block inside a step card."""
+    return _clean_html(
+        f"""
+        <div style="margin-top:12px;">
+          <div style="font-size:12px; font-weight:700; color:#500C6B; line-height:1.35;">{label}</div>
+          <div style="margin-top:4px; font-size:12px; line-height:1.6; color:#52606A;">{body}</div>
+        </div>
+        """
+    )
+
+
+STEP_EXPLANATIONS = [
     (
         "Tell me about your home",
-        "collects an anonymous household profile and optional service history (relative timing, active issue, and any upcoming requirement you already know).",
+        _detail(
+            "What you do:",
+            """
+            Enter an anonymous household profile and optional service history:<br>
+            • When the AC was last serviced<br>
+            • When deep cleaning was last done<br>
+            • Any current plumbing issue<br>
+            • Any upcoming requirement you already know
+            """,
+        )
+        + _detail(
+            "What the app does:",
+            "It stores this only in the current session. No name, phone number, address, invoice or account data is collected.",
+        )
+        + _detail("Output:", "A private profile used only to create planning cues."),
     ),
     (
         "Your next 90 days",
-        "builds a private plan from your history plus public guidance, shows why each cue appears, and exports a checklist, calendar reminders, and plan data.",
+        _detail(
+            "What you do:",
+            "Click to build the plan. You can also mark something as not needed right now.",
+        )
+        + _detail(
+            "What the app does:",
+            """
+            It compares your timing with public guidance about typical service intervals, then creates planning cues such as:<br>
+            Soon<br>
+            Needs attention<br>
+            Needs more detail<br>
+            Your note<br>
+            Not needed<br><br>
+            Every cue shows:<br>
+            Why it appears<br>
+            The basis for it<br>
+            Evidence source<br>
+            Confidence score<br>
+            Whether it is only a planning cue
+            """,
+        )
+        + _detail(
+            "Important:",
+            "If you mark something as not needed, the app returns NO_ACTION — no reminder, no recommendation.",
+        )
+        + _detail(
+            "Output:",
+            "Markdown plan<br>.ics calendar reminders<br>JSON plan data<br>Optional grounded summary",
+        ),
     ),
     (
         "Need Decider",
-        "routes a described need to DIY, local/neighbour, a relevant service category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.",
+        _detail(
+            "What you do:",
+            "Describe a need in plain language, for example:<br>“AC not cooling, tap dripping, and something feels off in my kitchen.”",
+        )
+        + _detail(
+            "What the app does:",
+            """
+            It checks the text using local rules, in this order:<br><br>
+            1. Urgent safety signal → seek immediate help<br>
+            Example: sparks, smoke, gas smell, flooding.<br>
+            2. Explicit no need → no action<br>
+            Example: “No service needed right now.”<br>
+            3. Too vague → ask clarifying questions / wait<br>
+            Example: “Something is wrong.”<br>
+            4. Simple maintenance → DIY<br>
+            Example: basic cleaning or tightening.<br>
+            5. Building/neighbour issue → local or neighbour help<br>
+            Example: shared corridor or building-level coordination.<br>
+            6. Clear service category → relevant category guidance<br>
+            Example: AC repair, cleaning, plumbing.<br>
+            7. Low confidence → wait and watch<br>
+            The app asks for more detail instead of guessing.
+            """,
+        )
+        + _detail(
+            "Output:",
+            "A route, confidence score, reason, and explanation of why other routes were not chosen. No booking is made.",
+        ),
     ),
     (
         "After a service",
-        "captures a post-service reflection and downloads a private checklist locally.",
+        _detail("What you do:", "Write a short post-service reflection.")
+        + _detail(
+            "What the app does:",
+            "It creates a private checklist and records feedback locally for testing.",
+        )
+        + _detail(
+            "Output:",
+            "Private checklist download<br>Feedback record<br>No account action, no messaging, no booking",
+        ),
     ),
 ]
 
+END_TO_END_STEPS = [
+    "The page shows a stepper with four steps.",
+    "You move forward with Next and back with Back.",
+    "State is kept only in the current Streamlit session.",
+    "Logic runs locally first.",
+    "Public guidance is used only to explain timing and categories.",
+    "Gemini, if configured, can improve wording only.",
+    "Safety and routing never depend on Gemini.",
+    "Every action is written to a tool trace for audit.",
+    "No external service is contacted by default.",
+    "No booking, payment, message, account action or pricing lever is used.",
+]
+
+EXAMPLE_INPUTS = [
+    "Last AC service: 4–6 months",
+    "Last deep cleaning: 7–12 months",
+    "Upcoming need: Bathroom cleaning",
+]
+
+EXAMPLE_OUTPUTS = [
+    "AC servicing — Soon, because your timing is near the typical interval.",
+    "Deep cleaning — Needs attention, depending on the public cadence.",
+    "Bathroom cleaning — Your note, because you added it yourself.",
+]
+
+KEY_IDEA = (
+    "The assistant helps you notice, understand and plan. It does not sell, book, push offers, message, "
+    "pay, or manage professionals. It can also clearly say: no service needed."
+)
+
 
 def _steps_html() -> str:
-    """Render the four-step journey as an About Us-style card."""
-    cards = []
-    for i, (title, detail) in enumerate(STEP_DETAILS, start=1):
-        cards.append(
-            "\n".join(
-                line.strip()
-                for line in textwrap.dedent(
-                    f"""
-                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
-                                padding:18px; display:flex; gap:14px; align-items:flex-start;">
-                      <span style="flex:0 0 34px; height:34px; border-radius:50%; background:#500C6B;
-                                   color:#ffffff; font-size:12px; font-weight:700; display:flex;
-                                   align-items:center; justify-content:center;">{i:02d}</span>
-                      <div style="min-width:0;">
-                        <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
-                          Step {i} – {title}
-                        </div>
-                        <div style="margin-top:6px; font-size:12px; line-height:1.55; color:#52606A;">
-                          {detail}
-                        </div>
-                      </div>
+    """Render the detailed four-step journey as an About Us-style card."""
+    step_cards = []
+    for i, (title, body_html) in enumerate(STEP_EXPLANATIONS, start=1):
+        step_cards.append(
+            _clean_html(
+                f"""
+                <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                            padding:18px; display:flex; gap:14px; align-items:flex-start;">
+                  <span style="flex:0 0 34px; height:34px; border-radius:50%; background:#500C6B;
+                               color:#ffffff; font-size:12px; font-weight:700; display:flex;
+                               align-items:center; justify-content:center;">{i:02d}</span>
+                  <div style="min-width:0;">
+                    <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
+                      Step {i} — {title}
                     </div>
-                    """
-                ).strip().splitlines()
+                    {body_html}
+                  </div>
+                </div>
+                """
             )
         )
-    return "\n".join(
-        line.strip()
-        for line in textwrap.dedent(
-            f"""
-            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
-                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
-              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
-                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">How it works</div>
-              <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                Your Home Care Assistant in Simple Steps
-              </h2>
-              <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
-                {''.join(cards)}
-              </div>
-              <div style="margin-top:16px; padding-top:14px; border-top:1px solid #E6D9EA; font-size:11px; line-height:1.6; color:#52606A;">
-                Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal details are requested and no external service is contacted.
-              </div>
+
+    end_items = "".join(
+        _clean_html(f'<li style="margin-bottom:6px;">{item}</li>') for item in END_TO_END_STEPS
+    )
+    example_inputs = "<br>".join(f"• {item}" for item in EXAMPLE_INPUTS)
+    example_outputs = "<br>".join(f"• {item}" for item in EXAMPLE_OUTPUTS)
+
+    return _clean_html(
+        f"""
+        <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                    padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+          <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                      padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                      text-transform:uppercase; font-weight:700; margin-bottom:12px;">How it works</div>
+          <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+            Your Home Care Assistant in Simple Steps
+          </h2>
+          <div style="display:grid; grid-template-columns:1fr; gap:14px;">
+            {''.join(step_cards)}
+          </div>
+          <div style="margin-top:22px; padding-top:18px; border-top:1px solid #E6D9EA;">
+            <div style="font-size:14px; font-weight:700; color:#12212B;">How it works end-to-end</div>
+            <ol style="margin:10px 0 0 18px; padding:0; font-size:12px; line-height:1.65; color:#52606A;">
+              {end_items}
+            </ol>
+          </div>
+          <div style="margin-top:18px; padding:16px; background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;">
+            <div style="font-size:14px; font-weight:700; color:#12212B;">Simple example</div>
+            <div style="margin-top:8px; font-size:12px; line-height:1.6; color:#52606A;">
+              <strong>You enter:</strong><br>{example_inputs}<br><br>
+              <strong>The app may show:</strong><br>{example_outputs}<br><br>
+              If you mark AC servicing as not needed, it changes to Not needed — no action.<br><br>
+              If you type “AC not cooling with a burning smell,” Need Decider routes to seek immediate help, not DIY or booking.
             </div>
-            """
-        ).strip().splitlines()
+          </div>
+          <div style="margin-top:18px; padding:16px; background:#EBDFF0; border:1px solid #D9C6E0; border-radius:14px;">
+            <div style="font-size:12px; font-weight:700; color:#500C6B; letter-spacing:0.06em; text-transform:uppercase;">
+              Key idea
+            </div>
+            <div style="margin-top:6px; font-size:12px; line-height:1.6; color:#12212B;">{KEY_IDEA}</div>
+          </div>
+          <div style="margin-top:16px; padding-top:14px; border-top:1px solid #E6D9EA; font-size:11px; line-height:1.6; color:#52606A;">
+            Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal details are requested and no external service is contacted.
+          </div>
+        </div>
+        """
     )
 
 
