@@ -94,7 +94,10 @@ def _about_html() -> str:
       <div style="flex:1 1 420px; min-width:300px;">
         <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">About Urban Company</div>
+                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Urban Company</div>
+        <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+          About Urban Company
+        </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           Urban Company is an online services marketplace that connects customers with
           trained professionals for at-home beauty, wellness, cleaning, repair, and
