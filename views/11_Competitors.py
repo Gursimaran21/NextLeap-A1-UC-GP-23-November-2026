@@ -9,7 +9,7 @@ import streamlit as st
 from src import config
 
 
-LOGO_PATH = config.ROOT / "assets" / "HCA-LOGO-14.png"
+LOGO_PATH = config.ROOT / "assets" / "HCA-LOGO-17.png"
 
 
 def _clean(value: str) -> str:
@@ -18,7 +18,7 @@ def _clean(value: str) -> str:
 
 
 def _header_html() -> str:
-    """Inline the local mark beside the page title."""
+    """Inline HCA-LOGO-17 beside the page title."""
     encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
     return _clean(
         f"""
@@ -66,7 +66,6 @@ SNAPSHOT = [
         "categories": "Cleaning, dishwashing, laundry, kitchen prep; instant salon-at-home pilot.",
         "scale": "Over 40,000 jobs a day and more than 15,000 workers by Apr 2026; crossed 1 million monthly jobs in Mar 2026.",
         "funding": "$56M Series D in Apr 2026; about $112M raised in total; reported valuation around $350M.",
-        "sources": "[S1], [S2], [S3], [S4]",
     },
     {
         "name": "Pronto",
@@ -76,7 +75,6 @@ SNAPSHOT = [
         "categories": "Laundry, kitchen prep, home cleaning; expanding into car washing, gardening and a home-cooks pilot.",
         "scale": "Over 26,000 daily bookings by May 2026, up from about 3,000 in early Dec 2025.",
         "funding": "$25M Series B in Mar 2026 at a $100M valuation; an additional $20M in May 2026 at a $200M valuation.",
-        "sources": "[P1], [P2], [P3]",
     },
 ]
 
@@ -84,27 +82,27 @@ SNABBIT_FACTS = [
     (
         "Operating model",
         "A managed, hyperlocal fleet is stationed around dense residential clusters. Public reporting "
-        "describes a 100% women-led expert fleet in 2025 and more than 15,000 workers by Apr 2026. [S2], [S3]",
+        "describes a 100% women-led expert fleet in 2025 and more than 15,000 workers by Apr 2026.",
     ),
     (
         "Demand thesis",
         "The bet is that short, frequent chores behave more like an everyday utility than a scheduled "
-        "appointment. Reported fulfilment is around 10 minutes. [S1], [S2]",
+        "appointment. Reported fulfilment is around 10 minutes.",
     ),
     (
         "Traction signals",
         "More than 300,000 customers by Oct 2025, a reported 30–35% retention rate, over 40 micro-markets "
-        "in five cities, then over 40,000 jobs a day in 2026. [S2], [S3]",
+        "in five cities, then over 40,000 jobs a day in 2026.",
     ),
     (
         "Expansion",
         "Core categories are cleaning, dishwashing, laundry and kitchen prep. A sub-15-minute "
-        "salon-at-home pilot was reported in Bengaluru in 2026. [S4]",
+        "salon-at-home pilot was reported in Bengaluru in 2026.",
     ),
     (
         "Strategic read",
         "Competes on speed, frequency and supply density. The hard part is holding service quality and "
-        "unit economics while entering higher-expectation categories. [S1], [S4]",
+        "unit economics while entering higher-expectation categories.",
     ),
 ]
 
@@ -112,27 +110,27 @@ PRONTO_FACTS = [
     (
         "Operating model",
         "Calls its workers Pros, uses in-person training and background verification, and assigns "
-        "structured shifts to make income more predictable. [P2]",
+        "structured shifts to make income more predictable.",
     ),
     (
         "Demand thesis",
         "Quick help for recurring household chores, available through instant, scheduled or recurring "
-        "options. Reported dispatch is about 10–15 minutes. [P1], [P2]",
+        "options. Reported dispatch is about 10–15 minutes.",
     ),
     (
         "Traction signals",
         "Daily bookings rose from about 3,000 in early Dec 2025 to more than 26,000 by May 2026. "
-        "Public reporting also noted roughly 101,000 daily active users in late Feb 2026. [P1], [P2]",
+        "Public reporting also noted roughly 101,000 daily active users in late Feb 2026.",
     ),
     (
         "Expansion",
         "Laundry, kitchen prep and home cleaning are core. The company is adding car washing and "
-        "gardening, and piloting home cooks. [P1]",
+        "gardening, and piloting home cooks.",
     ),
     (
         "Strategic read",
         "Describes itself as supply-constrained, so scaling trained workers is the central task. "
-        "Management said contribution margins had turned positive in its oldest Gurugram micro-markets. [P1], [P2]",
+        "Management said contribution margins had turned positive in its oldest Gurugram micro-markets.",
     ),
 ]
 
@@ -213,7 +211,6 @@ def _snapshot_html() -> str:
                   <td style="padding:12px; border-bottom:1px solid #E6D9EA;">{item['categories']}</td>
                   <td style="padding:12px; border-bottom:1px solid #E6D9EA;">{item['scale']}</td>
                   <td style="padding:12px; border-bottom:1px solid #E6D9EA;">{item['funding']}</td>
-                  <td style="padding:12px; border-bottom:1px solid #E6D9EA; color:#52606A;">{item['sources']}</td>
                 </tr>
                 """
             )
@@ -227,21 +224,16 @@ def _snapshot_html() -> str:
                       text-transform:uppercase; font-weight:700; margin-bottom:12px;">Market snapshot</div>
           <h2 style="margin:0 0 12px 0; font-size:1.45rem; color:#12212B;">Two instant-help challengers</h2>
           <div style="overflow-x:auto;">
-            <table style="border-collapse:collapse; width:100%; min-width:1040px; font-size:12px; line-height:1.55; color:#3B4C57;">
+            <table style="border-collapse:collapse; width:100%; min-width:920px; font-size:12px; line-height:1.55; color:#3B4C57;">
               <thead>
                 <tr style="background:#EBDFF0; color:#12212B; text-align:left;">
                   <th style="padding:12px;">Company</th><th style="padding:12px;">Founded / base</th>
                   <th style="padding:12px;">Core promise</th><th style="padding:12px;">Categories</th>
                   <th style="padding:12px;">Scale signal</th><th style="padding:12px;">Funding position</th>
-                  <th style="padding:12px;">Sources</th>
                 </tr>
               </thead>
               <tbody>{''.join(rows)}</tbody>
             </table>
-          </div>
-          <div style="margin-top:12px; font-size:11px; line-height:1.6; color:#52606A;">
-            Figures are public company claims reported by the sources on the dates shown. They are not audited,
-            and they should not be read as current private performance data.
           </div>
         </div>
         """
@@ -278,10 +270,6 @@ def _facts_html(title: str, facts: list[tuple[str, str]], source_label: str) -> 
 def render() -> None:
     """Render the competitor briefing page."""
     st.markdown(_header_html(), unsafe_allow_html=True)
-    st.caption(
-        "Public-source competitor briefing. No logged-in screens, private dashboards, account data or "
-        "personal information were used."
-    )
 
     st.markdown(
         _clean(
@@ -293,10 +281,28 @@ def render() -> None:
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">Why this page exists</div>
               <h2 style="margin:0 0 10px 0; font-size:1.45rem; color:#12212B;">Reading the instant-help wave</h2>
               <div style="font-size:13px; line-height:1.7; color:#3B4C57;">
-                India's home-services market is seeing a fast-growing instant-help segment. Snabbit and Pronto
-                are the two challengers most often named alongside Urban Company in public reporting. This page
-                records what is publicly known about them, then separates that market fact from this project's
-                own hypothesis. The prototype stays customer-side: guidance and planning, not transactions.
+                <p style="margin:0 0 10px 0;">
+                  Two shifts are converging in urban India. Households have become used to on-demand
+                  convenience in food and groceries, and they are beginning to expect the same from home help.
+                  At the same time, routine household work is being reframed from an informal, arranged-over-phone
+                  activity into a managed service that can be requested through an app.
+                </p>
+                <p style="margin:0 0 10px 0;">
+                  Snabbit and Pronto are the two challengers most often named alongside Urban Company in public
+                  reporting. Both build dense micro-markets, keep workers close to demand and promise very short
+                  arrival times. Their categories are deliberately simple and frequent: cleaning, dishwashing,
+                  laundry, kitchen preparation and related chores.
+                </p>
+                <p style="margin:0 0 10px 0;">
+                  Urban Company is also investing in instant services. The competitive question is therefore no
+                  longer whether quick help matters. It is how each player creates density, protects service
+                  quality and earns repeat use without turning every household need into a transaction.
+                </p>
+                <p style="margin:0;">
+                  For this project, the useful distinction is between fulfilment and judgement. Faster dispatch
+                  does not tell a household whether a problem is urgent, whether it can be handled safely at home,
+                  or what to remember after a service. Insta Talk sits in that gap.
+                </p>
               </div>
             </div>
             """
@@ -349,7 +355,7 @@ def render() -> None:
                         padding:22px;">
               <div style="font-size:11px; font-weight:700; color:#500C6B; letter-spacing:0.08em;
                           text-transform:uppercase;">Implication for Insta Talk</div>
-              <h2 style="margin:6px 0 14px 0; font-size:1.45rem; color:#12212B;">What this means for the project</h2>
+              <h2 style="margin:6px 0 14px 0; font-size:1.45rem; color:#12212B;">What implication for Insta Talk means</h2>
               <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
                 {implication_cards}
               </div>
@@ -377,8 +383,7 @@ def render() -> None:
                         padding:22px;">
               <div style="font-size:14px; font-weight:700; color:#12212B;">Source map</div>
               <div style="margin-top:6px; font-size:12px; line-height:1.6; color:#52606A;">
-                Source IDs are used in this page so that no URL appears in the app. Full URLs, access dates and
-                public-access confirmation are recorded only in <code>docs/sources.md</code>.
+                Public sources used for this briefing are listed below by ID. No URL is displayed in the app.
               </div>
               <table style="border-collapse:collapse; width:100%; margin-top:12px; font-size:12px; color:#3B4C57;">
                 <tbody>{source_rows}</tbody>
