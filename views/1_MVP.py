@@ -780,7 +780,7 @@ def _render_profile() -> dict:
         )
         save_col, reset_col, _ = st.columns([1, 1, 6])
         with save_col:
-            save_history = st.form_submit_button("Save household history", width="stretch", wrap=True)
+            save_history = st.form_submit_button("Save service history", width="stretch", wrap=True)
         with reset_col:
             reset_history = st.form_submit_button("Reset", width="stretch", wrap=True)
 
