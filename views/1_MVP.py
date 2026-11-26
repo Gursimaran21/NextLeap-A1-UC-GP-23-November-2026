@@ -512,7 +512,7 @@ def render() -> None:
 
     st.markdown(_about_html(), unsafe_allow_html=True)
 
-    st.subheader("Your Home-Care Journey in Four Steps")
+    st.subheader("Your Home Care Assistant in Simple Steps")
     st.markdown(
         "**Step 1 – Tell me about your home:** collects an anonymous household profile and optional service "
         "history (relative timing, active issue, and any upcoming requirement you already know).  \n"
