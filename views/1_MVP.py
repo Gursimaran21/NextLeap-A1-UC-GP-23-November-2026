@@ -174,6 +174,83 @@ def _steps_html() -> str:
     )
 
 
+DEMO_TASKS = [
+    (
+        "Organise history",
+        "In Step 1, set last AC service to '4-6 months', last deep cleaning to '7-12 months', "
+        "plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement.",
+    ),
+    (
+        "Generate a plan",
+        "In Step 2, build the plan, generate the grounded summary, and download the Markdown "
+        "plan and .ics reminders.",
+    ),
+    (
+        "Say no clearly",
+        "In Step 2 mark AC servicing as not needed, or in Step 3 use the 'No service needed "
+        "right now' button.",
+    ),
+    (
+        "Route a need",
+        "In Step 3, try <span style=\"background:#EBDFF0; color:#500C6B; padding:2px 6px; "
+        "border-radius:6px;\">AC not cooling, tap dripping, and something feels off in my "
+        "kitchen but not sure what.</span>",
+    ),
+    (
+        "Reflect",
+        "In Step 4, enter a post-service note, download the private checklist, and submit feedback.",
+    ),
+]
+
+
+def _demo_tasks_html() -> str:
+    """Render mentor demo tasks as an About Us-style card grid."""
+    cards = []
+    for i, (title, detail) in enumerate(DEMO_TASKS, start=1):
+        cards.append(
+            "\n".join(
+                line.strip()
+                for line in textwrap.dedent(
+                    f"""
+                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                                padding:18px; display:flex; gap:14px; align-items:flex-start;">
+                      <span style="flex:0 0 34px; height:34px; border-radius:50%; background:#500C6B;
+                                   color:#ffffff; font-size:12px; font-weight:700; display:flex;
+                                   align-items:center; justify-content:center;">{i}</span>
+                      <div style="min-width:0;">
+                        <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
+                          {title}
+                        </div>
+                        <div style="margin-top:6px; font-size:12px; line-height:1.55; color:#52606A;">
+                          {detail}
+                        </div>
+                      </div>
+                    </div>
+                    """
+                ).strip().splitlines()
+            )
+        )
+    return "\n".join(
+        line.strip()
+        for line in textwrap.dedent(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">For Mentors</div>
+              <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+                Demo tasks for mentors
+              </h2>
+              <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
+                {''.join(cards)}
+              </div>
+            </div>
+            """
+        ).strip().splitlines()
+    )
+
+
 def _init_state() -> None:
     defaults = {
         "mvp_step": 1,
@@ -585,17 +662,7 @@ def render() -> None:
 
     st.markdown(_steps_html(), unsafe_allow_html=True)
 
-    with st.expander("Demo tasks for mentors"):
-        st.markdown(
-            """
-            1. **Organise history:** In Step 1, set last AC service to '4-6 months', last deep cleaning to '7-12 months', plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement.<br>
-            2. **Generate a plan:** In Step 2, build the plan, generate the grounded summary, and download the Markdown plan and .ics reminders.<br>
-            3. **Say no clearly:** In Step 2 mark AC servicing as not needed, or in Step 3 use the 'No service needed right now' button.<br>
-            4. **Route a need:** In Step 3, try <span style="background:#EBDFF0; color:#500C6B; padding:2px 6px; border-radius:6px;">AC not cooling, tap dripping, and something feels off in my kitchen but not sure what.</span><br>
-            5. **Reflect:** In Step 4, enter a post-service note, download the private checklist, and submit feedback.
-            """,
-            unsafe_allow_html=True,
-        )
+    st.markdown(_demo_tasks_html(), unsafe_allow_html=True)
 
     _stepper()
     profile = st.session_state.get("mvp_profile", {})
