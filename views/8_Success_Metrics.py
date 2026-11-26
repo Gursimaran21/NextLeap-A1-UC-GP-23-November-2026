@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 
 import pandas as pd
@@ -10,8 +11,24 @@ import streamlit as st
 from src import config
 
 
+LOGO_PATH = config.ROOT / "assets" / "HCA-LOGO-13.png"
+
+
+def _header_html() -> str:
+    """Inline the HCA-LOGO-13 mark beside the page title."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/png;base64,{encoded}" alt="Home Care Assistant logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "Success Metrics</h1>"
+        "</div>"
+    )
+
+
 def render() -> None:
-    st.title("Success Metrics")
+    st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption("Measure continuity value without incentives, spam, or account actions.")
 
     st.subheader("Metric ladder")

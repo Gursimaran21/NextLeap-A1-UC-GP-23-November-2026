@@ -2,8 +2,28 @@
 
 from __future__ import annotations
 
+import base64
+
 import pandas as pd
 import streamlit as st
+
+from src import config
+
+
+LOGO_PATH = config.ROOT / "assets" / "HCA-LOGO-14.png"
+
+
+def _header_html() -> str:
+    """Inline the HCA-LOGO-14 mark beside the page title."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/png;base64,{encoded}" alt="Home Care Assistant logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "Risks</h1>"
+        "</div>"
+    )
 
 
 def _risk_table() -> pd.DataFrame:
@@ -90,7 +110,7 @@ def _risk_table() -> pd.DataFrame:
 
 
 def render() -> None:
-    st.title("Risks")
+    st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption("Risks, likelihood, severity, mitigations, and early-warning signals. Color + label (not color-only).")
 
     df = _risk_table()
