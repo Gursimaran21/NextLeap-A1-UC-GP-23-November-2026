@@ -16,10 +16,10 @@
 
 ## 3. Tasks (expected routes verified against `src/mvp.py` on 2026-11-23)
 
-### T1 — Profile + 90-day calendar (~4 min)
-- Ask: "Fill in the home profile, then look at your next-90-days plan. Pick the one item that feels most real for your home."
-- **Expected trace:** `build_calendar` → `public_reference_lookup` / `show_public_info`.
-- Observe: Are the 6 profile questions comfortable (no PII)? Do calendar cards' **public basis + source links** build trust? Is timing ("when_days") believable? Does any item feel like a made-up need?
+### T1 — Profile, household history + 90-day plan (~5 min)
+- Ask: "Fill in the home profile. In the optional history, set last AC servicing to 4-6 months, last deep cleaning to 7-12 months, plumbing issue to None, and add Bathroom cleaning as an upcoming need. Then build your plan and pick the cue that feels most real for your home."
+- **Expected trace:** `build_calendar` → `summarise_plan` (if used) → `show_public_info`.
+- Observe: Are the profile and history questions comfortable (no PII)? Do plan cards' **public basis + source links** build trust? Is the relative timing believable? Does any item feel like a made-up need? Can the participant download the Markdown plan and `.ics` reminders?
 
 ### T2 — Vague need (~3 min)
 - Ask them to type exactly: `something feels off in my kitchen but not sure what`
@@ -42,6 +42,11 @@
 - Ask: "Think of your last completed service. Type what went well and anything still open, then download your checklist."
 - **Expected trace:** `capture_reflection` → private checklist download (no upload).
 - Observe: Are open topics captured correctly? Is the download understandable? Any privacy concern?
+
+### T6 — Explicit no-need (~2 min)
+- Ask: "Try the 'No service needed right now' button in Step 3, and mark AC servicing as not needed in Step 2 history."
+- **Expected trace:** `route_need` with route `NO_ACTION`; plan card status `Not needed`.
+- Observe: Does the participant understand that no recommendation or reminder was added? Does this increase or reduce trust?
 
 ### Optional probe — known edge case
 - Input: `AC not cooling since yesterday and I already cleaned the filter`

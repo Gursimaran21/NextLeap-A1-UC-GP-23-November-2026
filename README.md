@@ -29,7 +29,7 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 
 ## What This Repo Contains
 
-- **Home Care Companion MVP** (Streamlit): 4-step wizard — profile, 90-day calendar, Need Decider, post-service reflection.
+- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, private 90-day plan with grounded summary and Markdown/.ics/JSON export, Need Decider with explicit no-action route, and post-service reflection checklist.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
 - **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).
@@ -115,7 +115,7 @@ python -m scripts.qa_check
 |---|---|---|
 | AI Discovery Engine | `views/2_Discovery_Engine.py` | Implemented |
 | 10-slide deck | `outputs/NL_UrbanCompany.pdf`, `views/10_Deck.py` | Draft generated |
-| Deployed AI-native MVP | `app.py`, `views/1_MVP.py` | Implemented; deploy pending |
+| Deployed AI-native MVP | `app.py`, `views/1_MVP.py` | Implemented locally with history input, plan export, reminders, and explicit no-action; deploy pending |
 | AI Evidence Log | `views/3_Evidence_Log.py`, `outputs/evidence_log.md`, `outputs/evidence_log.pdf` | Draft generated |
 
 ## Deployed URLs

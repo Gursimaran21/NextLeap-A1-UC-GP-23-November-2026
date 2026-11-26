@@ -23,10 +23,14 @@
 - Synthesis compares AI findings vs interview validation/challenges.
 
 ## 5) MVP
-- Deterministic-first Need Decider with optional LLM enhancement.
-- Routes: DIY, LOCAL_OR_NEIGHBOUR, UC_CATEGORY, WAIT_AND_WATCH, SEEK_IMMEDIATE_HELP.
+- 4-step Home Care Companion: anonymous profile + optional service history, private plan, Need Decider, reflection.
+- Plan cues combine customer-provided timing/issue/upcoming notes with public-reference cadence; every cue shows basis, source, evidence type and confidence.
+- Explicit no-need path: multiselect for categories not needed, plus a Need Decider `NO_ACTION` route.
+- Exports: private Markdown plan, JSON plan data, and `.ics` calendar with one-day-before reminders.
+- Deterministic-first Need Decider with optional LLM enhancement; grounded plan summary with deterministic fallback.
+- Routes: DIY, LOCAL_OR_NEIGHBOUR, UC_CATEGORY, WAIT_AND_WATCH, SEEK_IMMEDIATE_HELP, NO_ACTION.
 - Tool traces logged to `outputs/tool_trace.jsonl` for audit.
-- No transactions, no account access, no PII collection.
+- No transactions, no account access, no PII collection, no external scraping.
 
 ## 6) Evaluation
 - Golden-task routing audit (10 tasks) for tool-choice precision/recall.

@@ -5,9 +5,10 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 from src import config, llm as llm_mod, mvp
@@ -106,7 +107,9 @@ def _init_state() -> None:
     defaults = {
         "mvp_step": 1,
         "mvp_profile": {},
-        "mvp_calendar": [],
+        "mvp_history": {},
+        "mvp_plan": [],
+        "mvp_plan_summary": "",
         "mvp_custom_need": "",
         "mvp_chat": [],
         "mvp_reflection": None,
@@ -142,6 +145,7 @@ def _nav_buttons() -> None:
 def _render_profile() -> dict:
     st.subheader("Step 1: Tell me about your home")
     st.info("We don't ask for personal details. No name, phone, address, flat number, or booking screenshots.")
+
     profile = dict(st.session_state.get("mvp_profile", {}))
     with st.form("profile_form"):
         for q in mvp.PROFILE_QUESTIONS:
@@ -158,71 +162,272 @@ def _render_profile() -> dict:
         submitted = st.form_submit_button("Save profile")
     if submitted:
         st.session_state.mvp_profile = profile
-        st.success("Profile saved. Move to Step 2 to build your 90-day calendar.")
+        st.success("Profile saved. Add optional household history below, then move to Step 2.")
+
+    history = dict(st.session_state.get("mvp_history", {}))
+    st.markdown("**Optional household service history**")
+    st.caption("Relative timing only. This stays in your session and helps the plan avoid guesses.")
+
+    def _timing_index(key: str) -> int:
+        value = str(history.get(key, "Not sure") or "Not sure")
+        return mvp.HISTORY_TIMING_OPTIONS.index(value) if value in mvp.HISTORY_TIMING_OPTIONS else 0
+
+    with st.form("history_form"):
+        left, right = st.columns(2)
+        with left:
+            h_ac = st.selectbox("Last AC servicing", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_ac_service"), key="hist_ac")
+            h_deep = st.selectbox("Last deep cleaning", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_deep_clean"), key="hist_deep")
+        with right:
+            h_pest = st.selectbox("Last pest control", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_pest_control"), key="hist_pest")
+            h_plumb = st.selectbox("Last plumbing check", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_plumbing_check"), key="hist_plumb")
+
+        issue_default = str(history.get("plumbing_issue", "None") or "None")
+        h_issue = st.selectbox(
+            "Plumbing issue",
+            mvp.PLUMBING_ISSUE_OPTIONS,
+            index=mvp.PLUMBING_ISSUE_OPTIONS.index(issue_default) if issue_default in mvp.PLUMBING_ISSUE_OPTIONS else 0,
+            key="hist_issue",
+        )
+        h_upcoming = st.text_input(
+            "Upcoming requirement you already know",
+            value=str(history.get("upcoming_need", "") or ""),
+            placeholder="e.g., Bathroom cleaning",
+            key="hist_upcoming",
+        )
+        saved_no_need = [str(x) for x in history.get("no_need_now", []) if str(x) in mvp.NO_NEED_OPTIONS]
+        h_no_need = st.multiselect(
+            "Services I do not need right now",
+            mvp.NO_NEED_OPTIONS,
+            default=saved_no_need,
+            key="hist_no_need",
+        )
+        save_history = st.form_submit_button("Save household history")
+
+    if save_history:
+        st.session_state.mvp_history = {
+            "last_ac_service": h_ac,
+            "last_deep_clean": h_deep,
+            "last_pest_control": h_pest,
+            "last_plumbing_check": h_plumb,
+            "plumbing_issue": h_issue,
+            "upcoming_need": h_upcoming.strip(),
+            "no_need_now": h_no_need,
+        }
+        st.session_state.mvp_plan = []
+        st.session_state.mvp_plan_summary = ""
+        st.success("Household history saved. Build your plan in Step 2.")
+
+    current_history = st.session_state.get("mvp_history", {})
+    if current_history:
+        display_rows = [
+            {
+                "Field": label,
+                "Value": ", ".join(map(str, current_history.get(key, []))) if isinstance(current_history.get(key), list) else str(current_history.get(key, "") or "Not provided"),
+            }
+            for key, label in [
+                ("last_ac_service", "Last AC servicing"),
+                ("last_deep_clean", "Last deep cleaning"),
+                ("last_pest_control", "Last pest control"),
+                ("last_plumbing_check", "Last plumbing check"),
+                ("plumbing_issue", "Plumbing issue"),
+                ("upcoming_need", "Upcoming requirement"),
+                ("no_need_now", "No need right now"),
+            ]
+        ]
+        st.caption("Saved history for this session")
+        st.dataframe(pd.DataFrame(display_rows), width="stretch", hide_index=True)
+
     return st.session_state.get("mvp_profile", profile)
 
 
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
-    st.caption("Public-reference calendar. These are planning cues, not bookings or account actions.")
+    st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
+
+    history = st.session_state.get("mvp_history", {})
     col_a, col_b = st.columns([1, 2])
     with col_a:
-        if st.button("Build / refresh calendar", type="primary", width="stretch"):
+        if st.button("Build / refresh plan", type="primary", width="stretch"):
             ref = mvp.load_public_reference()
-            cal = mvp.build_calendar(profile, reference=ref, llm=None)
-            st.session_state.mvp_calendar = cal
+            plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
+            st.session_state.mvp_plan = plan
+            st.session_state.mvp_plan_summary = ""
             mvp.log_tool_trace({
                 "ts": datetime.now(timezone.utc).isoformat(),
                 "session_hash": st.session_state.mvp_session_hash,
                 "turn": 0,
                 "chosen_tool": "build_calendar",
-                "reason": "User requested calendar refresh",
-                "user_input_length": 0,
-                "route": "CALENDAR",
+                "reason": "User requested plan refresh from household history",
+                "user_input_length": len(json.dumps(history, ensure_ascii=False)),
+                "route": "PLAN",
                 "confidence": 1.0,
             })
             st.rerun()
     with col_b:
         custom = st.text_input(
-            "Add a need I'm already thinking about (optional)",
+            "Add an upcoming need you already know (optional)",
             value=st.session_state.get("mvp_custom_need", ""),
-            placeholder="e.g., I think my AC filter may need cleaning before summer",
+            placeholder="e.g., Bathroom cleaning",
         )
         st.session_state.mvp_custom_need = custom
+        if st.button("Add as personal note") and custom.strip():
+            plan = list(st.session_state.get("mvp_plan", []))
+            plan.append({
+                "need": custom.strip(),
+                "status": "Your note",
+                "due_in_days": 30,
+                "why": "You added this as an upcoming requirement.",
+                "basis": "Your own note; no external claim is made.",
+                "source_url": "",
+                "confidence": 0.4,
+                "route_hint": "USER_NOTE",
+                "evidence": "customer input only",
+            })
+            st.session_state.mvp_plan = plan
+            st.rerun()
 
-    cal = list(st.session_state.get("mvp_calendar", []))
-    if custom.strip():
-        cal = cal + [{
-            "need": custom.strip(),
-            "when_days": 30,
-            "why": "User-added planning note.",
-            "confidence": 0.4,
-            "basis": "Personal note added by you in this session.",
-            "source_url": "",
-            "route_hint": "USER_NOTE",
-        }]
-
-    if not cal:
-        st.info("Build your calendar to see upcoming home-care planning cues.")
+    plan = list(st.session_state.get("mvp_plan", []))
+    if not plan:
+        st.info("Save optional history in Step 1, then build your plan to see upcoming home-care cues.")
         return
 
-    for item in cal:
+    st.markdown("**Planning cues**")
+    for item in plan:
         conf = float(item.get("confidence", 0))
         conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
+        status = str(item.get("status", "Unclear"))
         with st.container(border=True):
-            st.markdown(f"**{item.get('need', 'Need')}**")
-            st.write(f"**When:** within ~{item.get('when_days', 90)} days")
+            head_left, head_right = st.columns([4, 1])
+            with head_left:
+                st.markdown(f"**{item.get('need', 'Cue')}**")
+                st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
+            with head_right:
+                st.metric("Confidence", f"{conf:.2f}")
+            if item.get("due_in_days") is not None:
+                st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
             st.write(f"**Why:** {item.get('why', '')}")
-            st.write(f"**Public basis:** {item.get('basis', '')}")
+            st.write(f"**Basis:** {item.get('basis', '')}")
             src = item.get("source_url", "")
             if src:
-                st.markdown(f"**Source:** [{src}]({src})")
-            st.caption(f"Confidence: {conf_label} ({conf:.2f}) · Route hint: {item.get('route_hint', 'N/A')}")
+                st.markdown(f"**Public source:** [{src}]({src})")
+            if status == "Not needed":
+                st.success("You marked this as not needed. No action is suggested.")
+            elif status == "Needs more detail":
+                st.warning("Add more detail if you want a specific timing cue.")
+            else:
+                st.caption("Planning cue only — not a service requirement.")
+
+    st.divider()
+    st.markdown("**Plain-language summary**")
+    if st.button("Generate grounded summary"):
+        summary = mvp.summarise_plan(
+            profile,
+            history,
+            plan,
+            llm=llm_mod if llm_mod.available() else None,
+        )
+        st.session_state.mvp_plan_summary = summary
+        mvp.log_tool_trace({
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "session_hash": st.session_state.mvp_session_hash,
+            "turn": 0,
+            "chosen_tool": "summarise_plan",
+            "reason": "User requested grounded summary of household plan",
+            "user_input_length": len(summary),
+            "route": "PLAN",
+            "confidence": 1.0,
+        })
+        st.rerun()
+    if st.session_state.get("mvp_plan_summary"):
+        st.info(st.session_state["mvp_plan_summary"])
+    else:
+        st.caption("Generate a short summary grounded only in the items above.")
+
+    with st.expander("Understand service categories"):
+        guide_df = pd.DataFrame(mvp.category_guide())
+        st.dataframe(guide_df, width="stretch", hide_index=True)
+        st.caption("Category descriptions use public information. No external action is taken from this page.")
+
+    st.divider()
+    st.subheader("Export your private plan")
+    summary = str(st.session_state.get("mvp_plan_summary", "") or "")
+    md_plan = mvp.plan_to_markdown(profile, history, plan, summary)
+    ics_plan = mvp.plan_to_ics(plan)
+    json_plan = json.dumps(
+        {
+            "generated_on": date.today().isoformat(),
+            "profile": profile,
+            "history": history,
+            "plan": plan,
+            "summary": summary,
+            "note": "Private planning cues only. No account access or external action.",
+        },
+        indent=2,
+        ensure_ascii=False,
+    )
+    exp1, exp2, exp3 = st.columns(3)
+    with exp1:
+        st.download_button(
+            "Download plan (Markdown)",
+            data=md_plan.encode("utf-8"),
+            file_name=f"home_care_plan_{date.today().isoformat()}.md",
+            mime="text/markdown",
+            width="stretch",
+        )
+    with exp2:
+        st.download_button(
+            "Download reminders (.ics)",
+            data=ics_plan.encode("utf-8"),
+            file_name="home_care_reminders.ics",
+            mime="text/calendar",
+            width="stretch",
+        )
+    with exp3:
+        st.download_button(
+            "Download plan data (JSON)",
+            data=json_plan.encode("utf-8"),
+            file_name="home_care_plan.json",
+            mime="application/json",
+            width="stretch",
+        )
+    st.caption("The calendar file uses one-day-before reminders and stays on your device.")
+
+
+def _append_decider_result(result: dict) -> None:
+    trace = result.get("tool_trace", {})
+    answer = (
+        f"**Route:** {result.get('route')}\n\n"
+        f"**Confidence:** {result.get('confidence')}\n\n"
+        f"**Reason:** {result.get('reason')}"
+    )
+    if result.get("category_info"):
+        answer += f"\n\n**Category info:** {result['category_info']}"
+    if result.get("steps"):
+        answer += "\n\n**Safe DIY steps:**\n" + "\n".join([f"- {s}" for s in result["steps"]])
+    st.session_state.mvp_chat.append({
+        "role": "assistant",
+        "content": answer,
+        "meta": {
+            "chosen_tool": trace.get("chosen_tool", "route_need"),
+            "route": result.get("route"),
+            "confidence": result.get("confidence"),
+            "clarifying_questions": result.get("clarifying_questions", []),
+            "used_public_reference": result.get("used_public_reference", False),
+            "public_reference": result.get("public_reference"),
+        },
+    })
 
 
 def _render_decider(profile: dict) -> None:
     st.subheader("Step 3: Need Decider")
-    st.caption("Describe a home issue. The companion suggests a route: DIY, local/neighbour, UC category info, wait-and-watch, or immediate help. No booking or account action.")
+    st.caption("Describe a home issue. The companion suggests a route: DIY, local/neighbour, category info, wait-and-watch, immediate help, or no action. No booking or account action.")
+
+    st.markdown("**Quick action**")
+    if st.button("No service needed right now", width="stretch"):
+        st.session_state.mvp_chat.append({"role": "user", "content": "I do not need a service right now."})
+        result = mvp.route_need("I do not need a service right now.", profile=profile, llm=None, session_hash=st.session_state.mvp_session_hash)
+        _append_decider_result(result)
+        st.rerun()
 
     for msg in st.session_state.mvp_chat:
         with st.chat_message(msg["role"]):
@@ -244,28 +449,7 @@ def _render_decider(profile: dict) -> None:
     if prompt:
         st.session_state.mvp_chat.append({"role": "user", "content": prompt})
         result = mvp.route_need(prompt, profile=profile, llm=None, session_hash=st.session_state.mvp_session_hash)
-        trace = result.get("tool_trace", {})
-        answer = (
-            f"**Route:** {result.get('route')}\n\n"
-            f"**Confidence:** {result.get('confidence')}\n\n"
-            f"**Reason:** {result.get('reason')}"
-        )
-        if result.get("category_info"):
-            answer += f"\n\n**Category info:** {result['category_info']}"
-        if result.get("steps"):
-            answer += "\n\n**Safe DIY steps:**\n" + "\n".join([f"- {s}" for s in result["steps"]])
-        st.session_state.mvp_chat.append({
-            "role": "assistant",
-            "content": answer,
-            "meta": {
-                "chosen_tool": trace.get("chosen_tool", "route_need"),
-                "route": result.get("route"),
-                "confidence": result.get("confidence"),
-                "clarifying_questions": result.get("clarifying_questions", []),
-                "used_public_reference": result.get("used_public_reference", False),
-                "public_reference": result.get("public_reference"),
-            },
-        })
+        _append_decider_result(result)
         st.rerun()
 
 
@@ -331,11 +515,12 @@ def render() -> None:
 
     st.subheader("Your Home-Care Journey in Four Steps")
     st.markdown(
-        "**Step 1 – Tell me about your home:** collects an anonymous household profile.  \n"
-        "**Step 2 – Your next 90 days:** builds a 90-day planning calendar from public reference guidance "
-        "and your own notes.  \n"
+        "**Step 1 – Tell me about your home:** collects an anonymous household profile and optional service "
+        "history (relative timing, active issue, and any upcoming requirement you already know).  \n"
+        "**Step 2 – Your next 90 days:** builds a private plan from your history plus public guidance, shows "
+        "why each cue appears, and exports a checklist, calendar reminders, and plan data.  \n"
         "**Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
-        "category, or wait/clarify, and explains why each route is chosen.  \n"
+        "category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.  \n"
         "**Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
         "locally.\n\n"
         "Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
@@ -346,9 +531,11 @@ def render() -> None:
     with st.expander("Demo tasks for mentors"):
         st.markdown(
             """
-            1. **Plan ahead:** Complete Step 1 profile and build a 90-day calendar in Step 2. Add your own need.  
-            2. **Route a need:** In Step 3, try: <span style="background:#EBDFF0; color:#500C6B; padding:2px 6px; border-radius:6px;">AC not cooling, tap dripping, and something feels off in my kitchen but not sure what.</span>  
-            3. **Reflect:** In Step 4, enter a post-service note, download the private checklist, and submit feedback.
+            1. **Organise history:** In Step 1, set last AC service to '4-6 months', last deep cleaning to '7-12 months', plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement.<br>
+            2. **Generate a plan:** In Step 2, build the plan, generate the grounded summary, and download the Markdown plan and .ics reminders.<br>
+            3. **Say no clearly:** In Step 2 mark AC servicing as not needed, or in Step 3 use the 'No service needed right now' button.<br>
+            4. **Route a need:** In Step 3, try <span style="background:#EBDFF0; color:#500C6B; padding:2px 6px; border-radius:6px;">AC not cooling, tap dripping, and something feels off in my kitchen but not sure what.</span><br>
+            5. **Reflect:** In Step 4, enter a post-service note, download the private checklist, and submit feedback.
             """,
             unsafe_allow_html=True,
         )
