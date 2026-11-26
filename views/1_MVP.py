@@ -639,7 +639,13 @@ def _nav_buttons() -> None:
 
 def _render_profile() -> dict:
     st.subheader("Step 1: Tell me about your home")
-    st.info("We don't ask for personal details. No name, phone, address, flat number, or booking screenshots.")
+    st.markdown(
+        '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
+        'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5; margin-bottom:12px;">'
+        "We don't ask for personal details. No name, phone, address, flat number, or booking screenshots."
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
     profile = dict(st.session_state.get("mvp_profile", {}))
     with st.form("profile_form"):
