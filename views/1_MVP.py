@@ -165,6 +165,9 @@ def _steps_html() -> str:
               <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
                 {''.join(cards)}
               </div>
+              <div style="margin-top:16px; padding-top:14px; border-top:1px solid #E6D9EA; font-size:11px; line-height:1.6; color:#52606A;">
+                Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal details are requested and no external service is contacted.
+              </div>
             </div>
             """
         ).strip().splitlines()
