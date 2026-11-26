@@ -68,16 +68,16 @@ st.markdown(
 )
 
 pages = [
-    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
-    st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
-    st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
-    st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),
-    st.Page("views/5_User_Research.py", title="User Research", icon="🎙️"),
-    st.Page("views/6_Problem_Definition.py", title="Problem Definition", icon="🎯"),
-    st.Page("views/7_MVP_Testing.py", title="MVP Testing", icon="🧪"),
-    st.Page("views/8_Success_Metrics.py", title="Success Metrics", icon="📏"),
-    st.Page("views/9_Risks.py", title="Risks", icon="⚠️"),
-    st.Page("views/10_Deck.py", title="Deck", icon="📊"),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", default=True),
+    st.Page("views/2_Discovery_Engine.py", title="Discovery Engine"),
+    st.Page("views/3_Evidence_Log.py", title="Evidence Log"),
+    st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown"),
+    st.Page("views/5_User_Research.py", title="User Research"),
+    st.Page("views/6_Problem_Definition.py", title="Problem Definition"),
+    st.Page("views/7_MVP_Testing.py", title="MVP Testing"),
+    st.Page("views/8_Success_Metrics.py", title="Success Metrics"),
+    st.Page("views/9_Risks.py", title="Risks"),
+    st.Page("views/10_Deck.py", title="Deck"),
 ]
 
 pg = st.navigation(pages, position="top")
