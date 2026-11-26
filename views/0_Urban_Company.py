@@ -240,6 +240,55 @@ def _home_services_html() -> str:
     )
 
 
+def _at_a_glance_html() -> str:
+    """Render headline figures in an About Us-style card."""
+    metrics = [
+        ("Service rating", "4.8", "Public website figure"),
+        ("Customers globally", "12M+", "Public website figure"),
+        ("Repeat share of NTV", f"~{config.REPEAT_NTV_PCT}%", "From project brief"),
+    ]
+    tiles = []
+    for label, value, note in metrics:
+        tiles.append(
+            "\n".join(
+                line.strip()
+                for line in textwrap.dedent(
+                    f"""
+                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                                padding:18px; text-align:center;">
+                      <div style="font-size:2rem; font-weight:700; color:#500C6B; line-height:1.1;">{value}</div>
+                      <div style="margin-top:8px; font-size:13px; font-weight:700; color:#12212B;">{label}</div>
+                      <div style="margin-top:4px; font-size:11px; color:#52606A;">{note}</div>
+                    </div>
+                    """
+                ).strip().splitlines()
+            )
+        )
+    return "\n".join(
+        line.strip()
+        for line in textwrap.dedent(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Key Figures</div>
+              <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+                At a glance
+              </h2>
+              <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;">
+                {''.join(tiles)}
+              </div>
+              <div style="margin-top:14px; font-size:11px; line-height:1.55; color:#52606A;">
+                Service rating and customer count are public website figures as on 31 Dec 2024.
+                The ~{config.REPEAT_NTV_PCT}% repeat share comes from the project brief and is not recomputed here.
+              </div>
+            </div>
+            """
+        ).strip().splitlines()
+    )
+
+
 def render() -> None:
     st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption(
@@ -254,15 +303,7 @@ def render() -> None:
 
     st.markdown(_home_services_html(), unsafe_allow_html=True)
 
-    st.subheader("At a glance")
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Service rating", "4.8")
-    m2.metric("Customers globally", "12M+")
-    m3.metric("Repeat share of NTV", f"~{config.REPEAT_NTV_PCT}%")
-    st.caption(
-        "Service rating and customer count are public website figures as on 31 Dec 2024. "
-        f"The ~{config.REPEAT_NTV_PCT}% repeat share comes from the project brief and is not recomputed here."
-    )
+    st.markdown(_at_a_glance_html(), unsafe_allow_html=True)
 
     st.subheader("Where this project fits")
     st.markdown(
