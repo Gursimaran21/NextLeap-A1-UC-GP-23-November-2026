@@ -14,7 +14,7 @@ import streamlit as st
 from src import config, llm as llm_mod, mvp
 
 
-LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "HCA-LOGO-5.png"
+LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "HCA-LOGO-6.png"
 ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background_1.jpg"
 
 
