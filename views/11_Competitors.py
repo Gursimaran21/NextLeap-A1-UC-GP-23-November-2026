@@ -330,9 +330,9 @@ def render() -> None:
 
     left, right = st.columns(2, gap="large")
     with left:
-        st.markdown(_facts_html("Snabbit — detailed profile", SNABBIT_FACTS, "Challenger 01"), unsafe_allow_html=True)
+        st.markdown(_facts_html("Snabbit - detailed profile", SNABBIT_FACTS, "Challenger 01"), unsafe_allow_html=True)
     with right:
-        st.markdown(_facts_html("Pronto — detailed profile", PRONTO_FACTS, "Challenger 02"), unsafe_allow_html=True)
+        st.markdown(_facts_html("Pronto - detailed profile", PRONTO_FACTS, "Challenger 02"), unsafe_allow_html=True)
 
     st.markdown(
         _clean(
