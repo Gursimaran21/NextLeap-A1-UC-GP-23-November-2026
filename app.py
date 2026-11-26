@@ -69,6 +69,17 @@ st.markdown(
       [data-testid="stHeader"] .rc-overflow {
         justify-content: center !important;
       }
+      [data-testid="stHeader"] {
+        min-height: 5.5rem !important;
+      }
+      .stLogo,
+      [data-testid="stLogo"] {
+        height: 4.5rem !important;
+        width: auto !important;
+        max-width: 12rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
     </style>
     """,
     unsafe_allow_html=True,
