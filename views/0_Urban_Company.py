@@ -97,7 +97,7 @@ def _about_html() -> str:
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                     text-transform:uppercase; font-weight:700; margin-bottom:12px;">Urban Company</div>
         <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-          About Urban Company
+          About Us
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           Urban Company is an online services marketplace that connects customers with
