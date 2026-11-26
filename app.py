@@ -51,7 +51,7 @@ st.markdown(
       [data-testid="stTopNavLink"],
       [data-testid="stTopNavDropdownLink"],
       [data-testid="stTopNavSection"] {
-        background-color: #EBDFF0 !important;
+        background-color: rgba(255, 255, 255, 0.16) !important;
       }
       [data-testid="stTopNavLink"],
       [data-testid="stTopNavDropdownLink"],
@@ -59,12 +59,18 @@ st.markdown(
       [data-testid="stTopNavLink"] *,
       [data-testid="stTopNavDropdownLink"] *,
       [data-testid="stTopNavSection"] * {
-        color: #500C6B !important;
+        color: #FFFFFF !important;
       }
       [data-testid="stTopNavLink"]:hover,
       [data-testid="stTopNavDropdownLink"]:hover,
       [data-testid="stTopNavSection"]:hover {
-        background-color: #F7F1F9 !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
+      }
+      [data-testid="stTopNavLink"][aria-current="page"] {
+        background-color: #FFFFFF !important;
+      }
+      [data-testid="stTopNavLink"][aria-current="page"] * {
+        color: #500C6B !important;
       }
       [data-testid="stHeader"] .rc-overflow {
         justify-content: flex-start !important;
@@ -98,8 +104,8 @@ st.markdown(
       }
       [data-testid="stHeader"] {
         min-height: 5.5rem !important;
-        background-color: #F7F1F9 !important;
-        border-bottom: 1px solid #E6D9EA !important;
+        background-color: #500C6B !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
       }
       .stLogo,
       [data-testid="stLogo"] {
@@ -108,6 +114,10 @@ st.markdown(
         max-width: 12rem !important;
         margin-top: 0 !important;
         margin-bottom: 0 !important;
+        padding: 4px 8px !important;
+        background-color: #FFFFFF !important;
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
       }
     </style>
     """,
