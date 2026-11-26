@@ -130,7 +130,8 @@ def _card(title: str, body: str) -> None:
 def render() -> None:
     st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption(
-        "Public company context · Home Care Companion graduation project · Nov 2026"
+        "A technology-driven platform connecting customers with trusted professionals "
+        "for home and beauty needs — from cleaning and repairs to salon and spa services."
     )
 
     st.markdown(_about_html(), unsafe_allow_html=True)
