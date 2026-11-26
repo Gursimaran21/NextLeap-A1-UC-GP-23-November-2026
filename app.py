@@ -59,23 +59,25 @@ st.markdown(
       [data-testid="stTopNavSection"]:hover {
         background-color: #F7F1F9 !important;
       }
+      [data-testid="stHeader"] [data-testid="stToolbarActions"],
+      [data-testid="stHeader"] [data-testid="stAppDeployButton"] {
+        display: none !important;
+      }
+      [data-testid="stHeader"] [data-testid="stToolbar"] > div > div:last-child:not(.rc-overflow) {
+        display: none !important;
+      }
       [data-testid="stHeader"] [data-testid="stToolbar"] {
         justify-content: center !important;
       }
-      [data-testid="stHeader"] [data-testid="stToolbar"]::before,
-      [data-testid="stHeader"] [data-testid="stToolbar"]::after {
-        content: "";
-        flex: 1 1 0;
-      }
-      [data-testid="stHeader"] [data-testid="stToolbar"] > div.rc-overflow,
-      [data-testid="stHeader"] [data-testid="stToolbar"] > div:has([data-testid="stTopNavLinkContainer"]) {
-        width: fit-content !important;
-        max-width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+      [data-testid="stHeader"] [data-testid="stToolbar"] > div {
         justify-content: center !important;
-        padding-left: 12px !important;
-        padding-right: 12px !important;
+      }
+      [data-testid="stHeader"] .rc-overflow {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        justify-content: center !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
       }
     </style>
     """,
