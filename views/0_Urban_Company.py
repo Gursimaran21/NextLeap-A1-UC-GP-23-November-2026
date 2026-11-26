@@ -106,11 +106,6 @@ def _about_html() -> str:
         </p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">{tag_html}</div>
-        <div style="border-top:1px solid #E7EFEB; padding-top:12px; font-size:12px; line-height:1.55;
-                    color:#52606A;">
-          <strong style="color:#12212B;">Scope:</strong> Public company context for this graduation
-          project. No bookings, payments, messages, account access, prices, offers or logged-in data.
-        </div>
       </div>
       <div style="flex:1 1 340px; min-width:340px; display:flex; align-items:center; justify-content:center;">
         <div style="width:340px; height:453px; border-radius:14px; overflow:hidden;">
@@ -136,7 +131,6 @@ def render() -> None:
     )
 
     st.markdown(_about_html(), unsafe_allow_html=True)
-    st.caption("Paraphrased from the public About Us page; source logged in `docs/sources.md`.")
 
     st.subheader("Our Business")
     cols = st.columns(2)
