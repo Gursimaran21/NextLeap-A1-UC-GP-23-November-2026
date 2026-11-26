@@ -169,7 +169,7 @@ IMPLICATIONS = [
         "'what should I prepare?' or 'what should I remember next time?'.",
     ),
     (
-        "The project sits before and after the service",
+        "Insta Talk sits before and after the service",
         "Insta Talk is a customer-side guidance layer: need recognition, safe routing, private planning cues "
         "and aftercare continuity.",
     ),
