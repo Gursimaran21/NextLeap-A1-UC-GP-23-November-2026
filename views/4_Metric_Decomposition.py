@@ -37,8 +37,8 @@ def render() -> None:
     chain = [
         ("Business metric", "90-day repeat completion rate for eligible anchor customers"),
         ("Product outcomes", "Need recognition, mental availability, category clarity, choice confidence, frictionless completion"),
-        ("Customer behaviours", "D1–D6: what the customer actually does or decides"),
-        ("Measurable indicators", "Customer self-report (interviews) or public traces only — no internal UC data"),
+        ("Customer behaviours", "D1-D6: what the customer actually does or decides"),
+        ("Measurable indicators", "Customer self-report (interviews) or public traces only - no internal UC data"),
     ]
     for label, detail in chain:
         st.markdown(f"**{label}:** {detail}")
@@ -55,7 +55,7 @@ def render() -> None:
     ])
     st.dataframe(tree, width="stretch", hide_index=True)
 
-    st.subheader("D1–D6 decomposition")
+    st.subheader("D1-D6 decomposition")
     for d in config.DECOMPOSITION:
         influ = bool(d.get("influenceable"))
         badge = "🟢 Influencable" if influ else "⚪ Not directly influencable"
@@ -71,7 +71,7 @@ def render() -> None:
     st.subheader("Where to focus")
     st.markdown(
         """
-        Focus on **D2–D5**: recognition, mental availability, category consideration, and choice confidence.  
+        Focus on **D2-D5**: recognition, mental availability, category consideration, and choice confidence.  
         **D1** is partly exogenous; **D6** overlaps experience/ops but can include customer-side clarity.  
         All solutions must stay customer-side and respect C1/C2.
         """
