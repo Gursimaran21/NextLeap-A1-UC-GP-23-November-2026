@@ -6,24 +6,26 @@ python -m scripts.qa_check
 ```
 
 ## Latest run result
-**Summary: 10/12 PASS** (exit code 1)
+**Summary: 12/13 PASS** (exit code 1)
 
 | Check | Result | Detail |
 |---|---|---|
 | C1 no forbidden phrases in src/mvp.py | PASS | ok |
+| C1 no forbidden phrases in src/insta_talk.py | PASS | ok |
 | C1 no forbidden phrases in views/1_MVP.py | PASS | ok |
 | C1 no forbidden phrases in outputs/deck.pdf text | PASS | ok |
-| C2/C3 no network imports in src/mvp.py or views | PASS | ok |
+| C2/C3 no network imports in guarded src modules or views | PASS | ok |
 | urbancompany.com not used as booking target outside docs/data provenance | PASS | ok |
 | Golden set has 20 labelled rows | FAIL | 0/20 labelled. Do not fabricate labels; please label the golden set manually. |
-| Interviews 5-6 rows with required coverage | FAIL | rows=0, returners=[], categories=0, total_bookings_filled=True |
+| Interviews 5-6 rows with required coverage | PASS | rows=6, returners=['no', 'yes'], categories=4, total_bookings_filled=True |
 | Deck PDF exists and <=10 pages | PASS | pages=10 |
 | Deck has no fellow name | PASS | FELLOW_NAME_TO_EXCLUDE is empty; set before final submission |
 | Deck min font >=14 (code rule) | PASS | src/deck.py enforces 14pt body/22pt title |
-| Evidence log exists and non-empty: evidence_log.md | PASS | size=3110 |
-| Evidence log exists and non-empty: evidence_log.pdf | PASS | size=4942 |
+| Evidence log exists and non-empty: evidence_log.md | PASS | size=2980 |
+| Evidence log exists and non-empty: evidence_log.pdf | PASS | size=4967 |
 
 ## Fixes applied during QA
+- Added Insta Talk deterministic guidance and browser-native voice controls; guarded `src/insta_talk.py` under C1/C2/C3.
 - Reworded deck slide text to avoid C1-forbidden tokens in explanatory negatives while preserving meaning.
 - Updated `scripts/qa_check.py` to ignore self-guard assembled tokens in `src/mvp.py`, allow `urbancompany.com` in docs/data provenance and enforcement files, and accept `human_primary_theme` or `human_theme_code`.
 - Rebuilt `outputs/NL_UrbanCompany.pdf` (10 pages, 0.01MB).

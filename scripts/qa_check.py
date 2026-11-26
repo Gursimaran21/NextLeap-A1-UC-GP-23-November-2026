@@ -48,7 +48,7 @@ def main() -> int:
 
     # C1 forbidden phrases in src/mvp.py, views/1_MVP.py, outputs/deck.pdf text
     forbidden = [p.lower() for p in config.FORBIDDEN_PATTERNS]
-    for rel in ["src/mvp.py", "views/1_MVP.py"]:
+    for rel in ["src/mvp.py", "src/insta_talk.py", "views/1_MVP.py"]:
         text = read_text(ROOT / rel).lower()
         hits = [p for p in forbidden if p in text]
         # mvp.py contains assembled banned-text guard tokens; ignore exact self-guard literals
@@ -65,7 +65,7 @@ def main() -> int:
 
     # C2/C3 no requests/httpx/urllib/socket in src/mvp.py or any views/
     net_pat = re.compile(r"\b(requests|httpx|urllib|socket)\b")
-    targets = [ROOT / "src/mvp.py"] + sorted((ROOT / "views").glob("*.py"))
+    targets = [ROOT / "src/mvp.py", ROOT / "src/insta_talk.py"] + sorted((ROOT / "views").glob("*.py"))
     net_hits = []
     for p in targets:
         t = read_text(p)
@@ -76,7 +76,7 @@ def main() -> int:
             if '_BANNED_IMPORTS' in line or '_BANNED_TEXT' in line or 'im" + "port' in line or "im' + 'port" in line:
                 continue
             net_hits.append(f"{p.relative_to(ROOT)}:{i}:{line.strip()[:80]}")
-    check("C2/C3 no network imports in src/mvp.py or views", len(net_hits) == 0, "; ".join(net_hits[:6]) if net_hits else "ok")
+    check("C2/C3 no network imports in guarded src modules or views", len(net_hits) == 0, "; ".join(net_hits[:6]) if net_hits else "ok")
 
     # urbancompany.com only appears in docs/ and provenance URLs, never as a booking target
     uc_hits = []

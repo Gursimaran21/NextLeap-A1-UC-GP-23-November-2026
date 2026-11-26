@@ -6,17 +6,112 @@ import base64
 import hashlib
 import json
 import textwrap
+import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-from src import config, llm as llm_mod, mvp
+from src import config, insta_talk, llm as llm_mod, mvp
 
 
 LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "HCA-LOGO-6.png"
 ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background_1.jpg"
+
+_VOICE_HTML = """
+<div class="hca-voice">
+  <div class="hca-voice-row">
+    <button id="hca-mic" type="button">🎙 Speak your need</button>
+    <button id="hca-speak" type="button">🔊 Read reply</button>
+  </div>
+  <div id="hca-voice-status" class="hca-voice-status">Browser voice is optional. Typing always works.</div>
+</div>
+"""
+
+_VOICE_CSS = """
+.hca-voice {
+  font-family: var(--st-font);
+  color: var(--st-text-color);
+  border: 1px solid #E6D9EA;
+  background: #FBFAFC;
+  border-radius: 14px;
+  padding: 12px;
+}
+.hca-voice-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.hca-voice button {
+  border: 1px solid #500C6B;
+  background: #FFFFFF;
+  color: #500C6B;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hca-voice button:hover { background: #EBDFF0; }
+.hca-voice-status { margin-top: 8px; font-size: 11px; line-height: 1.5; opacity: 0.85; }
+"""
+
+_VOICE_JS = r"""
+export default function({ parentElement, data, setStateValue, setTriggerValue }) {
+  const mic = parentElement.querySelector("#hca-mic");
+  const speak = parentElement.querySelector("#hca-speak");
+  const status = parentElement.querySelector("#hca-voice-status");
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const lang = (data && data.lang) || "en-IN";
+
+  mic.onclick = () => {
+    if (!Speech) {
+      status.textContent = "Browser speech input is unavailable here. Please type instead.";
+      return;
+    }
+    const rec = new Speech();
+    rec.lang = lang;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    status.textContent = "Listening…";
+    rec.onresult = (event) => {
+      const text = event.results[0][0].transcript || "";
+      status.textContent = "Voice note received.";
+      setStateValue("transcript", text);
+      setTriggerValue("transcript_ready", true);
+    };
+    rec.onerror = () => {
+      status.textContent = "Voice input was not available. Please type instead.";
+    };
+    rec.onend = () => {
+      if (status.textContent === "Listening…") status.textContent = "Ready. Type anytime.";
+    };
+    rec.start();
+  };
+
+  speak.onclick = () => {
+    const text = (data && data.speech) || "";
+    if (!text) {
+      status.textContent = "There is no reply to read yet.";
+      return;
+    }
+    if (!("speechSynthesis" in window)) {
+      status.textContent = "Browser speech output is unavailable here.";
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text.slice(0, 900));
+    utterance.lang = lang;
+    utterance.rate = 0.95;
+    window.speechSynthesis.speak(utterance);
+    status.textContent = "Reading the latest reply.";
+  };
+}
+"""
+
+voice_component = st.components.v2.component(
+    "hca_insta_talk_voice",
+    html=_VOICE_HTML,
+    css=_VOICE_CSS,
+    js=_VOICE_JS,
+)
 
 
 def _header_html() -> str:
@@ -99,7 +194,7 @@ def _about_html() -> str:
 STEPS = [
     "Tell me about your home",
     "Your next 90 days",
-    "Need Decider",
+    "Insta Talk",
     "After a service",
 ]
 
@@ -172,14 +267,15 @@ STEP_EXPLANATIONS = [
         ),
     ),
     (
-        "Need Decider",
+        "Insta Talk (Need Decider)",
         _detail(
             "What you do:",
-            "Describe a need in plain language, for example:<br>“AC not cooling, tap dripping, and something feels off in my kitchen.”",
+            "Type or speak a need in plain language, for example:<br>“AC not cooling, tap dripping, and something feels off in my kitchen.”",
         )
         + _detail(
             "What the app does:",
             """
+            Insta Talk offers six modes: Explain, Decide, Prepare, Aftercare, No action, and Next 90 days.<br>
             It checks the text using local rules, in this order:<br><br>
             1. Urgent safety signal → seek immediate help<br>
             Example: sparks, smoke, gas smell, flooding.<br>
@@ -336,7 +432,7 @@ DEMO_TASKS = [
     ),
     (
         "Route a need",
-        "In Step 3, try <span style=\"background:#EBDFF0; color:#500C6B; padding:2px 6px; "
+        "In Step 3, type or speak <span style=\"background:#EBDFF0; color:#500C6B; padding:2px 6px; "
         "border-radius:6px;\">AC not cooling, tap dripping, and something feels off in my "
         "kitchen but not sure what.</span>",
     ),
@@ -406,6 +502,9 @@ def _init_state() -> None:
         "mvp_chat": [],
         "mvp_reflection": None,
         "mvp_feedback": {},
+        "mvp_talk_mode": "Decide",
+        "mvp_decision_started": None,
+        "mvp_aftercare_result": None,
         "mvp_session_hash": hashlib.sha256(str(datetime.now(timezone.utc).timestamp()).encode()).hexdigest()[:12],
     }
     for k, v in defaults.items():
@@ -685,17 +784,66 @@ def _render_calendar(profile: dict) -> None:
     st.caption("The calendar file uses one-day-before reminders and stays on your device.")
 
 
-def _append_decider_result(result: dict) -> None:
-    trace = result.get("tool_trace", {})
-    answer = (
-        f"**Route:** {result.get('route')}\n\n"
-        f"**Confidence:** {result.get('confidence')}\n\n"
-        f"**Reason:** {result.get('reason')}"
+def _plain_speech(text: str) -> str:
+    """Make a chat answer readable when spoken aloud."""
+    clean = str(text or "").replace("**", "").replace("`", "")
+    return " ".join(clean.split())[:900]
+
+
+def _voice_bridge(speech_text: str, key: str) -> str:
+    """Mount browser-native voice controls and return a finished transcript."""
+    if not hasattr(st, "components") or not hasattr(st.components, "v2"):
+        st.caption("Voice assistance needs a newer Streamlit build. Typed input still works.")
+        return ""
+    result = voice_component(
+        data={"speech": _plain_speech(speech_text), "lang": "en-IN"},
+        default={"transcript": ""},
+        on_transcript_change=lambda: None,
+        on_transcript_ready_change=lambda: None,
+        key=key,
+        width="stretch",
     )
+    st.caption("Voice is processed by your browser. You can switch to typing anytime.")
+    if getattr(result, "transcript_ready", None):
+        return str(getattr(result, "transcript", "") or "")
+    return ""
+
+
+def _log_decision_event(event: str, msg: dict) -> None:
+    """Record leading indicators for Insta Talk evaluation."""
+    meta = msg.get("meta", {})
+    started = st.session_state.get("mvp_decision_started")
+    seconds = round(time.time() - float(started), 1) if started else None
+    mvp.log_tool_trace({
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "session_hash": st.session_state.mvp_session_hash,
+        "turn": 0,
+        "chosen_tool": "insta_talk_decision_event",
+        "reason": event,
+        "user_input_length": 0,
+        "route": meta.get("route", ""),
+        "confidence": meta.get("confidence", 0),
+        "accepted_route": event == "route_clear",
+        "revisit_intent": event == "revisit_later",
+        "seconds_to_decision": seconds,
+    })
+    st.toast("Saved locally for evaluation.")
+
+
+def _append_decider_result(result: dict, mode: str = "") -> None:
+    trace = result.get("tool_trace", {})
+    parts = []
+    if mode:
+        parts.append(f"**Insta Talk mode:** {mode}")
+    parts.append(f"**Route:** {result.get('route')}")
+    parts.append(f"**Confidence:** {result.get('confidence')}")
+    parts.append(f"**Reason:** {insta_talk.guard(str(result.get('reason', '')))}")
     if result.get("category_info"):
-        answer += f"\n\n**Category info:** {result['category_info']}"
+        parts.append(f"**Category info:** {result['category_info']}")
     if result.get("steps"):
-        answer += "\n\n**Safe DIY steps:**\n" + "\n".join([f"- {s}" for s in result["steps"]])
+        parts.append("**Steps to keep in mind:**")
+        parts.extend([f"- {s}" for s in result["steps"]])
+    answer = "\n\n".join(parts)
     st.session_state.mvp_chat.append({
         "role": "assistant",
         "content": answer,
@@ -706,27 +854,75 @@ def _append_decider_result(result: dict) -> None:
             "clarifying_questions": result.get("clarifying_questions", []),
             "used_public_reference": result.get("used_public_reference", False),
             "public_reference": result.get("public_reference"),
+            "mode": mode,
+            "plan_item": result.get("plan_item"),
         },
     })
 
 
+def _handle_talk(mode: str, text: str, profile: dict) -> None:
+    text = str(text or "").strip()
+    if not text and mode not in {"No action", "Next 90 days"}:
+        text = "I need guidance."
+    user_text = text or "No service needed right now."
+    st.session_state.mvp_chat.append({"role": "user", "content": user_text})
+    if st.session_state.get("mvp_decision_started") is None:
+        st.session_state.mvp_decision_started = time.time()
+    result = insta_talk.mode_response(
+        mode,
+        text,
+        profile=profile,
+        plan=st.session_state.get("mvp_plan", []),
+        session_hash=st.session_state.mvp_session_hash,
+    )
+    trace = result.get("tool_trace", {})
+    if str(trace.get("chosen_tool", "")).startswith("insta_talk"):
+        mvp.log_tool_trace(trace)
+    _append_decider_result(result, mode)
+    st.rerun()
+
+
+def _talk_mode_selector() -> str:
+    st.markdown("**Insta Talk modes**")
+    cols = st.columns(3)
+    for idx, (mode, label) in enumerate(insta_talk.TALK_MODES):
+        with cols[idx % 3]:
+            if st.button(label, key=f"talk_mode_{idx}", width="stretch"):
+                st.session_state.mvp_talk_mode = mode
+                if mode in {"No action", "Next 90 days"}:
+                    _handle_talk(mode, "", st.session_state.get("mvp_profile", {}))
+                st.rerun()
+    active = str(st.session_state.get("mvp_talk_mode", "Decide"))
+    st.caption(f"Active mode: {active}")
+    return active
+
+
 def _render_decider(profile: dict) -> None:
-    st.subheader("Step 3: Need Decider")
-    st.caption("Describe a home issue. The companion suggests a route: DIY, local/neighbour, category info, wait-and-watch, immediate help, or no action. No booking or account action.")
+    st.subheader("Step 3: Insta Talk — Need Decider")
+    st.caption(
+        "Type or speak a home issue. Insta Talk gives public-information guidance, a clear "
+        "route, confidence, and why other routes were not preferred. No booking or account action."
+    )
 
-    st.markdown("**Quick action**")
-    if st.button("No service needed right now", width="stretch"):
-        st.session_state.mvp_chat.append({"role": "user", "content": "I do not need a service right now."})
-        result = mvp.route_need("I do not need a service right now.", profile=profile, llm=None, session_hash=st.session_state.mvp_session_hash)
-        _append_decider_result(result)
-        st.rerun()
+    active_mode = _talk_mode_selector()
+    context = st.text_input(
+        "Add context for this mode (optional)",
+        key=f"talk_context_{active_mode}",
+        placeholder="e.g., Deep cleaning was 9 months ago",
+    )
+    if st.button("Send to Insta Talk", key="talk_send_mode"):
+        _handle_talk(active_mode, context, profile)
 
-    for msg in st.session_state.mvp_chat:
+    st.divider()
+    for idx, msg in enumerate(list(st.session_state.mvp_chat)):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("meta"):
                 m = msg["meta"]
-                st.caption(f"Tool used this turn: `{m.get('chosen_tool','')}` · Route: {m.get('route','')} · Confidence: {m.get('confidence','')}")
+                st.caption(
+                    f"Tool used this turn: `{m.get('chosen_tool','')}` · "
+                    f"Route: {m.get('route','')} · Confidence: {m.get('confidence','')}"
+                )
                 if m.get("clarifying_questions"):
                     st.markdown("**Clarifying questions:**")
                     for q in m["clarifying_questions"]:
@@ -736,24 +932,85 @@ def _render_decider(profile: dict) -> None:
                     st.info(f"Public reference: {pr.get('basis','')} ")
                     if pr.get("source_url"):
                         st.markdown(f"[Source]({pr['source_url']})")
+                if m.get("plan_item") and st.button(
+                    "Add private reminder to Step 2", key=f"add_plan_cue_{idx}"
+                ):
+                    plan = list(st.session_state.get("mvp_plan", []))
+                    plan.append(dict(m["plan_item"]))
+                    st.session_state.mvp_plan = plan
+                    st.success("Private cue added to the Step 2 plan.")
+
+    last_assistant = next(
+        (m for m in reversed(list(st.session_state.mvp_chat)) if m["role"] == "assistant"),
+        None,
+    )
+    if last_assistant:
+        clear_col, revisit_col = st.columns(2)
+        with clear_col:
+            if st.button("Route was clear", key="route_clear", width="stretch"):
+                _log_decision_event("route_clear", last_assistant)
+        with revisit_col:
+            if st.button("I’ll revisit later", key="revisit_later", width="stretch"):
+                _log_decision_event("revisit_later", last_assistant)
+
+    st.divider()
+    voice_text = _voice_bridge(
+        _plain_speech(last_assistant["content"] if last_assistant else "Describe a home issue."),
+        "hca_voice_step3",
+    )
+    if voice_text:
+        _handle_talk(active_mode, voice_text, profile)
 
     prompt = st.chat_input("What's going on at home? (no personal details)")
     if prompt:
-        st.session_state.mvp_chat.append({"role": "user", "content": prompt})
-        result = mvp.route_need(prompt, profile=profile, llm=None, session_hash=st.session_state.mvp_session_hash)
-        _append_decider_result(result)
-        st.rerun()
+        _handle_talk(active_mode, prompt, profile)
 
 
 def _render_reflection() -> None:
-    st.subheader("Step 4: After a service")
-    st.caption("Capture what you noticed after a service. This creates a private personal checklist; nothing is uploaded.")
+    st.subheader("Step 4: Insta Talk after a service")
+    st.caption(
+        "What should I remember for next time? Capture a private continuity note. "
+        "Speak or type; nothing is uploaded."
+    )
+
+    voice_text = _voice_bridge(
+        "What should I remember for next time?",
+        "hca_voice_step4",
+    )
+    if voice_text:
+        st.session_state.mvp_reflection_text = (
+            str(st.session_state.get("mvp_reflection_text", "") or "") + " " + voice_text
+        ).strip()
+        st.rerun()
+
     text = st.text_area(
-        "What did you notice after the service? (optional, no personal details)",
+        "What should I remember for next time? (optional, no personal details)",
         value=st.session_state.get("mvp_reflection_text", ""),
         height=120,
     )
     st.session_state.mvp_reflection_text = text
+
+    if st.button("Aftercare check", key="aftercare_check"):
+        result = insta_talk.mode_response(
+            "Aftercare",
+            text,
+            plan=st.session_state.get("mvp_plan", []),
+            session_hash=st.session_state.mvp_session_hash,
+        )
+        trace = result.get("tool_trace", {})
+        if str(trace.get("chosen_tool", "")).startswith("insta_talk"):
+            mvp.log_tool_trace(trace)
+        st.session_state.mvp_aftercare_result = result
+        st.rerun()
+
+    aftercare = st.session_state.get("mvp_aftercare_result")
+    if aftercare:
+        st.info(insta_talk.guard(str(aftercare.get("reason", ""))))
+        if aftercare.get("steps"):
+            st.markdown("**Private aftercare checklist:**")
+            for step in aftercare["steps"]:
+                st.markdown(f"- {step}")
+
     if st.button("Generate reflection checklist"):
         ref = mvp.reflect(text, session_hash=st.session_state.mvp_session_hash)
         st.session_state.mvp_reflection = ref
@@ -782,12 +1039,16 @@ def _render_reflection() -> None:
     st.markdown("**Quick feedback**")
     useful = st.radio("Was this useful?", ["Select", "Yes", "Partly", "No"], horizontal=True, key="fb_useful")
     matched = st.radio("Did this match a real need?", ["Select", "Yes", "Partly", "No"], horizontal=True, key="fb_match")
+    clear = st.radio("Was the route clear?", ["Select", "Yes", "Partly", "No"], horizontal=True, key="fb_clear")
+    revisit = st.radio("Will you revisit this assistant later?", ["Select", "Yes", "Maybe", "No"], horizontal=True, key="fb_revisit")
     if st.button("Submit feedback"):
         record = {
             "ts": datetime.now(timezone.utc).isoformat(),
             "session_hash": st.session_state.mvp_session_hash,
             "useful": useful,
             "matched_real_need": matched,
+            "route_clear": clear,
+            "revisit_intent": revisit,
         }
         mvp.log_feedback(record)
         st.session_state.mvp_feedback = record
