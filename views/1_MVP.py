@@ -68,7 +68,7 @@ def _about_html() -> str:
       <div style="flex:1 1 420px; min-width:300px;">
         <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                     padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Companion</div>
+                    text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Care Assistant</div>
         <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
           About Home Care Assistant
         </h2>
@@ -518,10 +518,10 @@ def render() -> None:
         "history (relative timing, active issue, and any upcoming requirement you already know).  \n"
         "**Step 2 – Your next 90 days:** builds a private plan from your history plus public guidance, shows "
         "why each cue appears, and exports a checklist, calendar reminders, and plan data.  \n"
-        "**Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
-        "category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.  \n"
-        "**Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
-        "locally.\n\n"
+        "**Step 3 – After a service:** captures a post-service reflection and downloads a private checklist "
+        "locally.  \n"
+        "**Step 4 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
+        "category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.\n\n"
         "Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
         "and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal "
         "details are requested and no external service is contacted."
