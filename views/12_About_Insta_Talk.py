@@ -192,7 +192,7 @@ STEP_EXPLANATIONS = [
         )
         + _detail(
             "Important:",
-            "If you mark something as not needed, the app returns NO_ACTION — no reminder, no recommendation.",
+            "If you mark something as not needed, the app returns NO_ACTION - no reminder, no recommendation.",
         )
         + _detail(
             "Output:",
@@ -300,7 +300,7 @@ EXAMPLES = [
     (
         "Safety",
         "There is a burning smell from the AC.",
-        "Route to SEEK_IMMEDIATE_HELP — immediate qualified help, not DIY or a service category.",
+        "Route to SEEK_IMMEDIATE_HELP - immediate qualified help, not DIY or a service category.",
     ),
     (
         "No need",
@@ -312,7 +312,7 @@ EXAMPLES = [
 KEY_IDEA = (
     "Insta Talk helps users notice, understand and plan. Its voice-enabled guidance makes that "
     "support conversational. It supports the 90-day repeat-service hypothesis through need "
-    "recognition, clarity and continuity — not through booking or sales pressure."
+    "recognition, clarity and continuity - not through booking or sales pressure."
 )
 
 
@@ -330,7 +330,7 @@ def _steps_html() -> str:
                                align-items:center; justify-content:center;">{i:02d}</span>
                   <div style="min-width:0;">
                     <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
-                      Step {i} — {title}
+                      Step {i} - {title}
                     </div>
                     {body_html}
                   </div>
