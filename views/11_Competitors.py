@@ -185,15 +185,31 @@ IMPLICATIONS = [
     ),
 ]
 
-SOURCE_NOTES = [
-    ("[S1]", "Reuters, 28 Apr 2026 — Snabbit funding, scale, monthly jobs and market context."),
-    ("[S2]", "TechCrunch, 29 Oct 2025 — Snabbit fleet, micromarkets, retention and pricing context."),
-    ("[S3]", "TechCrunch, 27 Apr 2026 — Snabbit Series D, worker count and daily jobs."),
-    ("[S4]", "YourStory, 27 May 2026 — Snabbit instant salon-at-home pilot."),
-    ("[P1]", "Reuters, 7 May 2026 — Pronto funding, valuation, daily bookings and expansion."),
-    ("[P2]", "TechCrunch, 2 Mar 2026 — Pronto operating model, funding, users and market context."),
-    ("[P3]", "TechCrunch, 6 May 2026 — additional Series B capital and category sizing."),
-    ("[U1]", "Reuters, 19 Sep 2025 — Urban Company's stated focus on instant services."),
+WATCH_SIGNALS = [
+    (
+        "Supply density",
+        "Whether micro-markets can add workers and jobs without long travel or idle time.",
+    ),
+    (
+        "Repeat behaviour",
+        "Whether short chores become a habit rather than a one-off convenience.",
+    ),
+    (
+        "Service quality",
+        "Whether training and verification hold as categories widen beyond basic chores.",
+    ),
+    (
+        "Operating discipline",
+        "Whether utilisation and cost per job improve as networks mature.",
+    ),
+    (
+        "Category fit",
+        "Which services truly benefit from speed, and which still need planning.",
+    ),
+    (
+        "Customer judgement",
+        "Whether households get better at deciding DIY, wait, local help or no action.",
+    ),
 ]
 
 
@@ -365,29 +381,36 @@ def render() -> None:
         unsafe_allow_html=True,
     )
 
-    source_rows = "".join(
+    watch_cards = "".join(
         _clean(
             f"""
-            <tr>
-              <td style="padding:9px; border-bottom:1px solid #E6D9EA; font-weight:700; color:#500C6B;">{sid}</td>
-              <td style="padding:9px; border-bottom:1px solid #E6D9EA;">{note}</td>
-            </tr>
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:14px; padding:14px;">
+              <div style="font-size:12px; font-weight:700; color:#500C6B;">
+                {i:02d} · {label}
+              </div>
+              <div style="margin-top:5px; font-size:12px; line-height:1.6; color:#52606A;">{body}</div>
+            </div>
             """
         )
-        for sid, note in SOURCE_NOTES
+        for i, (label, body) in enumerate(WATCH_SIGNALS, start=1)
     )
     st.markdown(
         _clean(
             f"""
-            <div style="margin-top:24px; background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
-                        padding:22px;">
-              <div style="font-size:14px; font-weight:700; color:#12212B;">Source map</div>
-              <div style="margin-top:6px; font-size:12px; line-height:1.6; color:#52606A;">
-                Public sources used for this briefing are listed below by ID. No URL is displayed in the app.
+            <div style="margin-top:24px; background:#FFFFFF; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:22px; box-shadow:0 16px 36px rgba(15,27,38,0.06);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Signals to watch</div>
+              <h2 style="margin:0 0 14px 0; font-size:1.45rem; color:#12212B;">What to watch next</h2>
+              <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;">
+                {watch_cards}
               </div>
-              <table style="border-collapse:collapse; width:100%; margin-top:12px; font-size:12px; color:#3B4C57;">
-                <tbody>{source_rows}</tbody>
-              </table>
+              <div style="margin-top:14px; padding-top:12px; border-top:1px solid #E6D9EA;
+                          font-size:11px; line-height:1.6; color:#52606A;">
+                These are monitoring questions, not predictions. They help the team revisit the competitor view
+                as new public information appears.
+              </div>
             </div>
             """
         ),
