@@ -120,6 +120,33 @@ def _about_html() -> str:
     """
 
 
+def _our_business_html() -> str:
+    """Render business units with the same card style as the About card."""
+    cards = []
+    for i, (title, body) in enumerate(BUSINESS_UNITS):
+        cards.append(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:20px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:flex; gap:10px; align-items:flex-start;">
+                <span style="flex:0 0 26px; height:26px; border-radius:50%; background:#500C6B;
+                             color:#ffffff; font-size:11px; font-weight:700; display:flex;
+                             align-items:center; justify-content:center;">{i + 1:02d}</span>
+                <div style="font-size:13px; font-weight:700; color:#12212B;">{title}</div>
+              </div>
+              <div style="margin-top:10px; font-size:12px; line-height:1.55; color:#3B4C57;">
+                {body}
+              </div>
+            </div>
+            """
+        )
+    return (
+        '<div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px;">'
+        + "".join(cards)
+        + "</div>"
+    )
+
+
 def _card(title: str, body: str) -> None:
     with st.container(border=True):
         st.markdown(f"**{title}**")
@@ -136,12 +163,7 @@ def render() -> None:
     st.markdown(_about_html(), unsafe_allow_html=True)
 
     st.subheader("Our Business")
-    cols = st.columns(2)
-    for i, (title, body) in enumerate(BUSINESS_UNITS):
-        with cols[i % 2]:
-            _card(title, body)
-        if i % 2 == 1 and i < len(BUSINESS_UNITS) - 1:
-            cols = st.columns(2)
+    st.markdown(_our_business_html(), unsafe_allow_html=True)
 
     st.subheader("Home services at your doorstep")
     st.markdown(
