@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import textwrap
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -101,6 +102,73 @@ STEPS = [
     "Need Decider",
     "After a service",
 ]
+
+STEP_DETAILS = [
+    (
+        "Tell me about your home",
+        "collects an anonymous household profile and optional service history (relative timing, active issue, and any upcoming requirement you already know).",
+    ),
+    (
+        "Your next 90 days",
+        "builds a private plan from your history plus public guidance, shows why each cue appears, and exports a checklist, calendar reminders, and plan data.",
+    ),
+    (
+        "Need Decider",
+        "routes a described need to DIY, local/neighbour, a relevant service category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.",
+    ),
+    (
+        "After a service",
+        "captures a post-service reflection and downloads a private checklist locally.",
+    ),
+]
+
+
+def _steps_html() -> str:
+    """Render the four-step journey as an About Us-style card."""
+    cards = []
+    for i, (title, detail) in enumerate(STEP_DETAILS, start=1):
+        cards.append(
+            "\n".join(
+                line.strip()
+                for line in textwrap.dedent(
+                    f"""
+                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                                padding:18px; display:flex; gap:14px; align-items:flex-start;">
+                      <span style="flex:0 0 34px; height:34px; border-radius:50%; background:#500C6B;
+                                   color:#ffffff; font-size:12px; font-weight:700; display:flex;
+                                   align-items:center; justify-content:center;">{i:02d}</span>
+                      <div style="min-width:0;">
+                        <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
+                          Step {i} – {title}
+                        </div>
+                        <div style="margin-top:6px; font-size:12px; line-height:1.55; color:#52606A;">
+                          {detail}
+                        </div>
+                      </div>
+                    </div>
+                    """
+                ).strip().splitlines()
+            )
+        )
+    return "\n".join(
+        line.strip()
+        for line in textwrap.dedent(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">How it works</div>
+              <h2 style="margin:0 0 18px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+                Your Home Care Assistant in Simple Steps
+              </h2>
+              <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;">
+                {''.join(cards)}
+              </div>
+            </div>
+            """
+        ).strip().splitlines()
+    )
 
 
 def _init_state() -> None:
@@ -512,20 +580,7 @@ def render() -> None:
 
     st.markdown(_about_html(), unsafe_allow_html=True)
 
-    st.subheader("Your Home Care Assistant in Simple Steps")
-    st.markdown(
-        "**Step 1 – Tell me about your home:** collects an anonymous household profile and optional service "
-        "history (relative timing, active issue, and any upcoming requirement you already know).  \n"
-        "**Step 2 – Your next 90 days:** builds a private plan from your history plus public guidance, shows "
-        "why each cue appears, and exports a checklist, calendar reminders, and plan data.  \n"
-        "**Step 3 – Need Decider:** routes a described need to DIY, local/neighbour, a relevant service "
-        "category, wait/clarify, immediate help, or explicit no-action, and explains why each route is chosen.  \n"
-        "**Step 4 – After a service:** captures a post-service reflection and downloads a private checklist "
-        "locally.\n\n"
-        "Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing "
-        "and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal "
-        "details are requested and no external service is contacted."
-    )
+    st.markdown(_steps_html(), unsafe_allow_html=True)
 
     with st.expander("Demo tasks for mentors"):
         st.markdown(
