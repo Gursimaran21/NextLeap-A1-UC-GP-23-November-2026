@@ -224,15 +224,21 @@ STEP_EXPLANATIONS = [
             Enter an anonymous household profile and optional service history:<br>
             • When the AC was last serviced<br>
             • When deep cleaning was last done<br>
-            • Any current plumbing issue<br>
-            • Any upcoming requirement you already know
+            • Pest and plumbing timing<br>
+            • Current plumbing issue<br>
+            • Any upcoming requirement you already know<br>
+            • Services you do not need right now
             """,
         )
         + _detail(
             "What the app does:",
-            "It stores this only in the current session. No name, phone number, address, invoice or account data is collected.",
+            "Stores everything only in the current Streamlit session. It does not ask for a name, "
+            "phone number, address, flat number, invoice or screenshot.",
         )
-        + _detail("Output:", "A private profile used only to create planning cues."),
+        + _detail(
+            "Output:",
+            "A private profile used only to create planning cues in Step 2.",
+        ),
     ),
     (
         "Your next 90 days",
@@ -270,76 +276,116 @@ STEP_EXPLANATIONS = [
         "Insta Talk (Need Decider)",
         _detail(
             "What you do:",
-            "Type or speak a need in plain language, for example:<br>“AC not cooling, tap dripping, and something feels off in my kitchen.”",
+            """
+            Type or speak a need in plain language, for example:<br>
+            “AC not cooling, tap dripping, and something feels off in my kitchen.”<br><br>
+            Choose a mode: Explain, Decide, Prepare, Aftercare, No action, or Next 90 days.
+            """,
         )
         + _detail(
             "What the app does:",
             """
-            Insta Talk offers six modes: Explain, Decide, Prepare, Aftercare, No action, and Next 90 days.<br>
-            It checks the text using local rules, in this order:<br><br>
+            Insta Talk gives instant guidance using deterministic local rules. It does not depend on Gemini for safety or routing.<br><br>
+            It checks:<br>
             1. Urgent safety signal → seek immediate help<br>
-            Example: sparks, smoke, gas smell, flooding.<br>
             2. Explicit no need → no action<br>
-            Example: “No service needed right now.”<br>
             3. Too vague → ask clarifying questions / wait<br>
-            Example: “Something is wrong.”<br>
             4. Simple maintenance → DIY<br>
-            Example: basic cleaning or tightening.<br>
             5. Building/neighbour issue → local or neighbour help<br>
-            Example: shared corridor or building-level coordination.<br>
-            6. Clear service category → relevant category guidance<br>
-            Example: AC repair, cleaning, plumbing.<br>
-            7. Low confidence → wait and watch<br>
-            The app asks for more detail instead of guessing.
+            6. Clear service category → public-grounded category guidance<br>
+            7. Low confidence → wait and watch<br><br>
+            Every answer shows the route, confidence, reason, why other routes were not chosen, and a public source where available.
+            """,
+        )
+        + _detail(
+            "Voice and speak-to-plan:",
+            """
+            Speak your need or have the reply read aloud. Typing always works.<br>
+            If you say “Deep cleaning was 9 months ago,” Insta Talk returns a planning cue and offers to add it as a private reminder in Step 2.
             """,
         )
         + _detail(
             "Output:",
-            "A route, confidence score, reason, and explanation of why other routes were not chosen. No booking is made.",
+            "A clear route, confidence and reason, why-not explanation, public basis, private planning cue when relevant, and a local decision-journal entry. No booking, payment, pro message, account action or commercial push is created.",
         ),
     ),
     (
         "After a service",
-        _detail("What you do:", "Write a short post-service reflection.")
+        _detail(
+            "What you do:",
+            """
+            Answer: “What should I remember for next time?”<br>
+            You can type or speak your reflection.
+            """,
+        )
         + _detail(
             "What the app does:",
-            "It creates a private checklist and records feedback locally for testing.",
+            """
+            It creates a private aftercare and continuity note, offers an Aftercare check, generates a checklist, and records feedback on usefulness, real need match, route clarity and revisit intent.
+            """,
         )
         + _detail(
             "Output:",
-            "Private checklist download<br>Feedback record<br>No account action, no messaging, no booking",
+            "Private checklist JSON, continuity note for the next 90 days, and local feedback record. Nothing is uploaded and no external action is taken.",
         ),
     ),
 ]
 
 END_TO_END_STEPS = [
-    "The page shows a stepper with four steps.",
-    "You move forward with Next and back with Back.",
-    "State is kept only in the current Streamlit session.",
-    "Logic runs locally first.",
-    "Public guidance is used only to explain timing and categories.",
-    "Gemini, if configured, can improve wording only.",
-    "Safety and routing never depend on Gemini.",
-    "Every action is written to a tool trace for audit.",
+    "User opens the app and starts on Urban Company.",
+    "User selects Home Care Assistant.",
+    "The page shows About, the four-step explanation and mentor demo tasks.",
+    "The stepper tracks progress across four steps.",
+    "Step 1 saves an anonymous profile and optional history.",
+    "Step 2 builds a private 90-day plan.",
+    "Step 3 Insta Talk answers typed or spoken needs using local deterministic logic.",
+    "A spoken timing note can add a private planning cue.",
+    "Step 4 captures post-service continuity and aftercare.",
+    "Exports stay local: Markdown, .ics, JSON and checklist.",
+    "Routes and decision events are written to the tool trace.",
+    "Gemini may only improve wording; safety and routing stay local.",
     "No external service is contacted by default.",
-    "No booking, payment, message, account action or pricing lever is used.",
 ]
 
-EXAMPLE_INPUTS = [
-    "Last AC service: 4–6 months",
-    "Last deep cleaning: 7–12 months",
-    "Upcoming need: Bathroom cleaning",
+GUARDRAIL_CAN = [
+    "Explain public service areas.",
+    "Route to DIY, local help, a category, wait, immediate help or no action.",
+    "Clarify, prepare, support aftercare and say no service needed.",
+    "Create private planning cues and reminder files.",
 ]
 
-EXAMPLE_OUTPUTS = [
-    "AC servicing — Soon, because your timing is near the typical interval.",
-    "Deep cleaning — Needs attention, depending on the public cadence.",
-    "Bathroom cleaning — Your note, because you added it yourself.",
+GUARDRAIL_CANNOT = [
+    "Make bookings or advance reservations.",
+    "Run purchase or payment flows.",
+    "Send pro messages or change account state.",
+    "Apply sales pressure, paid plans or pricing changes.",
+    "Use logged-in or private data.",
+    "Claim a real booking-rate lift from this prototype.",
+]
+
+EXAMPLES = [
+    (
+        "Planning cue",
+        "Deep cleaning was 9 months ago.",
+        "This looks like a planning cue for deep cleaning. Basis: your input plus public timing "
+        "guidance. Confidence: high. This is not a service requirement.",
+    ),
+    (
+        "Safety",
+        "There is a burning smell from the AC.",
+        "Route to SEEK_IMMEDIATE_HELP — immediate qualified help, not DIY or a service category.",
+    ),
+    (
+        "No need",
+        "Choose “No service needed right now”.",
+        "No action added. No reminder created. You can return if the situation changes.",
+    ),
 ]
 
 KEY_IDEA = (
-    "The assistant helps you notice, understand and plan. It does not sell, book, push offers, message, "
-    "pay, or manage professionals. It can also clearly say: no service needed."
+    "Home Care Assistant helps users notice, understand and plan. Insta Talk makes that guidance "
+    "conversational and voice-enabled. It supports the 90-day repeat-service hypothesis through "
+    "need recognition, clarity and continuity — not through booking or sales pressure."
 )
 
 
@@ -369,8 +415,27 @@ def _steps_html() -> str:
     end_items = "".join(
         _clean_html(f'<li style="margin-bottom:6px;">{item}</li>') for item in END_TO_END_STEPS
     )
-    example_inputs = "<br>".join(f"• {item}" for item in EXAMPLE_INPUTS)
-    example_outputs = "<br>".join(f"• {item}" for item in EXAMPLE_OUTPUTS)
+    can_items = "".join(
+        _clean_html(f'<li style="margin-bottom:5px;">{item}</li>') for item in GUARDRAIL_CAN
+    )
+    cannot_items = "".join(
+        _clean_html(f'<li style="margin-bottom:5px;">{item}</li>') for item in GUARDRAIL_CANNOT
+    )
+    example_cards = []
+    for title, user_line, answer in EXAMPLES:
+        example_cards.append(
+            _clean_html(
+                f"""
+                <div style="background:#FBFAFC; border:1px solid #E6D9EA; border-radius:12px; padding:12px;">
+                  <div style="font-size:12px; font-weight:700; color:#500C6B;">{title}</div>
+                  <div style="margin-top:5px; font-size:12px; line-height:1.6; color:#52606A;">
+                    <strong>You:</strong> “{user_line}”<br>
+                    <strong>Insta Talk:</strong> {answer}
+                  </div>
+                </div>
+                """
+            )
+        )
 
     return _clean_html(
         f"""
@@ -392,12 +457,26 @@ def _steps_html() -> str:
             </ol>
           </div>
           <div style="margin-top:18px; padding:16px; background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;">
-            <div style="font-size:14px; font-weight:700; color:#12212B;">Simple example</div>
-            <div style="margin-top:8px; font-size:12px; line-height:1.6; color:#52606A;">
-              <strong>You enter:</strong><br>{example_inputs}<br><br>
-              <strong>The app may show:</strong><br>{example_outputs}<br><br>
-              If you mark AC servicing as not needed, it changes to Not needed — no action.<br><br>
-              If you type “AC not cooling with a burning smell,” Need Decider routes to seek immediate help, not DIY or booking.
+            <div style="font-size:14px; font-weight:700; color:#12212B;">Safety and guardrails</div>
+            <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:10px;">
+              <div>
+                <div style="font-size:12px; font-weight:700; color:#500C6B;">Insta Talk can</div>
+                <ul style="margin:6px 0 0 18px; padding:0; font-size:12px; line-height:1.6; color:#52606A;">
+                  {can_items}
+                </ul>
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:700; color:#500C6B;">Insta Talk cannot</div>
+                <ul style="margin:6px 0 0 18px; padding:0; font-size:12px; line-height:1.6; color:#52606A;">
+                  {cannot_items}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:18px; padding:16px; background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;">
+            <div style="font-size:14px; font-weight:700; color:#12212B;">Simple examples</div>
+            <div style="display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px;">
+              {''.join(example_cards)}
             </div>
           </div>
           <div style="margin-top:18px; padding:16px; background:#EBDFF0; border:1px solid #D9C6E0; border-radius:14px;">
@@ -407,7 +486,7 @@ def _steps_html() -> str:
             <div style="margin-top:6px; font-size:12px; line-height:1.6; color:#12212B;">{KEY_IDEA}</div>
           </div>
           <div style="margin-top:16px; padding-top:14px; border-top:1px solid #E6D9EA; font-size:11px; line-height:1.6; color:#52606A;">
-            Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing and safety rules stay local. Each action is written to a tool trace for the AI audit. No personal details are requested and no external service is contacted.
+            Runs offline with deterministic logic; a configured Gemini key may improve wording, but routing and safety rules stay local. Browser voice is optional and typed input always works. Each action is written to a tool trace for the AI audit. No personal details are requested and no external service is contacted.
           </div>
         </div>
         """
