@@ -98,7 +98,7 @@ pages = [
     st.Page("views/6_Problem_Definition.py", title="Problem Definition"),
     st.Page("views/7_MVP_Testing.py", title="MVP Testing"),
     st.Page("views/8_Success_Metrics.py", title="Success Metrics"),
-    st.Page("views/9_Risks.py", title="Risk & Limitations"),
+    st.Page("views/9_Risks.py", title="Risks & Limitations"),
 ]
 if SHOW_DECK_PAGE:
     pages.append(st.Page("views/10_Deck.py", title="Deck"))

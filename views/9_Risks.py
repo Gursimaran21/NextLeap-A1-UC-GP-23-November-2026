@@ -1,4 +1,4 @@
-"""Risks and mitigations page. Respect docs/constraints.md."""
+"""Risks, limitations and mitigations page. Respect docs/constraints.md."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ def _header_html() -> str:
         f'<img src="data:image/png;base64,{encoded}" alt="Home Care Assistant logo" '
         'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
         '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
-        "Risks</h1>"
+        "Risks &amp; Limitations</h1>"
         "</div>"
     )
 
