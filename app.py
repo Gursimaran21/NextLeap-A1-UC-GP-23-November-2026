@@ -78,7 +78,6 @@ st.markdown(
         justify-content: center !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
-        transform: translateX(-56px) !important;
       }
     </style>
     """,
