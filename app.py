@@ -37,7 +37,7 @@ st.markdown(
     """
     <style>
       html, body, [class*="css"] { font-size: 16px; color: #12212B; background: #FFFFFF; }
-      .block-container { padding-top: 6.5rem !important; padding-bottom: 2rem; }
+      .block-container { padding-top: 5.4rem !important; padding-bottom: 2rem; }
       a, button, input, textarea, [role="tab"] { outline-color: #500C6B !important; }
       a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [role="tab"]:focus-visible {
         outline: 3px solid #500C6B !important;
@@ -110,7 +110,7 @@ st.markdown(
       }
       [data-testid="stHeader"] {
         position: relative !important;
-        min-height: 5.5rem !important;
+        min-height: 5rem !important;
         background-color: transparent !important;
         border-bottom: none !important;
       }
