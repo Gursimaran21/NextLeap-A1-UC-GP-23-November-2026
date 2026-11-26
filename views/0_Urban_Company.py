@@ -108,12 +108,12 @@ def _about_html() -> str:
           and transparent services.
         </p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
-        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">{tag_html}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">{tag_html}</div>
       </div>
-      <div style="flex:1 1 340px; min-width:340px; display:flex; align-items:flex-start; justify-content:center;">
-        <div style="width:376px; max-width:100%; border-radius:14px; overflow:hidden;">
+      <div style="flex:1 1 340px; min-width:340px; min-height:376px; position:relative;">
+        <div style="position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); aspect-ratio:1 / 1; max-width:100%; border-radius:14px; overflow:hidden;">
           <img src="data:image/jpeg;base64,{encoded}" alt="Home care planning visual"
-               style="display:block; width:100%; height:auto; object-fit:contain; border-radius:14px;" />
+               style="display:block; width:100%; height:100%; object-fit:contain; border-radius:14px;" />
         </div>
       </div>
     </div>
