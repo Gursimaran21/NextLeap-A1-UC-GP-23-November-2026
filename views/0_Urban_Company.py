@@ -7,6 +7,7 @@ Public information only. Respects docs/constraints.md (C1/C2/C3).
 from __future__ import annotations
 
 import base64
+import textwrap
 
 import streamlit as st
 
@@ -125,20 +126,25 @@ def _our_business_html() -> str:
     cards = []
     for i, (title, body) in enumerate(BUSINESS_UNITS):
         cards.append(
-            f"""
-            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
-                        padding:20px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
-              <div style="display:flex; gap:10px; align-items:flex-start;">
-                <span style="flex:0 0 26px; height:26px; border-radius:50%; background:#500C6B;
-                             color:#ffffff; font-size:11px; font-weight:700; display:flex;
-                             align-items:center; justify-content:center;">{i + 1:02d}</span>
-                <div style="font-size:13px; font-weight:700; color:#12212B;">{title}</div>
-              </div>
-              <div style="margin-top:10px; font-size:12px; line-height:1.55; color:#3B4C57;">
-                {body}
-              </div>
-            </div>
-            """
+            "\n".join(
+                line.strip()
+                for line in textwrap.dedent(
+                    f"""
+                    <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                                padding:20px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+                      <div style="display:flex; gap:10px; align-items:flex-start;">
+                        <span style="flex:0 0 26px; height:26px; border-radius:50%; background:#500C6B;
+                                     color:#ffffff; font-size:11px; font-weight:700; display:flex;
+                                     align-items:center; justify-content:center;">{i + 1:02d}</span>
+                        <div style="font-size:13px; font-weight:700; color:#12212B;">{title}</div>
+                      </div>
+                      <div style="margin-top:10px; font-size:12px; line-height:1.55; color:#3B4C57;">
+                        {body}
+                      </div>
+                    </div>
+                    """
+                ).strip().splitlines()
+            )
         )
     return (
         '<div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px;">'
