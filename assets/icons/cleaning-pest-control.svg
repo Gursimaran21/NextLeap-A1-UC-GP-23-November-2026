@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cleaning and pest control">
+  <circle cx="32" cy="32" r="30" fill="#EBDFF0"/>
+  <g fill="none" stroke="#500C6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 29h13v19a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5z"/>
+    <path d="M30 29v-6h10l5-6"/>
+    <path d="M45 10v7M41.5 13.5h7"/>
+    <path d="M16 16l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+  </g>
+</svg>

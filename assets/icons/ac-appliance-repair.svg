@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AC and appliance repair">
+  <circle cx="32" cy="32" r="30" fill="#EBDFF0"/>
+  <g fill="none" stroke="#500C6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="11" y="18" width="42" height="17" rx="3"/>
+    <path d="M17 26h30"/>
+    <path d="M18 35v5M46 35v5"/>
+    <path d="M40 43l8-8 5 5-8 8-5-5z"/>
+  </g>
+</svg>

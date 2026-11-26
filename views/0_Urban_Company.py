@@ -15,6 +15,7 @@ from src import config
 
 LOGO_PATH = config.ROOT / "assets" / "urban_company_logo.jpg"
 ABOUT_BG_PATH = config.ROOT / "assets" / "Urban Company" / "uc-img-6.jpg"
+ICON_DIR = config.ROOT / "assets" / "icons"
 
 BUSINESS_UNITS = [
     (
@@ -36,12 +37,42 @@ BUSINESS_UNITS = [
 ]
 
 SERVICE_GROUPS = [
-    ("Cleaning & Pest Control", "Deep cleaning, room cleaning, pest control"),
-    ("AC & Appliance Repair", "AC service, appliance and stove repair"),
-    ("Electrician, Plumber & Carpenter", "Repairs and installation work at home"),
-    ("Salon & Spa", "Beauty and wellness services at home"),
-    ("Painting & Water-proofing", "Home painting and protection"),
-    ("Native Smart Products", "Water purifiers and smart locks"),
+    (
+        "Cleaning & Pest Control",
+        "Deep cleaning, room cleaning, pest control",
+        "cleaning-pest-control.svg",
+        "Cleaning and pest control icon",
+    ),
+    (
+        "AC & Appliance Repair",
+        "AC service, appliance and stove repair",
+        "ac-appliance-repair.svg",
+        "AC and appliance repair icon",
+    ),
+    (
+        "Electrician, Plumber & Carpenter",
+        "Repairs and installation work at home",
+        "electrician-plumber-carpenter.svg",
+        "Electrician, plumber and carpenter icon",
+    ),
+    (
+        "Salon & Spa",
+        "Beauty and wellness services at home",
+        "salon-spa.svg",
+        "Salon and spa icon",
+    ),
+    (
+        "Painting & Water-proofing",
+        "Home painting and protection",
+        "painting-waterproofing.svg",
+        "Painting and waterproofing icon",
+    ),
+    (
+        "Native Smart Products",
+        "Water purifiers and smart locks",
+        "native-smart-products.svg",
+        "Native smart products icon",
+    ),
 ]
 
 
@@ -153,10 +184,60 @@ def _our_business_html() -> str:
     )
 
 
-def _card(title: str, body: str) -> None:
-    with st.container(border=True):
-        st.markdown(f"**{title}**")
-        st.caption(body)
+def _home_services_html() -> str:
+    """Render service groups in an About Us-style card with custom icons."""
+    cards = []
+    for title, body, icon_file, alt in SERVICE_GROUPS:
+        encoded = base64.b64encode((ICON_DIR / icon_file).read_bytes()).decode("ascii")
+        cards.append(
+            "\n".join(
+                line.strip()
+                for line in textwrap.dedent(
+                    f"""
+                    <div style="background:#FFFFFF; border:1px solid #E6D9EA; border-radius:14px;
+                                padding:16px;">
+                      <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:44px; height:44px; border-radius:12px; background:#EBDFF0;
+                                    display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                          <img src="data:image/svg+xml;base64,{encoded}" alt="{alt}"
+                               style="width:30px; height:30px; object-fit:contain;" />
+                        </div>
+                        <div style="font-size:13px; font-weight:700; color:#12212B; line-height:1.35;">
+                          {title}
+                        </div>
+                      </div>
+                      <div style="margin-top:10px; font-size:12px; line-height:1.5; color:#52606A;">
+                        {body}
+                      </div>
+                    </div>
+                    """
+                ).strip().splitlines()
+            )
+        )
+    return "\n".join(
+        line.strip()
+        for line in textwrap.dedent(
+            f"""
+            <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
+                        padding:26px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+              <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
+                          padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Services</div>
+              <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
+                Home services at your doorstep
+              </h2>
+              <p style="margin:0 0 18px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
+                From everyday cleaning to specialist repairs and at-home wellness, these are the
+                categories customers plan around. This page groups them only to explain the
+                home-care context; the project looks at what happens after a service is completed.
+              </p>
+              <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;">
+                {''.join(cards)}
+              </div>
+            </div>
+            """
+        ).strip().splitlines()
+    )
 
 
 def render() -> None:
@@ -171,17 +252,7 @@ def render() -> None:
     st.subheader("Our Business")
     st.markdown(_our_business_html(), unsafe_allow_html=True)
 
-    st.subheader("Home services at your doorstep")
-    st.markdown(
-        "Public city pages group services in the following way. This project studies "
-        "the period **after** one completed service, not the booking flow."
-    )
-    cols = st.columns(3)
-    for i, (title, body) in enumerate(SERVICE_GROUPS):
-        with cols[i % 3]:
-            _card(title, body)
-        if i % 3 == 2 and i < len(SERVICE_GROUPS) - 1:
-            cols = st.columns(3)
+    st.markdown(_home_services_html(), unsafe_allow_html=True)
 
     st.subheader("At a glance")
     m1, m2, m3 = st.columns(3)

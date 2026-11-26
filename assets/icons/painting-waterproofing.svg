@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Painting and waterproofing">
+  <circle cx="32" cy="32" r="30" fill="#EBDFF0"/>
+  <g fill="none" stroke="#500C6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="12" y="14" width="24" height="13" rx="2"/>
+    <path d="M36 20h9v12h-9"/>
+    <path d="M45 32v14"/>
+    <path d="M20 38h18"/>
+  </g>
+  <path d="M52 40c0 4-3 7-3 7s-3-3-3-7a3 3 0 0 1 6 0z" fill="#500C6B"/>
+</svg>
