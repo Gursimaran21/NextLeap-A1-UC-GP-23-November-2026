@@ -69,6 +69,16 @@ def _about_html() -> str:
         ("04", "Service clarity", "Understand the options, from DIY to professional help."),
         ("05", "Voice guidance", "Speak or type a need. Replies can also be read aloud by the browser."),
         ("06", "Safety-first routing", "Urgent signals go to immediate help, never DIY or a service category."),
+        (
+            "07",
+            "No action",
+            "Recognise when no service is needed. Nothing is scheduled and no reminder is created unless you ask for one.",
+        ),
+        (
+            "08",
+            "Public grounding",
+            "Use public service information as the basis for guidance, with confidence and source shown where available.",
+        ),
     ]
     pillar_html = "".join(
         '<div style="display:flex; gap:10px; align-items:flex-start;">'
