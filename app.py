@@ -74,12 +74,12 @@ st.markdown(
       }
       [data-testid="stHeader"] .rc-overflow {
         position: absolute !important;
-        left: 50% !important;
+        left: calc(50% - 2.5rem) !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
         justify-content: center !important;
         width: max-content !important;
-        max-width: calc(100% - 26rem) !important;
+        max-width: calc(100% - 31rem) !important;
         margin: 0 !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
