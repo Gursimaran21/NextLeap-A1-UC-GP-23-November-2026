@@ -30,7 +30,7 @@ st.markdown(
     """
     <style>
       html, body, [class*="css"] { font-size: 16px; color: #12212B; background: #FFFFFF; }
-      .block-container { padding-top: 2rem; padding-bottom: 2rem; }
+      .block-container { padding-top: 1rem; padding-bottom: 2rem; }
       a, button, input, textarea, [role="tab"] { outline-color: #500C6B !important; }
       a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [role="tab"]:focus-visible {
         outline: 3px solid #500C6B !important;
@@ -62,6 +62,35 @@ st.markdown(
       [data-testid="stHeader"] .rc-overflow {
         justify-content: center !important;
       }
+      [data-testid="stTopNavSection"],
+      .rc-overflow-item-rest {
+        display: none !important;
+      }
+      .secondary-nav {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        width: fit-content;
+        margin: 0 auto 0.75rem auto;
+        padding: 0.35rem 0.6rem;
+        background: #EBDFF0;
+        border-radius: 10px;
+      }
+      .secondary-nav a {
+        display: inline-block;
+        padding: 0.35rem 0.8rem;
+        border-radius: 8px;
+        background: #FFFFFF;
+        color: #500C6B !important;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+      }
+      .secondary-nav a:hover,
+      .secondary-nav a[aria-current="page"] {
+        background: #F7F1F9;
+        text-decoration: underline;
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -81,6 +110,19 @@ pages = [
 ]
 
 pg = st.navigation(pages, position="top")
+
+secondary_links = []
+for page in pages[-3:]:
+    current_attr = ' aria-current="page"' if page.url_path == pg.url_path else ""
+    label = f"{page.icon} {page.title}".strip()
+    secondary_links.append(
+        f'<a class="secondary-nav-link" href="/{page.url_path}"{current_attr}>{label}</a>'
+    )
+st.markdown(
+    '<div class="secondary-nav">' + "".join(secondary_links) + "</div>",
+    unsafe_allow_html=True,
+)
+
 pg.run()
 
 st.markdown(
