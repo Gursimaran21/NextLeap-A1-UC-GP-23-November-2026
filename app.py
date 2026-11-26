@@ -28,7 +28,7 @@ st.set_page_config(
 config.ensure_dirs()
 
 
-LOGO_PATH = Path(__file__).resolve().parent / "assets" / "urban_company_logo.jpg"
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "uc_logo_1.jpg"
 
 # Places the Urban Company logo at the left of the top nav, before the page links.
 st.logo(str(LOGO_PATH), size="large")
