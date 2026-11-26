@@ -6,6 +6,7 @@ Respect docs/constraints.md. MVP is the default/root page.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import streamlit as st
 
@@ -25,6 +26,12 @@ st.set_page_config(
     layout="wide",
 )
 config.ensure_dirs()
+
+
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "urban_company_logo.jpg"
+
+# Places the Urban Company logo at the left of the top nav, before the page links.
+st.logo(str(LOGO_PATH), size="large")
 
 st.markdown(
     """
