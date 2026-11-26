@@ -219,7 +219,7 @@ def _home_services_html() -> str:
         for line in textwrap.dedent(
             f"""
             <div style="background:#F7F1F9; border:1px solid #E6D9EA; border-radius:18px;
-                        padding:26px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
+                        padding:26px; margin-top:24px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
               <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Services</div>
