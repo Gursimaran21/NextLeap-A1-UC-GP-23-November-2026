@@ -278,7 +278,7 @@ def render() -> None:
                         padding:22px; margin-top:14px; box-shadow:0 16px 36px rgba(15,27,38,0.08);">
               <div style="display:inline-block; background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0;
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
-                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Why this page exists</div>
+                          text-transform:uppercase; font-weight:700; margin-bottom:12px;">Competitive Landscape</div>
               <h2 style="margin:0 0 10px 0; font-size:1.45rem; color:#12212B;">Reading the instant-help wave</h2>
               <div style="font-size:13px; line-height:1.7; color:#3B4C57;">
                 <p style="margin:0 0 10px 0;">
