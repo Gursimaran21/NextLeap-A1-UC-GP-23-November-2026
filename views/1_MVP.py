@@ -73,7 +73,7 @@ def _about_html() -> str:
           About Home Care Assistant
         </h2>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
-          A calm planning companion for urban households. It helps you recognise home-care needs,
+          A calm planning assistant for urban households. It helps you recognise home-care needs,
           understand your options and plan what comes next.
         </p>
         <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">{third_paragraph}</p>
