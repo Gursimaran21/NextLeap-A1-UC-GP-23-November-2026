@@ -6,13 +6,14 @@ python -m scripts.qa_check
 ```
 
 ## Latest run result
-**Summary: 12/13 PASS** (exit code 1)
+**Summary: 13/14 PASS** (exit code 1)
 
 | Check | Result | Detail |
 |---|---|---|
 | C1 no forbidden phrases in src/mvp.py | PASS | ok |
 | C1 no forbidden phrases in src/insta_talk.py | PASS | ok |
 | C1 no forbidden phrases in views/1_MVP.py | PASS | ok |
+| C1 no forbidden phrases in views/11_Competitors.py | PASS | ok |
 | C1 no forbidden phrases in outputs/deck.pdf text | PASS | ok |
 | C2/C3 no network imports in guarded src modules or views | PASS | ok |
 | urbancompany.com not used as booking target outside docs/data provenance | PASS | ok |
@@ -26,6 +27,7 @@ python -m scripts.qa_check
 
 ## Fixes applied during QA
 - Added Insta Talk deterministic guidance and browser-native voice controls; guarded `src/insta_talk.py` under C1/C2/C3.
+- Added a public-source competitors page for Snabbit and Pronto, with URLs recorded only in `docs/sources.md`, and guarded it under C1/C2/C3.
 - Reworded deck slide text to avoid C1-forbidden tokens in explanatory negatives while preserving meaning.
 - Updated `scripts/qa_check.py` to ignore self-guard assembled tokens in `src/mvp.py`, allow `urbancompany.com` in docs/data provenance and enforcement files, and accept `human_primary_theme` or `human_theme_code`.
 - Rebuilt `outputs/NL_UrbanCompany.pdf` (10 pages, 0.01MB).
