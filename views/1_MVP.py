@@ -508,8 +508,7 @@ def _render_reflection() -> None:
 def render() -> None:
     _init_state()
     st.markdown(_header_html(), unsafe_allow_html=True)
-    st.caption("A calm planning companion for urban home care. No bookings, no account access, no personal details.")
-    st.caption("Format selected after AI discovery, metric decomposition, and primary research.")
+    st.caption("A calm planning assistant for urban home care. No bookings, no account access, no personal details.")
 
     st.markdown(_about_html(), unsafe_allow_html=True)
 
