@@ -299,7 +299,7 @@ def render() -> None:
                   quality and earns repeat use without turning every household need into a transaction.
                 </p>
                 <p style="margin:0;">
-                  For this project, the useful distinction is between fulfilment and judgement. Faster dispatch
+                  The useful distinction is between fulfilment and judgement. Faster dispatch
                   does not tell a household whether a problem is urgent, whether it can be handled safely at home,
                   or what to remember after a service. Insta Talk sits in that gap.
                 </p>
