@@ -26,12 +26,11 @@ st.set_page_config(
 )
 config.ensure_dirs()
 
-
 st.markdown(
     """
     <style>
       html, body, [class*="css"] { font-size: 16px; color: #12212B; background: #FFFFFF; }
-      .block-container { padding-top: 5.4rem !important; padding-bottom: 2rem; }
+      .block-container { padding-top: 2rem; padding-bottom: 2rem; }
       a, button, input, textarea, [role="tab"] { outline-color: #500C6B !important; }
       a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [role="tab"]:focus-visible {
         outline: 3px solid #500C6B !important;
@@ -58,55 +57,10 @@ st.markdown(
       [data-testid="stTopNavLink"]:hover,
       [data-testid="stTopNavDropdownLink"]:hover,
       [data-testid="stTopNavSection"]:hover {
-        background-color: #D9C6E0 !important;
-      }
-      [data-testid="stTopNavLink"][aria-current="page"] {
-        background-color: #500C6B !important;
-      }
-      [data-testid="stTopNavLink"][aria-current="page"] * {
-        color: #FFFFFF !important;
+        background-color: #F7F1F9 !important;
       }
       [data-testid="stHeader"] .rc-overflow {
-        position: absolute !important;
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;
         justify-content: center !important;
-        width: max-content !important;
-        max-width: calc(100% - 12rem) !important;
-        margin: 0 !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scrollbar-width: none !important;
-      }
-      [data-testid="stHeader"] .rc-overflow::-webkit-scrollbar {
-        display: none !important;
-      }
-      [data-testid="stHeader"] .rc-overflow-item {
-        display: block !important;
-        flex: 0 0 auto !important;
-        position: static !important;
-      }
-      [data-testid="stHeader"] .rc-overflow-item-rest {
-        display: none !important;
-      }
-      [data-testid="stTopNavLink"],
-      [data-testid="stTopNavDropdownLink"] {
-        padding-left: 0.35rem !important;
-        padding-right: 0.35rem !important;
-        font-size: 0.78rem !important;
-        gap: 0.25rem !important;
-      }
-      [data-testid="stTopNavLink"] span,
-      [data-testid="stTopNavDropdownLink"] span {
-        font-size: 0.78rem !important;
-      }
-      [data-testid="stHeader"] {
-        position: relative !important;
-        min-height: 5rem !important;
-        background-color: transparent !important;
-        border-bottom: none !important;
       }
     </style>
     """,
@@ -114,7 +68,7 @@ st.markdown(
 )
 
 pages = [
-    st.Page("views/1_MVP.py", title="Home Care Companion", icon="🏠", default=True),
+    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),

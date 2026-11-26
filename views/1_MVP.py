@@ -14,14 +14,20 @@ import streamlit as st
 from src import config, llm as llm_mod, mvp
 
 
+LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "urban_company_logo.jpg"
 ABOUT_BG_PATH = Path(__file__).resolve().parent.parent / "assets" / "about_background_1.jpg"
 
 
 def _header_html() -> str:
-    """Page title; the Urban Company logo is shown globally above navigation."""
+    """Inline the logo and title in one vertically centred row."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
     return (
-        '<h1 style="margin:0 0 6px 0; line-height:1.2; font-size:2.25rem;">'
-        "Home Care Companion</h1>"
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/jpeg;base64,{encoded}" alt="Urban Company logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "Urban Company - Home Care Companion</h1>"
+        "</div>"
     )
 
 
