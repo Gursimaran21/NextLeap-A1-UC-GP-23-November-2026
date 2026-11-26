@@ -731,9 +731,9 @@ def _render_profile() -> dict:
                 profile[qid] = st.multiselect(label, opts, default=[d for d in default_list if d in opts], key=widget_key)
         save_col, reset_col, _ = st.columns([1, 1, 6])
         with save_col:
-            submitted = st.form_submit_button("Save profile", width="stretch")
+            submitted = st.form_submit_button("Save profile", width="stretch", wrap=True)
         with reset_col:
-            reset_profile = st.form_submit_button("Reset", width="stretch")
+            reset_profile = st.form_submit_button("Reset", width="stretch", wrap=True)
     if submitted:
         st.session_state.mvp_profile = profile
         st.success("Profile saved. Add optional household history below, then move to Step 2.")
@@ -780,9 +780,9 @@ def _render_profile() -> dict:
         )
         save_col, reset_col, _ = st.columns([1, 1, 6])
         with save_col:
-            save_history = st.form_submit_button("Save household history", width="stretch")
+            save_history = st.form_submit_button("Save household history", width="stretch", wrap=True)
         with reset_col:
-            reset_history = st.form_submit_button("Reset", width="stretch")
+            reset_history = st.form_submit_button("Reset", width="stretch", wrap=True)
 
     if save_history:
         st.session_state.mvp_history = {
