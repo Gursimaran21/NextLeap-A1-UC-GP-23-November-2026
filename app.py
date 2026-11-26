@@ -78,6 +78,7 @@ st.markdown(
         width: 100% !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        transform: translateX(-5rem) !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
