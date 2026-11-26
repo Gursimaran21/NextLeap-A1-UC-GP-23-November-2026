@@ -73,7 +73,11 @@ st.markdown(
         color: #FFFFFF !important;
       }
       [data-testid="stHeader"] .rc-overflow {
-        justify-content: flex-start !important;
+        justify-content: center !important;
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
