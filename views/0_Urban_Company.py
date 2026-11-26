@@ -127,6 +127,10 @@ def _about_html() -> str:
         f'{detail}</div></div></div>'
         for num, title, detail in pillars
     )
+    service_points = ["Beauty &amp; Wellness", "Home Repairs"]
+    service_point_html = "".join(
+        f'<li style="margin-bottom:5px;">{point}</li>' for point in service_points
+    )
     return f"""
     <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:stretch; background:#F7F1F9;
                 border:1px solid #E6D9EA; border-radius:18px; padding:26px;
@@ -148,6 +152,12 @@ def _about_html() -> str:
           and transparent services.
         </p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:12px; font-weight:700; color:#12212B;">Core consumer service categories</div>
+          <ul style="margin:6px 0 0 18px; padding:0; font-size:12px; line-height:1.55; color:#52606A;">
+            {service_point_html}
+          </ul>
+        </div>
         <div style="display:flex; flex-wrap:wrap; gap:8px;">{tag_html}</div>
       </div>
       <div style="flex:1 1 340px; min-width:340px; min-height:376px; position:relative;">
