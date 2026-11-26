@@ -51,7 +51,7 @@ def _header_html() -> str:
         '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
         f'<img src="data:image/jpeg;base64,{encoded}" alt="Urban Company logo" '
         'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
-        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem; color:#500C6B;">'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
         "Urban Company</h1>"
         "</div>"
     )
