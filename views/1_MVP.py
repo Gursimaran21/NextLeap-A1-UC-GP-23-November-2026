@@ -38,7 +38,7 @@ def _about_html() -> str:
         "It supports Urban Company's 90-day repeat-booking objective without "
         + "dis" + "counts, pricing changes or operational changes."
     )
-    tags = ["Need recognition", "Post-service continuity", "Service clarity", "Informed choice"]
+    tags = ["Need recognition", "Post-service continuity", "Informed choice", "Service clarity"]
     tag_html = "".join(
         '<span style="background:#EBDFF0; border:1px solid #D9C6E0; color:#500C6B; '
         'padding:5px 11px; border-radius:999px; font-size:11px; '
@@ -48,7 +48,7 @@ def _about_html() -> str:
     pillars = [
         ("01", "Need recognition", "Notice what the home needs before it becomes urgent."),
         ("02", "Post-service continuity", "Reflect, plan follow-ups and keep notes private."),
-        ("03", "Informed Choice", "Choose the right next step - DIY, local help, professional service or wait - based on their needs, urgency and safety."),
+        ("03", "Informed choice", "Choose the right next step - DIY, local help, professional service or wait - based on their needs, urgency and safety."),
         ("04", "Service clarity", "Understand the options, from DIY to professional help."),
     ]
     pillar_html = "".join(
