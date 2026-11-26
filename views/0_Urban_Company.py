@@ -101,8 +101,7 @@ def _about_html() -> str:
         </p>
         <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           Its public positioning is to simplify urban living through reliable, high-quality
-          and transparent services. This page keeps that context high-level and logs every
-          public source.
+          and transparent services.
         </p>
         <div style="display:grid; gap:12px; margin-bottom:14px;">{pillar_html}</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">{tag_html}</div>
