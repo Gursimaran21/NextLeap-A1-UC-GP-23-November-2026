@@ -224,12 +224,12 @@ def _home_services_html() -> str:
                           padding:5px 12px; border-radius:999px; font-size:11px; letter-spacing:0.09em;
                           text-transform:uppercase; font-weight:700; margin-bottom:12px;">Home Services</div>
               <h2 style="margin:0 0 10px 0; font-size:1.55rem; line-height:1.25; font-weight:700; color:#12212B;">
-                Home services at your doorstep
+                Home services at your doorstep - planned around your home, not just when something breaks
               </h2>
               <p style="margin:0 0 18px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
-                From everyday cleaning to specialist repairs and at-home wellness, these are the
-                categories customers plan around. This page groups them only to explain the
-                home-care context; the project looks at what happens after a service is completed.
+                Keep track of what you have had done, spot upcoming care needs early, and decide
+                what makes sense for your home - without digging through old chats or guessing
+                when maintenance is due.
               </p>
               <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;">
                 {''.join(cards)}
