@@ -601,6 +601,8 @@ def _init_state() -> None:
         "mvp_step": 1,
         "mvp_profile": {},
         "mvp_history": {},
+        "mvp_profile_version": 0,
+        "mvp_history_version": 0,
         "mvp_plan": [],
         "mvp_plan_summary": "",
         "mvp_custom_need": "",
@@ -686,6 +688,22 @@ def _nav_buttons() -> None:
             st.rerun()
 
 
+def _reset_profile_state() -> None:
+    st.session_state.mvp_profile = {}
+    st.session_state.mvp_profile_version = int(st.session_state.mvp_profile_version) + 1
+    st.session_state.mvp_plan = []
+    st.session_state.mvp_plan_summary = ""
+    st.rerun()
+
+
+def _reset_history_state() -> None:
+    st.session_state.mvp_history = {}
+    st.session_state.mvp_history_version = int(st.session_state.mvp_history_version) + 1
+    st.session_state.mvp_plan = []
+    st.session_state.mvp_plan_summary = ""
+    st.rerun()
+
+
 def _render_profile() -> dict:
     st.subheader("Step 1: Tell me about your home")
     st.markdown(
@@ -697,22 +715,30 @@ def _render_profile() -> dict:
     )
 
     profile = dict(st.session_state.get("mvp_profile", {}))
+    profile_version = int(st.session_state.mvp_profile_version)
     with st.form("profile_form"):
         for q in mvp.PROFILE_QUESTIONS:
             qid = q["id"]
             label = q["question"]
             opts = q["options"]
             default = profile.get(qid)
+            widget_key = f"prof_{qid}_{profile_version}"
             if q["type"] == "single":
                 idx = opts.index(default) if default in opts else 0
-                profile[qid] = st.selectbox(label, opts, index=idx, key=f"prof_{qid}")
+                profile[qid] = st.selectbox(label, opts, index=idx, key=widget_key)
             else:
                 default_list = default if isinstance(default, list) else []
-                profile[qid] = st.multiselect(label, opts, default=[d for d in default_list if d in opts], key=f"prof_{qid}")
-        submitted = st.form_submit_button("Save profile")
+                profile[qid] = st.multiselect(label, opts, default=[d for d in default_list if d in opts], key=widget_key)
+        save_col, reset_col = st.columns([1, 1])
+        with save_col:
+            submitted = st.form_submit_button("Save profile", width="stretch")
+        with reset_col:
+            reset_profile = st.form_submit_button("Reset", width="stretch")
     if submitted:
         st.session_state.mvp_profile = profile
         st.success("Profile saved. Add optional household history below, then move to Step 2.")
+    if reset_profile:
+        _reset_profile_state()
 
     history = dict(st.session_state.get("mvp_history", {}))
     st.markdown("**Optional household service history**")
@@ -722,36 +748,41 @@ def _render_profile() -> dict:
         value = str(history.get(key, "Not sure") or "Not sure")
         return mvp.HISTORY_TIMING_OPTIONS.index(value) if value in mvp.HISTORY_TIMING_OPTIONS else 0
 
+    history_version = int(st.session_state.mvp_history_version)
     with st.form("history_form"):
         left, right = st.columns(2)
         with left:
-            h_ac = st.selectbox("Last AC servicing", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_ac_service"), key="hist_ac")
-            h_deep = st.selectbox("Last deep cleaning", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_deep_clean"), key="hist_deep")
+            h_ac = st.selectbox("Last AC servicing", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_ac_service"), key=f"hist_ac_{history_version}")
+            h_deep = st.selectbox("Last deep cleaning", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_deep_clean"), key=f"hist_deep_{history_version}")
         with right:
-            h_pest = st.selectbox("Last pest control", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_pest_control"), key="hist_pest")
-            h_plumb = st.selectbox("Last plumbing check", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_plumbing_check"), key="hist_plumb")
+            h_pest = st.selectbox("Last pest control", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_pest_control"), key=f"hist_pest_{history_version}")
+            h_plumb = st.selectbox("Last plumbing check", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_plumbing_check"), key=f"hist_plumb_{history_version}")
 
         issue_default = str(history.get("plumbing_issue", "None") or "None")
         h_issue = st.selectbox(
             "Plumbing issue",
             mvp.PLUMBING_ISSUE_OPTIONS,
             index=mvp.PLUMBING_ISSUE_OPTIONS.index(issue_default) if issue_default in mvp.PLUMBING_ISSUE_OPTIONS else 0,
-            key="hist_issue",
+            key=f"hist_issue_{history_version}",
         )
         h_upcoming = st.text_input(
             "Upcoming requirement you already know",
             value=str(history.get("upcoming_need", "") or ""),
             placeholder="e.g., Bathroom cleaning",
-            key="hist_upcoming",
+            key=f"hist_upcoming_{history_version}",
         )
         saved_no_need = [str(x) for x in history.get("no_need_now", []) if str(x) in mvp.NO_NEED_OPTIONS]
         h_no_need = st.multiselect(
             "Services I do not need right now",
             mvp.NO_NEED_OPTIONS,
             default=saved_no_need,
-            key="hist_no_need",
+            key=f"hist_no_need_{history_version}",
         )
-        save_history = st.form_submit_button("Save household history")
+        save_col, reset_col = st.columns([1, 1])
+        with save_col:
+            save_history = st.form_submit_button("Save household history", width="stretch")
+        with reset_col:
+            reset_history = st.form_submit_button("Reset", width="stretch")
 
     if save_history:
         st.session_state.mvp_history = {
@@ -766,6 +797,8 @@ def _render_profile() -> dict:
         st.session_state.mvp_plan = []
         st.session_state.mvp_plan_summary = ""
         st.success("Household history saved. Build your plan in Step 2.")
+    if reset_history:
+        _reset_history_state()
 
     current_history = st.session_state.get("mvp_history", {})
     if current_history:
