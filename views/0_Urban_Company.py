@@ -97,7 +97,7 @@ def _about_html() -> str:
                     text-transform:uppercase; font-weight:700; margin-bottom:12px;">About Urban Company</div>
         <p style="margin:0 0 10px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           A technology-driven platform connecting customers with trusted professionals for
-          home and beauty needs — from cleaning and repairs to salon and spa services.
+          home and beauty needs - from cleaning and repairs to salon and spa services.
         </p>
         <p style="margin:0 0 12px 0; font-size:0.96rem; line-height:1.6; color:#3B4C57;">
           Its public positioning is to simplify urban living through reliable, high-quality
@@ -131,7 +131,7 @@ def render() -> None:
     st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption(
         "A technology-driven platform connecting customers with trusted professionals "
-        "for home and beauty needs — from cleaning and repairs to salon and spa services."
+        "for home and beauty needs - from cleaning and repairs to salon and spa services."
     )
 
     st.markdown(_about_html(), unsafe_allow_html=True)
