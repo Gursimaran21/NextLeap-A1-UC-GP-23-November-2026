@@ -300,54 +300,6 @@ def render() -> None:
 
     st.markdown(_at_a_glance_html(), unsafe_allow_html=True)
 
-    st.subheader("Where this project fits")
-    st.markdown(
-        f"""
-        | Stage | What happens | Project focus |
-        |---|---|---|
-        | Before service | Customer notices a need and chooses a provider | Context only |
-        | During service | Professional visits and completes the work | Context only |
-        | After service | Customer returns to daily life; next needs may or may not be recognised | **Main focus** |
-
-        The business metric is the share of customers who complete another eligible
-        service within **{config.WINDOW_DAYS} days** of an anchor service. Redos, warranty
-        claims, refunds and InstaHelp are excluded.
-        """
-    )
-
-    st.subheader("Scope and guardrails")
-    st.markdown(
-        """
-        The Home Care Companion is a customer-side continuity aid. It organises what the
-        customer chooses to share, explains home-care categories in plain language, and
-        creates a checklist and reminders. It can also say that **no service is needed**.
-
-        Deliberately out of scope:
-
-        - No discounts, coupons, memberships or pricing changes.
-        - No changes to professional earnings, pay or management.
-        - No bookings, messages, payments or account actions.
-        - No logged-in scraping; only public information and customer-provided details.
-        """
-    )
-
-    st.subheader("How to read this app")
-    st.markdown(
-        """
-        1. **Home Care Companion** — try the MVP with a household scenario.
-        2. **Discovery Engine** — inspect the public-review evidence.
-        3. **Evidence Log** — review the manually labelled examples.
-        4. **Metric Breakdown** — see the business metric and exclusions.
-        5. **User Research / Problem Definition** — read interviews and the hypothesis.
-        6. **MVP Testing / Success Metrics / Risks / Deck** — validation plan and submission.
-        """
-    )
-
-    st.caption(
-        "Sources: public About Us and Chennai city pages, plus the project brief. "
-        "URLs and access dates are logged in `docs/sources.md`. No private or logged-in "
-        "Urban Company surfaces were used."
-    )
 
 
 render()
