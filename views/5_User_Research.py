@@ -2,10 +2,29 @@
 
 from __future__ import annotations
 
+import base64
+
 import pandas as pd
 import streamlit as st
 
 from src import config, research
+
+
+LOGO_PATH = config.ROOT / "assets" / "HCA-LOGO-10.png"
+
+
+def _header_html() -> str:
+    """Inline the HCA-LOGO-10 mark beside the page title."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    return (
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">'
+        f'<img src="data:image/png;base64,{encoded}" alt="Home Care Assistant logo" '
+        'style="width:44px; height:44px; object-fit:contain; flex-shrink:0;" />'
+        '<h1 style="margin:0; line-height:1.2; font-size:2.25rem;">'
+        "User Research</h1>"
+        "</div>"
+    )
+
 
 # Mirrors the nine interview areas in docs/ProblemStatement.txt (R3) and
 # docs/interview_guide.md. No answers are pre-filled; real quotes are required.
@@ -23,7 +42,7 @@ PROTOCOL = [
 
 
 def render() -> None:
-    st.title("User Research")
+    st.markdown(_header_html(), unsafe_allow_html=True)
     st.caption("5–6 anonymized interviews. No PII, no screenshots, no invoices, no personal documents.")
 
     st.subheader("Interview questionnaire (9 areas, R3)")
