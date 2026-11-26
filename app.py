@@ -67,7 +67,34 @@ st.markdown(
         background-color: #F7F1F9 !important;
       }
       [data-testid="stHeader"] .rc-overflow {
-        justify-content: center !important;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        max-width: none !important;
+        scrollbar-width: none !important;
+      }
+      [data-testid="stHeader"] .rc-overflow::-webkit-scrollbar {
+        display: none !important;
+      }
+      [data-testid="stHeader"] .rc-overflow-item {
+        display: block !important;
+        flex: 0 0 auto !important;
+        position: static !important;
+      }
+      [data-testid="stHeader"] .rc-overflow-item-rest {
+        display: none !important;
+      }
+      [data-testid="stTopNavLink"],
+      [data-testid="stTopNavDropdownLink"] {
+        padding-left: 0.35rem !important;
+        padding-right: 0.35rem !important;
+        font-size: 0.78rem !important;
+        gap: 0.25rem !important;
+      }
+      [data-testid="stTopNavLink"] span,
+      [data-testid="stTopNavDropdownLink"] span {
+        font-size: 0.78rem !important;
       }
       [data-testid="stHeader"] {
         min-height: 5.5rem !important;
@@ -88,7 +115,7 @@ st.markdown(
 )
 
 pages = [
-    st.Page("views/1_MVP.py", title="Urban Company - Home Care Companion", icon="🏠", default=True),
+    st.Page("views/1_MVP.py", title="Home Care Companion", icon="🏠", default=True),
     st.Page("views/2_Discovery_Engine.py", title="Discovery Engine", icon="🔍"),
     st.Page("views/3_Evidence_Log.py", title="Evidence Log", icon="🧾"),
     st.Page("views/4_Metric_Decomposition.py", title="Metric Breakdown", icon="🧮"),
