@@ -755,6 +755,16 @@ def _render_care_plan(care: dict) -> None:
             st.caption("Your service name stays in this session only.")
 
 
+def _reset_guided_care_plan() -> None:
+    """Clear the built guided plan and return its three inputs to defaults."""
+    st.session_state.mvp_care_plan = None
+    st.session_state.mvp_care_category = ""
+    st.session_state.mvp_intake_edit = True
+    st.session_state.intake_service = insta_talk.CARE_PLAN_CATEGORIES[0]
+    st.session_state.intake_note = ""
+    st.session_state.intake_mode = "Routine"
+
+
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -815,11 +825,12 @@ def _render_calendar(profile: dict) -> None:
                 }, quiet=True)
                 st.rerun()
         with reset_col:
-            if st.button("Reset guided care plan", key="care_plan_reset", width="content"):
-                st.session_state.mvp_care_plan = None
-                st.session_state.mvp_care_category = ""
-                st.session_state.mvp_intake_edit = True
-                st.rerun()
+            st.button(
+                "Reset guided care plan",
+                key="care_plan_reset",
+                width="content",
+                on_click=_reset_guided_care_plan,
+            )
 
         _render_care_plan(care)
 
