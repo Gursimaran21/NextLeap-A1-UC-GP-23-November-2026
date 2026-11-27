@@ -30,7 +30,7 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 
 ## What This Repo Contains
 
-- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, guided 3-question intake, private 90-day care plan with Watch for / Note down / Review sections, coverage badges and confidence breakdown, need cues, category awareness, decision-confidence questions and route-choice guidance, grounded summary with Markdown/.ics/JSON export, Need Decider with quick prompt chips and explicit no-action route, post-service continuity loop, private session summary, and local leading-indicator capture.
+- **Home Care Companion MVP** (Streamlit): 4-step wizard — one combined Step 1 form for anonymous home profile + household service history with a single Save/Reset pair, guided 3-question intake, private 90-day care plan with Watch for / Note down / Review sections, coverage badges and confidence breakdown, need cues, category awareness, decision-confidence questions and route-choice guidance, grounded summary with Markdown/.ics/JSON export, Need Decider with quick prompt chips and explicit no-action route, post-service continuity loop, private session summary, and local leading-indicator capture.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
 - **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).

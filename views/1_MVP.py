@@ -9,6 +9,7 @@ import textwrap
 import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import streamlit as st
@@ -148,10 +149,10 @@ def _clean_html(value: str) -> str:
 
 DEMO_TASKS = [
     (
-        "Organise history",
-        "In Step 1, set last AC service to '4-6 months', last deep cleaning to '7-12 months', "
-        "plumbing issue to 'None', and add 'Bathroom cleaning' as an upcoming requirement. "
-        "Point out that no name, phone number or address is requested.",
+        "Complete combined intake",
+        "In Step 1, use the one form: choose home profile answers, set last AC service to '4-6 months', "
+        "last deep cleaning to '7-12 months', plumbing issue to 'None', and add 'Bathroom cleaning' "
+        "as an upcoming requirement. Save once. Point out that one Reset clears both sections.",
     ),
     (
         "Build a 90-day plan",
@@ -353,141 +354,175 @@ def _nav_buttons() -> None:
             st.rerun()
 
 
-def _reset_profile_state() -> None:
+def _reset_home_intake_state() -> None:
+    """Clear the combined Step 1 form and its downstream session outputs."""
     st.session_state.mvp_profile = {}
-    st.session_state.mvp_profile_version = int(st.session_state.mvp_profile_version) + 1
-    st.session_state.mvp_plan = []
-    st.session_state.mvp_plan_summary = ""
-    st.session_state.mvp_care_plan = None
-    st.session_state.mvp_continuity = None
-    st.rerun()
-
-
-def _reset_history_state() -> None:
     st.session_state.mvp_history = {}
+    st.session_state.mvp_profile_version = int(st.session_state.mvp_profile_version) + 1
     st.session_state.mvp_history_version = int(st.session_state.mvp_history_version) + 1
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
     st.session_state.mvp_care_plan = None
     st.session_state.mvp_continuity = None
+    st.session_state.mvp_reflection = None
+    st.session_state.mvp_reflection_text = ""
+    st.session_state.mvp_intake_edit = False
     st.rerun()
 
 
 def _render_profile() -> dict:
+    """Collect profile and household history in one combined Step 1 form."""
     st.subheader("Step 1: Tell me about your home")
     st.markdown(
         '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
         'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5; margin-bottom:12px;">'
-        "We don't ask for personal details. No name, phone, address, flat number, or booking screenshots."
+        "We don't ask for personal details. No name, phone, address, flat number, or booking screenshots. "
+        "Complete both sections once, then use Save."
         "</div>",
         unsafe_allow_html=True,
     )
 
-    profile = dict(st.session_state.get("mvp_profile", {}))
+    saved_profile = dict(st.session_state.get("mvp_profile", {}))
+    saved_history = dict(st.session_state.get("mvp_history", {}))
     profile_version = int(st.session_state.mvp_profile_version)
-    with st.form("profile_form"):
-        for q in mvp.PROFILE_QUESTIONS:
-            qid = q["id"]
-            label = q["question"]
-            opts = q["options"]
-            default = profile.get(qid)
-            widget_key = f"prof_{qid}_{profile_version}"
-            if q["type"] == "single":
-                idx = opts.index(default) if default in opts else 0
-                profile[qid] = st.selectbox(label, opts, index=idx, key=widget_key)
-            else:
-                default_list = default if isinstance(default, list) else []
-                profile[qid] = st.multiselect(label, opts, default=[d for d in default_list if d in opts], key=widget_key)
-        save_col, reset_col, _ = st.columns([1, 1, 6])
-        with save_col:
-            submitted = st.form_submit_button("Save profile", width="stretch", wrap=True)
-        with reset_col:
-            reset_profile = st.form_submit_button("Reset", width="stretch", wrap=True)
-    if submitted:
-        st.session_state.mvp_profile = profile
-        st.success("Profile saved. Add optional household history below, then move to Step 2.")
-    if reset_profile:
-        _reset_profile_state()
-
-    history = dict(st.session_state.get("mvp_history", {}))
-    st.markdown("**Optional household service history**")
-    st.caption("Relative timing only. This stays in your session and helps the plan avoid guesses.")
+    history_version = int(st.session_state.mvp_history_version)
 
     def _timing_index(key: str) -> int:
-        value = str(history.get(key, "Not sure") or "Not sure")
+        value = str(saved_history.get(key, "Not sure") or "Not sure")
         return mvp.HISTORY_TIMING_OPTIONS.index(value) if value in mvp.HISTORY_TIMING_OPTIONS else 0
 
-    history_version = int(st.session_state.mvp_history_version)
-    with st.form("history_form"):
-        left, right = st.columns(2)
-        with left:
-            h_ac = st.selectbox("Last AC servicing", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_ac_service"), key=f"hist_ac_{history_version}")
-            h_deep = st.selectbox("Last deep cleaning", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_deep_clean"), key=f"hist_deep_{history_version}")
-        with right:
-            h_pest = st.selectbox("Last pest control", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_pest_control"), key=f"hist_pest_{history_version}")
-            h_plumb = st.selectbox("Last plumbing check", mvp.HISTORY_TIMING_OPTIONS, index=_timing_index("last_plumbing_check"), key=f"hist_plumb_{history_version}")
+    profile: dict[str, Any] = {}
+    history: dict[str, Any] = {}
 
-        issue_default = str(history.get("plumbing_issue", "None") or "None")
-        h_issue = st.selectbox(
-            "Plumbing issue",
-            mvp.PLUMBING_ISSUE_OPTIONS,
-            index=mvp.PLUMBING_ISSUE_OPTIONS.index(issue_default) if issue_default in mvp.PLUMBING_ISSUE_OPTIONS else 0,
-            key=f"hist_issue_{history_version}",
-        )
-        h_upcoming = st.text_input(
-            "Upcoming requirement you already know",
-            value=str(history.get("upcoming_need", "") or ""),
-            placeholder="e.g., Bathroom cleaning",
-            key=f"hist_upcoming_{history_version}",
-        )
-        saved_no_need = [str(x) for x in history.get("no_need_now", []) if str(x) in mvp.NO_NEED_OPTIONS]
-        h_no_need = st.multiselect(
+    with st.form("home_intake_form", clear_on_submit=False):
+        st.markdown("### 01 - About your home")
+        st.caption("Broad context only. This helps the plan avoid guesses about your space and habits.")
+        profile_cols = st.columns(2)
+        for idx, q in enumerate(mvp.PROFILE_QUESTIONS):
+            qid = q["id"]
+            opts = q["options"]
+            default = saved_profile.get(qid)
+            widget_key = f"prof_{qid}_{profile_version}"
+            with profile_cols[idx % 2]:
+                if q["type"] == "single":
+                    selected = opts.index(default) if default in opts else 0
+                    profile[qid] = st.selectbox(q["question"], opts, index=selected, key=widget_key)
+                else:
+                    default_list = default if isinstance(default, list) else []
+                    profile[qid] = st.multiselect(
+                        q["question"],
+                        opts,
+                        default=[d for d in default_list if d in opts],
+                        key=widget_key,
+                    )
+
+        st.markdown("---")
+        st.markdown("### 02 - Household service history")
+        st.caption("Relative timing only. Leave as 'Not sure' if you do not remember.")
+
+        history_cols = st.columns(2)
+        with history_cols[0]:
+            history["last_ac_service"] = st.selectbox(
+                "Last AC servicing",
+                mvp.HISTORY_TIMING_OPTIONS,
+                index=_timing_index("last_ac_service"),
+                key=f"hist_ac_{history_version}",
+            )
+            history["last_deep_clean"] = st.selectbox(
+                "Last deep cleaning",
+                mvp.HISTORY_TIMING_OPTIONS,
+                index=_timing_index("last_deep_clean"),
+                key=f"hist_deep_{history_version}",
+            )
+        with history_cols[1]:
+            history["last_pest_control"] = st.selectbox(
+                "Last pest control",
+                mvp.HISTORY_TIMING_OPTIONS,
+                index=_timing_index("last_pest_control"),
+                key=f"hist_pest_{history_version}",
+            )
+            history["last_plumbing_check"] = st.selectbox(
+                "Last plumbing check",
+                mvp.HISTORY_TIMING_OPTIONS,
+                index=_timing_index("last_plumbing_check"),
+                key=f"hist_plumb_{history_version}",
+            )
+
+        issue_col, upcoming_col = st.columns(2)
+        with issue_col:
+            issue_default = str(saved_history.get("plumbing_issue", "None") or "None")
+            history["plumbing_issue"] = st.selectbox(
+                "Plumbing issue",
+                mvp.PLUMBING_ISSUE_OPTIONS,
+                index=mvp.PLUMBING_ISSUE_OPTIONS.index(issue_default)
+                if issue_default in mvp.PLUMBING_ISSUE_OPTIONS else 0,
+                key=f"hist_issue_{history_version}",
+            )
+        with upcoming_col:
+            history["upcoming_need"] = st.text_input(
+                "Upcoming requirement you already know",
+                value=str(saved_history.get("upcoming_need", "") or ""),
+                placeholder="e.g., Bathroom cleaning",
+                key=f"hist_upcoming_{history_version}",
+            )
+
+        saved_no_need = [str(x) for x in saved_history.get("no_need_now", []) if str(x) in mvp.NO_NEED_OPTIONS]
+        history["no_need_now"] = st.multiselect(
             "Services I do not need right now",
             mvp.NO_NEED_OPTIONS,
             default=saved_no_need,
             key=f"hist_no_need_{history_version}",
         )
-        save_col, reset_col, _ = st.columns([1, 1, 6])
-        with save_col:
-            save_history = st.form_submit_button("Save service history", width="stretch", wrap=True)
-        with reset_col:
-            reset_history = st.form_submit_button("Reset", width="stretch", wrap=True)
 
-    if save_history:
-        st.session_state.mvp_history = {
-            "last_ac_service": h_ac,
-            "last_deep_clean": h_deep,
-            "last_pest_control": h_pest,
-            "last_plumbing_check": h_plumb,
-            "plumbing_issue": h_issue,
-            "upcoming_need": h_upcoming.strip(),
-            "no_need_now": h_no_need,
-        }
+        st.markdown("---")
+        save_col, reset_col, note_col = st.columns([1, 1, 4])
+        with save_col:
+            save_all = st.form_submit_button("Save home details", type="primary", width="stretch", wrap=True)
+        with reset_col:
+            reset_all = st.form_submit_button("Reset", width="stretch", wrap=True)
+        with note_col:
+            st.caption("Save stores both sections for this session only. Reset clears both sections together.")
+
+    if save_all:
+        history["upcoming_need"] = str(history.get("upcoming_need", "") or "").strip()
+        st.session_state.mvp_profile = profile
+        st.session_state.mvp_history = history
         st.session_state.mvp_plan = []
         st.session_state.mvp_plan_summary = ""
-        st.success("Household history saved. Build your plan in Step 2.")
-    if reset_history:
-        _reset_history_state()
+        st.session_state.mvp_care_plan = None
+        st.session_state.mvp_continuity = None
+        st.success("Home details saved. Step 2 is ready.")
+    if reset_all:
+        _reset_home_intake_state()
 
+    current_profile = st.session_state.get("mvp_profile", {})
     current_history = st.session_state.get("mvp_history", {})
-    if current_history:
-        display_rows = [
-            {
+    if current_profile or current_history:
+        snapshot_rows: list[dict[str, str]] = []
+        for q in mvp.PROFILE_QUESTIONS:
+            value = current_profile.get(q["id"], "")
+            snapshot_rows.append({
+                "Section": "Profile",
+                "Field": q["question"],
+                "Value": ", ".join(map(str, value)) if isinstance(value, list) else str(value or "Not provided"),
+            })
+        for key, label in [
+            ("last_ac_service", "Last AC servicing"),
+            ("last_deep_clean", "Last deep cleaning"),
+            ("last_pest_control", "Last pest control"),
+            ("last_plumbing_check", "Last plumbing check"),
+            ("plumbing_issue", "Plumbing issue"),
+            ("upcoming_need", "Upcoming requirement"),
+            ("no_need_now", "No need right now"),
+        ]:
+            value = current_history.get(key, "")
+            snapshot_rows.append({
+                "Section": "Household",
                 "Field": label,
-                "Value": ", ".join(map(str, current_history.get(key, []))) if isinstance(current_history.get(key), list) else str(current_history.get(key, "") or "Not provided"),
-            }
-            for key, label in [
-                ("last_ac_service", "Last AC servicing"),
-                ("last_deep_clean", "Last deep cleaning"),
-                ("last_pest_control", "Last pest control"),
-                ("last_plumbing_check", "Last plumbing check"),
-                ("plumbing_issue", "Plumbing issue"),
-                ("upcoming_need", "Upcoming requirement"),
-                ("no_need_now", "No need right now"),
-            ]
-        ]
-        st.caption("Saved history for this session")
-        st.dataframe(pd.DataFrame(display_rows), width="stretch", hide_index=True)
+                "Value": ", ".join(map(str, value)) if isinstance(value, list) else str(value or "Not provided"),
+            })
+        st.caption("Saved home snapshot for this session")
+        st.dataframe(pd.DataFrame(snapshot_rows), width="stretch", hide_index=True)
 
     return st.session_state.get("mvp_profile", profile)
 
