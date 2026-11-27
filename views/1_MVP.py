@@ -569,6 +569,15 @@ def _render_profile() -> dict:
     return st.session_state.get("mvp_profile", profile)
 
 
+def _tinted_note(text: str) -> str:
+    """Render a light-purple, dark-purple note used for guidance text."""
+    return (
+        '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
+        'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5;">'
+        f'{html.escape(str(text))}</div>'
+    )
+
+
 def _care_pdf_markdown(care: dict) -> str:
     """Render the full on-screen care plan as a structured PDF document."""
     lines = [
@@ -742,7 +751,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     })
                 if st.session_state.get("mvp_plan_summary"):
                     st.markdown("**Grounded summary**")
-                    st.info(st.session_state["mvp_plan_summary"])
+                    st.markdown(_tinted_note(st.session_state["mvp_plan_summary"]), unsafe_allow_html=True)
                 else:
                     st.caption("Generate a short summary grounded only in the items above.")
 
@@ -801,7 +810,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 st.caption(f"Caution: {item['caution']}")
             st.caption("Decide what fits you. Nothing here contacts anyone.")
         with care_tabs[5]:
-            st.info(care.get("why", ""))
+            st.markdown(_tinted_note(care.get("why", "")), unsafe_allow_html=True)
             parts = care.get("confidence_parts", {}) or {}
             st.write(
                 f"**Confidence:** {float(care.get('confidence', 0)):.2f} "
