@@ -550,6 +550,13 @@ def _render_profile() -> dict:
             f"<thead><tr>{header_html}</tr></thead><tbody>{body_html}</tbody></table>",
             unsafe_allow_html=True,
         )
+        snapshot_df = pd.DataFrame(snapshot_rows, columns=["Section", "Field", "Value"])
+        st.download_button(
+            "Download home snapshot (CSV)",
+            data=snapshot_df.to_csv(index=False).encode("utf-8"),
+            file_name=f"home_snapshot_{date.today().isoformat()}.csv",
+            mime="text/csv",
+        )
 
     return st.session_state.get("mvp_profile", profile)
 
