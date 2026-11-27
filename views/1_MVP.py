@@ -767,7 +767,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     st.caption("Category descriptions use public information. No external action is taken from this page.")
                 st.divider()
 
-            pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.30, 0.29])
+            pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.44, 0.15])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
                     "Download care plan (PDF)",
