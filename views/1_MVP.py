@@ -690,7 +690,7 @@ def _render_care_plan(care: dict) -> None:
                 plan.append(dict(care["plan_item"]))
                 st.session_state.mvp_plan = plan
                 st.success("Private cue added to the plan below.")
-            pdf_col, none_col, _pdf_spacer = st.columns([0.22, 0.17, 0.61])
+            pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
                     "Download care plan (PDF)",
@@ -790,7 +790,7 @@ def _render_calendar(profile: dict) -> None:
                 ["Routine", "Planned", "Possible urgency"],
                 key="intake_mode",
             )
-        build_col, reset_col, _build_spacer = st.columns([0.20, 0.20, 0.60])
+        build_col, reset_col, _build_spacer = st.columns([0.205, 0.205, 0.59])
         with build_col:
             if st.button("Build guided care plan", type="primary", width="content"):
                 built = insta_talk.guided_intake_plan(
