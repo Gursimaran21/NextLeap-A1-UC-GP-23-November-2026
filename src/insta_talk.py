@@ -20,6 +20,7 @@ TALK_MODES = [
     ("Aftercare", "Aftercare check"),
     ("No action", "No service needed right now"),
     ("Next 90 days", "What should I plan next?"),
+    ("Care plan", "Next-cycle care plan"),
 ]
 
 _WHY_NOT = {
@@ -53,6 +54,9 @@ _WHY_NOT = {
     "PLAN_CUE": (
         "A route today is not required; this is only a private planning cue."
     ),
+    "CARE_PLAN": (
+        "A single route today is less useful than a private care plan built from public guidance."
+    ),
 }
 
 _GENERIC_GUIDANCE = (
@@ -73,6 +77,229 @@ _SPEECH_NEEDS = [
     ("Appliance repair", ("fridge", "washing machine", "geyser", "appliance")),
     ("Salon", ("salon", "haircut", "facial", "grooming")),
 ]
+
+# Guidance-only templates for next-cycle care plans. Every item is a private
+# planning cue; none of these fields creates an external action.
+_CARE_PLAN_LIBRARY: dict[str, dict[str, Any]] = {
+    "AC Service": {
+        "watch_for": [
+            "Reduced cooling or airflow that feels weaker than usual",
+            "Dust build-up near vents or filters",
+            "Unusual noise or water leakage from the unit",
+        ],
+        "note_down": [
+            "When the change in cooling started",
+            "Which rooms feel most affected",
+            "Whether filters were cleaned recently",
+        ],
+        "review": [("AC filter cleaning", 30), ("AC servicing", 180)],
+        "cues": [
+            {
+                "signal": "Dusty airflow or reduced cooling",
+                "category": "AC Service",
+                "basis": "Public AC maintenance guidance",
+                "confidence": 0.78,
+            },
+            {
+                "signal": "Unusual noise or water leakage",
+                "category": "Appliance Repair",
+                "basis": "Public electrical and appliance safety guidance",
+                "confidence": 0.62,
+            },
+        ],
+        "adjacent": ["Deep Cleaning", "Pest Control"],
+        "decision_questions": [
+            "What exactly did the previous service cover?",
+            "What changed after the service?",
+            "Is this a routine check or a safety concern?",
+        ],
+    },
+    "Deep Cleaning": {
+        "watch_for": [
+            "Dust returning quickly in high-use rooms",
+            "Allergy symptoms or musty smells from soft furnishings",
+            "Kitchen or bathroom areas needing a reset",
+        ],
+        "note_down": [
+            "Which rooms matter most to you",
+            "Any allergy or sensitivity triggers",
+            "What you already handle yourself",
+        ],
+        "review": [("Mattress/sofa cleaning", 180), ("Deep home cleaning", 120)],
+        "cues": [
+            {
+                "signal": "Allergy symptoms or dusty soft furnishings",
+                "category": "Deep Cleaning",
+                "basis": "Public indoor-allergen guidance",
+                "confidence": 0.7,
+            },
+            {
+                "signal": "Slow drainage or damp smell",
+                "category": "Plumbing",
+                "basis": "Public water and drain maintenance guidance",
+                "confidence": 0.6,
+            },
+        ],
+        "adjacent": ["Pest Control", "Plumbing"],
+        "decision_questions": [
+            "Which areas actually need attention?",
+            "What can be handled with your own routine?",
+            "Is there a health or safety reason to act sooner?",
+        ],
+    },
+    "Plumbing": {
+        "watch_for": [
+            "Damp patches or higher-than-usual water use",
+            "Slow drainage or recurring odour",
+            "Drips that return after a previous fix",
+        ],
+        "note_down": [
+            "Where you noticed the issue",
+            "Whether it is constant or intermittent",
+            "What was fixed previously",
+        ],
+        "review": [("Plumbing leak check", 60), ("Bathroom/kitchen drain check", 90)],
+        "cues": [
+            {
+                "signal": "Dampness or higher water use",
+                "category": "Plumbing",
+                "basis": "Public leak-prevention guidance",
+                "confidence": 0.76,
+            },
+            {
+                "signal": "Slow drainage with odour",
+                "category": "Plumbing",
+                "basis": "Public drain-maintenance guidance",
+                "confidence": 0.68,
+            },
+        ],
+        "adjacent": ["Deep Cleaning", "Appliance Repair"],
+        "decision_questions": [
+            "Is the issue small and local, or spreading?",
+            "Can you safely pause use until it is reviewed?",
+            "What scope would you want clarified first?",
+        ],
+    },
+    "Pest Control": {
+        "watch_for": [
+            "Visible insects or recurring sightings",
+            "Humid corners or moisture build-up",
+            "Signs of activity after rainy periods",
+        ],
+        "note_down": [
+            "Where sightings happen most",
+            "Whether activity is seasonal",
+            "Any steps already taken",
+        ],
+        "review": [("Pest control inspection", 120)],
+        "cues": [
+            {
+                "signal": "Humidity or visible insects",
+                "category": "Pest Control",
+                "basis": "Public pest-prevention guidance",
+                "confidence": 0.7,
+            },
+            {
+                "signal": "Moisture near walls or drains",
+                "category": "Plumbing",
+                "basis": "Public moisture and leak guidance",
+                "confidence": 0.58,
+            },
+        ],
+        "adjacent": ["Deep Cleaning", "Plumbing"],
+        "decision_questions": [
+            "Is this a one-off sighting or a pattern?",
+            "What prevention steps are already in place?",
+            "Would an inspection clarify the cause?",
+        ],
+    },
+    "Appliance Repair": {
+        "watch_for": [
+            "Unusual noise, weak performance or vibration",
+            "Burning smell, sparks or loose wiring signs",
+            "Reduced cooling or flow in a major appliance",
+        ],
+        "note_down": [
+            "Which appliance is affected",
+            "When the symptom started",
+            "Any warning signs you observed",
+        ],
+        "review": [("Appliance safety check", 7), ("Refrigerator coil cleaning", 180), ("Kitchen chimney/filter cleaning", 90)],
+        "cues": [
+            {
+                "signal": "Sparks, burning smell or unusual noise",
+                "category": "Appliance Repair",
+                "basis": "Public electrical safety guidance",
+                "confidence": 0.86,
+            },
+            {
+                "signal": "Reduced cooling or airflow",
+                "category": "AC Service",
+                "basis": "Public appliance efficiency guidance",
+                "confidence": 0.6,
+            },
+        ],
+        "adjacent": ["AC Service", "Plumbing"],
+        "decision_questions": [
+            "Is there a safety warning sign?",
+            "What did the earlier service actually cover?",
+            "Do you need a routine check or a safety review?",
+        ],
+    },
+    "Salon": {
+        "watch_for": [
+            "A personal-care need you have been postponing",
+            "A pre-planned occasion or routine preference",
+            "Comfort with at-home service versus your own routine",
+        ],
+        "note_down": [
+            "What you usually prefer",
+            "When you last felt satisfied",
+            "Whether this is planned or spontaneous",
+        ],
+        "review": [],
+        "cues": [],
+        "adjacent": ["Deep Cleaning"],
+        "decision_questions": [
+            "Is this a planned need or a mood-based choice?",
+            "What outcome matters most to you?",
+            "Would your own routine be enough this time?",
+        ],
+    },
+}
+
+CARE_PLAN_CATEGORIES = list(_CARE_PLAN_LIBRARY.keys())
+
+_ROUTE_GUIDE = [
+    {
+        "route": "DIY",
+        "fits": "Small, low-risk routine tasks you are comfortable handling",
+        "caution": "Stop if there is any safety warning sign",
+    },
+    {
+        "route": "Local help",
+        "fits": "Familiar help for quick or building-level tasks",
+        "caution": "Scope and reliability can vary",
+    },
+    {
+        "route": "Professional service",
+        "fits": "Recurring, technical or safety-related needs",
+        "caution": "Clarify the scope and expectations first",
+    },
+]
+
+_GENERIC_CARE_PLAN: dict[str, Any] = {
+    "watch_for": ["A change that keeps recurring", "A task you keep putting off"],
+    "note_down": ["What you noticed", "When you noticed it"],
+    "review": [],
+    "cues": [],
+    "adjacent": CARE_PLAN_CATEGORIES,
+    "decision_questions": [
+        "What exactly changed at home?",
+        "Is this routine, urgent or simply planned?",
+        "What information would help you decide calmly?",
+    ],
+}
 
 
 def guard(text: str) -> str:
@@ -179,6 +406,133 @@ def _relative_months(text: str) -> int | None:
     if weeks:
         return max(1, round(int(weeks.group(1)) / 4))
     return None
+
+
+def _reference_lookup() -> dict[str, dict[str, str]]:
+    """Return public timing references keyed by need, without any network call."""
+    try:
+        ref = mvp.load_public_reference()
+    except Exception:
+        return {}
+    out: dict[str, dict[str, str]] = {}
+    for _, row in ref.iterrows():
+        key = str(row.get("need", "") or "").strip().lower()
+        if not key:
+            continue
+        out[key] = {
+            "trigger": str(row.get("trigger", "") or ""),
+            "basis": str(row.get("public_basis", "") or ""),
+            "source_url": str(row.get("source_url", "") or ""),
+            "source_class": str(row.get("source_class", "") or ""),
+        }
+    return out
+
+
+def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
+    """Build a guidance-only next-cycle care plan from a self-reported service.
+
+    The plan stays private. It uses public timing references and the category the
+    user selected; it never checks account history or takes an external action.
+    """
+    requested = str(category or "").strip()
+    matched = requested if requested in _CARE_PLAN_LIBRARY else (_service_match(requested)[0] or "")
+    template = _CARE_PLAN_LIBRARY.get(matched, _GENERIC_CARE_PLAN)
+    lookup = _reference_lookup()
+
+    reviews: list[dict[str, Any]] = []
+    for need, days in template.get("review", []):
+        info = lookup.get(str(need).strip().lower(), {})
+        reviews.append({
+            "need": str(need),
+            "days": int(days),
+            "trigger": info.get("trigger", ""),
+            "basis": info.get("basis", ""),
+            "source_url": info.get("source_url", ""),
+            "source_class": info.get("source_class", ""),
+        })
+
+    guide_row = next(
+        (
+            row
+            for row in mvp.category_guide()
+            if str(row.get("category", "")).lower() == matched.lower()
+        ),
+        {},
+    )
+    source_url = str(guide_row.get("source_url", "") or (reviews[0]["source_url"] if reviews else ""))
+    basis = str(guide_row.get("covers", "") or (reviews[0]["basis"] if reviews else "Your own observation"))
+    source_class = str(reviews[0].get("source_class", "") or "public_guidance") if reviews else "customer_input"
+    confidence = 0.72 if source_url else 0.38
+
+    watch = [guard(str(x)) for x in template.get("watch_for", [])]
+    note = [guard(str(x)) for x in template.get("note_down", [])]
+    cues = [
+        {
+            "signal": guard(str(c.get("signal", ""))),
+            "category": guard(str(c.get("category", ""))),
+            "basis": guard(str(c.get("basis", ""))),
+            "confidence": round(float(c.get("confidence", 0.5)), 2),
+        }
+        for c in template.get("cues", [])
+    ]
+    questions = [guard(str(q)) for q in template.get("decision_questions", [])]
+
+    steps: list[str] = [f"Watch for: {x}" for x in watch]
+    steps.extend(f"Note down: {x}" for x in note)
+    steps.extend(
+        f"Review around {r['days']} day(s): {r['need']} - {r['basis'] or 'public timing guidance'}"
+        for r in reviews
+    )
+    steps.extend(f"Decision question: {q}" for q in questions)
+
+    plan_item = None
+    if reviews:
+        first = reviews[0]
+        plan_item = {
+            "need": first["need"],
+            "status": "Review window",
+            "due_in_days": first["days"],
+            "why": f"A private review cue after the {matched.lower()} you told us about.",
+            "basis": first["basis"] or "Public timing guidance.",
+            "source_url": first["source_url"],
+            "confidence": round(confidence, 2),
+            "route_hint": "CARE_PLAN",
+            "evidence": "customer input plus public guidance",
+        }
+
+    label = matched or "your home"
+    reason = ensure_why_not(
+        (
+            f"Here is a private next-cycle care plan for {label}. "
+            "Watch for the signals, note what matters to you, and use the review window as a prompt to check your own situation. "
+            "This is public guidance plus what you told us; no external action is taken here."
+        ),
+        "CARE_PLAN",
+    )
+    why = (
+        f"Why this guidance: {basis}. "
+        f"Source class: {source_class}. "
+        + (f"Public source: {source_url}. " if source_url else "No public source was available for this item. ")
+        + "The service name came from what you selected in this session."
+    )
+    return {
+        "category": label,
+        "watch_for": watch,
+        "note_down": note,
+        "review": reviews,
+        "need_cues": cues,
+        "adjacent_categories": [guard(str(x)) for x in template.get("adjacent", [])],
+        "decision_questions": questions,
+        "route_guide": _ROUTE_GUIDE,
+        "source_url": source_url,
+        "basis": basis,
+        "source_class": source_class,
+        "confidence": round(confidence, 2),
+        "reason": guard(reason),
+        "why": guard(why),
+        "steps": [guard(s) for s in steps],
+        "plan_item": plan_item,
+    }
 
 
 def planning_cue(text: str, session_hash: str = "") -> dict[str, Any] | None:
@@ -301,6 +655,31 @@ def mode_response(
                 "These are planning cues only, drawn from your input and public guidance."
             ),
             session_hash=session_hash,
+        )
+
+    if lowered_mode == "care plan":
+        selected = _service_match(text)[0] or ""
+        if not selected and plan:
+            selected = _service_match(str(plan[0].get("need", "")))[0] or ""
+        cp = care_plan(selected, session_hash=session_hash)
+        category_info = (
+            f"{cp['why']} "
+            f"Watch for: {', '.join(cp['watch_for'][:2])}. "
+            f"Note down: {', '.join(cp['note_down'][:2])}."
+        )
+        return _result(
+            tool="insta_talk_care_plan",
+            route="CARE_PLAN",
+            confidence=float(cp["confidence"]),
+            reason=str(cp["reason"]),
+            session_hash=session_hash,
+            category=str(cp["category"]),
+            source_url=str(cp["source_url"]),
+            basis=str(cp["basis"]),
+            category_info=category_info,
+            steps=list(cp["steps"]),
+            questions=list(cp["decision_questions"]),
+            plan_item=cp.get("plan_item"),
         )
 
     category, confidence, row = _service_match(text)

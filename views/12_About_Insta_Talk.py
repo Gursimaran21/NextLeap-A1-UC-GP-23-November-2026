@@ -45,6 +45,7 @@ def _about_html() -> str:
     tags = [
         "Need recognition",
         "Post-service continuity",
+        "Care plans",
         "Informed choice",
         "Service clarity",
         "Voice guidance",
@@ -78,6 +79,11 @@ def _about_html() -> str:
             "08",
             "Public grounding",
             "Use public service information as the basis for guidance, with confidence and source shown where available.",
+        ),
+        (
+            "09",
+            "Next-cycle care plans",
+            "See Watch for, Note down and Review windows for the service you tell us you completed, with need cues and decision questions.",
         ),
     ]
     pillar_html = "".join(

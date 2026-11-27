@@ -23,13 +23,14 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 
 - **Build:** MVP, Discovery Engine, Evidence Log, Research/Strategy pages, and 10-slide deck are implemented.
 - **Real data:** `data/public_corpus.csv` now holds **500 real public App Store (India) reviews** (465 kept after cleaning), collected 2026-11-23 via `scripts/collect_appstore.py`. Discovery results, evidence log, and deck regenerated from real data. Golden template regenerated from real reviews (20 rows, unlabelled).
-- **QA:** `python -m scripts.qa_check` currently reports **11/12 PASS**.
+- **QA:** `python -m scripts.qa_check` currently reports **14/15 PASS**.
   - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
+- **Insta Talk guidance:** next-cycle care plans (Watch for / Note down / Review), need cues, category awareness, decision-confidence questions, route-choice guidance, source/confidence disclosure, and a no-action path. All are local, guidance-only, and based on user input plus `data/public_reference.csv`.
 - **Pending before submission:** 20 manual golden labels (`python -m scripts.label_golden`), 5–6 real anonymized interviews, >=3 MVP user tests, fellow-name exclusion set locally, final QA pass, Streamlit deployment/public links.
 
 ## What This Repo Contains
 
-- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, private 90-day plan with grounded summary and Markdown/.ics/JSON export, Need Decider with explicit no-action route, and post-service reflection checklist.
+- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, private 90-day care plan with Watch for / Note down / Review sections, need cues, category awareness, decision-confidence questions and route-choice guidance, grounded summary with Markdown/.ics/JSON export, Need Decider with explicit no-action route, and post-service reflection checklist.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
 - **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).
@@ -54,6 +55,7 @@ outputs/discovery_results.json, evidence_log.md/pdf
         ▼
 Streamlit app (app.py + views/*)
   - MVP (src/mvp.py): build_calendar, route_need, reflect
+  - Guidance (src/insta_talk.py): care_plan, mode_response, guardrails, why-not notes
   - Discovery/Evidence/Research/Problem/Testing/Metrics/Risks/Deck
         │
         ▼
@@ -115,7 +117,7 @@ python -m scripts.qa_check
 |---|---|---|
 | AI Discovery Engine | `views/2_Discovery_Engine.py` | Implemented |
 | 10-slide deck | `outputs/NL_UrbanCompany.pdf`, `views/10_Deck.py` | Draft generated |
-| Deployed AI-native MVP | `app.py`, `views/1_MVP.py` | Implemented locally with history input, plan export, reminders, and explicit no-action; deploy pending |
+| Deployed AI-native MVP | `app.py`, `views/1_MVP.py`, `src/insta_talk.py` | Implemented locally with history input, next-cycle care plans, need cues, decision questions, route guidance, plan export, reminders, and explicit no-action; deploy pending |
 | AI Evidence Log | `views/3_Evidence_Log.py`, `outputs/evidence_log.md`, `outputs/evidence_log.pdf` | Draft generated |
 
 ## Deployed URLs

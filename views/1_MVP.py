@@ -166,6 +166,11 @@ DEMO_TASKS = [
         "to show the speak-to-plan cue.",
     ),
     (
+        "Show next-cycle care plan",
+        "In Step 2, pick a recently completed service and open the six care tabs. Show Watch for, "
+        "Note down and Review, one need-recognition cue, a decision question and the source confidence.",
+    ),
+    (
         "Test continuity",
         "In Step 4, speak or type 'What should I remember for next time?', download the private "
         "checklist, and submit feedback on usefulness, real need match, route clarity and "
@@ -232,6 +237,8 @@ def _init_state() -> None:
         "mvp_history_version": 0,
         "mvp_plan": [],
         "mvp_plan_summary": "",
+        "mvp_care_category": "AC Service",
+        "mvp_care_plan": None,
         "mvp_custom_need": "",
         "mvp_chat": [],
         "mvp_reflection": None,
@@ -320,6 +327,7 @@ def _reset_profile_state() -> None:
     st.session_state.mvp_profile_version = int(st.session_state.mvp_profile_version) + 1
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
+    st.session_state.mvp_care_plan = None
     st.rerun()
 
 
@@ -328,6 +336,7 @@ def _reset_history_state() -> None:
     st.session_state.mvp_history_version = int(st.session_state.mvp_history_version) + 1
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
+    st.session_state.mvp_care_plan = None
     st.rerun()
 
 
@@ -453,6 +462,132 @@ def _render_profile() -> dict:
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
+
+    st.markdown("### Next-cycle care plan (guidance only)")
+    st.caption(
+        "Based only on the service you say you completed and public guidance. "
+        "No prices, availability, messages, or account access."
+    )
+    care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
+    default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
+    care_left, care_right = st.columns([2, 1])
+    with care_left:
+        selected_care = st.selectbox(
+            "Which service did you most recently complete?",
+            care_options,
+            index=care_options.index(default_care) if default_care in care_options else 0,
+            key="care_category_select",
+        )
+    with care_right:
+        if st.button("Show care plan", type="primary", width="stretch"):
+            st.session_state.mvp_care_category = selected_care
+            st.session_state.mvp_care_plan = insta_talk.care_plan(
+                selected_care,
+                session_hash=st.session_state.mvp_session_hash,
+            )
+            st.rerun()
+
+    care = st.session_state.get("mvp_care_plan")
+    if care:
+        st.markdown(f"**Care plan for {care['category']}**")
+        care_tabs = st.tabs([
+            "90-day plan",
+            "Need cues",
+            "Category awareness",
+            "Decision confidence",
+            "Route choice",
+            "Why this guidance?",
+        ])
+        with care_tabs[0]:
+            watch_col, note_col, review_col = st.columns(3)
+            with watch_col:
+                st.markdown("**Watch for**")
+                for item in care.get("watch_for", []):
+                    st.markdown(f"- {item}")
+            with note_col:
+                st.markdown("**Note down**")
+                for item in care.get("note_down", []):
+                    st.markdown(f"- {item}")
+            with review_col:
+                st.markdown("**Review around this time**")
+                if care.get("review"):
+                    for item in care["review"]:
+                        st.markdown(f"- **{item['need']}**: about {item['days']} day(s)")
+                        st.caption(item.get("basis", "Public timing guidance"))
+                else:
+                    st.caption("Use your own notes; no public timing cue is available.")
+            st.caption("Review windows are prompts to check your own situation, not service requirements.")
+            add_col, none_col = st.columns(2)
+            with add_col:
+                if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", width="stretch"):
+                    plan = list(st.session_state.get("mvp_plan", []))
+                    plan.append(dict(care["plan_item"]))
+                    st.session_state.mvp_plan = plan
+                    st.success("Private cue added to the plan below.")
+            with none_col:
+                if st.button("No need right now", key="care_no_need", width="stretch"):
+                    st.session_state.mvp_care_plan = None
+                    st.success("Nothing added. You can return if that changes.")
+            care_md = "\n".join([
+                f"# Next-cycle care plan: {care['category']}",
+                "",
+                "## Watch for",
+                *[f"- {x}" for x in care.get("watch_for", [])],
+                "",
+                "## Note down",
+                *[f"- {x}" for x in care.get("note_down", [])],
+                "",
+                "## Review around this time",
+                *[f"- {x['need']}: about {x['days']} day(s) - {x.get('basis','')}" for x in care.get("review", [])],
+                "",
+                "## Decision questions",
+                *[f"- {x}" for x in care.get("decision_questions", [])],
+                "",
+                f"Why this guidance: {care.get('why','')}",
+            ])
+            st.download_button(
+                "Download care plan (Markdown)",
+                data=care_md.encode("utf-8"),
+                file_name="next_cycle_care_plan.md",
+                mime="text/markdown",
+                width="stretch",
+            )
+        with care_tabs[1]:
+            if care.get("need_cues"):
+                for cue in care["need_cues"]:
+                    st.markdown(
+                        f"- **{cue['signal']}** - check {cue['category']} "
+                        f"(confidence {float(cue['confidence']):.2f})"
+                    )
+                    st.caption(cue.get("basis", "Public guidance"))
+            else:
+                st.caption("No public cue is available for this service. Use your own notes.")
+        with care_tabs[2]:
+            for category in care.get("adjacent_categories", []):
+                row = next((x for x in mvp.category_guide() if x["category"] == category), {})
+                st.markdown(f"**{category}**")
+                st.caption(f"Covers: {row.get('covers', 'Public guidance')}")
+                st.caption(f"Consider when: {row.get('consider_when', 'Your own observation')}")
+            st.caption("Category information only. No provider names or availability are shown.")
+        with care_tabs[3]:
+            for question in care.get("decision_questions", []):
+                st.markdown(f"- {question}")
+        with care_tabs[4]:
+            for item in care.get("route_guide", []):
+                st.markdown(f"**{item['route']}**")
+                st.caption(f"Fits: {item['fits']}")
+                st.caption(f"Caution: {item['caution']}")
+            st.caption("Decide what fits you. Nothing here contacts anyone.")
+        with care_tabs[5]:
+            st.info(care.get("why", ""))
+            st.write(f"**Confidence:** {float(care.get('confidence', 0)):.2f}")
+            if care.get("source_url"):
+                st.markdown(f"[Public source]({care['source_url']})")
+            st.caption("Your service name stays in this session only.")
+    else:
+        st.caption("Choose a service above to see the care plan.")
+
+    st.divider()
 
     history = st.session_state.get("mvp_history", {})
     col_a, col_b = st.columns([1, 2])
@@ -681,7 +816,7 @@ def _append_decider_result(result: dict, mode: str = "") -> None:
 
 def _handle_talk(mode: str, text: str, profile: dict) -> None:
     text = str(text or "").strip()
-    if not text and mode not in {"No action", "Next 90 days"}:
+    if not text and mode not in {"No action", "Next 90 days", "Care plan"}:
         text = "I need guidance."
     user_text = text or "No service needed right now."
     st.session_state.mvp_chat.append({"role": "user", "content": user_text})
@@ -708,7 +843,7 @@ def _talk_mode_selector() -> str:
         with cols[idx % 3]:
             if st.button(label, key=f"talk_mode_{idx}", width="stretch"):
                 st.session_state.mvp_talk_mode = mode
-                if mode in {"No action", "Next 90 days"}:
+                if mode in {"No action", "Next 90 days", "Care plan"}:
                     _handle_talk(mode, "", st.session_state.get("mvp_profile", {}))
                 st.rerun()
     active = str(st.session_state.get("mvp_talk_mode", "Decide"))
