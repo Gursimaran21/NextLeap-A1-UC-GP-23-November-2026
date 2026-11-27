@@ -604,7 +604,7 @@ def _render_calendar(profile: dict) -> None:
                 ["Routine", "Planned", "Possible urgency"],
                 key="intake_mode",
             )
-        if st.button("Build guided care plan", type="primary", width="stretch"):
+        if st.button("Build guided care plan", type="primary", width="content"):
             built = insta_talk.guided_intake_plan(
                 {
                     "category": intake_service,
