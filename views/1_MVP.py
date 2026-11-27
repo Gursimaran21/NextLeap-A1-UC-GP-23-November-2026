@@ -286,6 +286,7 @@ def _init_state() -> None:
         "mvp_continuity": None,
         "mvp_intake_edit": False,
         "mvp_edit_guided_notice": False,
+        "mvp_direct_plan_notice": False,
         "mvp_leading": {},
         "mvp_reflection_text": "",
         "mvp_custom_need": "",
@@ -862,6 +863,18 @@ def _edit_guided_answers(service: str, change: str, timing: str) -> None:
     st.session_state.mvp_edit_guided_notice = True
 
 
+def _show_direct_care_plan(selected_service: str) -> None:
+    """Build a direct quick plan and reveal it in the guided intake section."""
+    st.session_state.mvp_care_category = selected_service
+    st.session_state.mvp_care_plan = insta_talk.care_plan(
+        selected_service,
+        session_hash=st.session_state.mvp_session_hash,
+    )
+    st.session_state.mvp_intake_edit = True
+    st.session_state.mvp_plan_details_visible = False
+    st.session_state.mvp_direct_plan_notice = True
+
+
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -959,13 +972,15 @@ def _render_calendar(profile: dict) -> None:
                 key="care_category_select",
             )
         with care_right:
-            if st.button("Show care plan", type="primary", width="content"):
-                st.session_state.mvp_care_category = selected_care
-                st.session_state.mvp_care_plan = insta_talk.care_plan(
-                    selected_care,
-                    session_hash=st.session_state.mvp_session_hash,
-                )
-                st.rerun()
+            st.button(
+                "Show care plan",
+                type="primary",
+                width="content",
+                on_click=_show_direct_care_plan,
+                args=(selected_care,),
+            )
+        if st.session_state.pop("mvp_direct_plan_notice", False):
+            st.info("Quick plan ready in section 1 above.")
         if not care:
             st.caption("Choose a service above to see the care plan.")
         _session_summary_panel()
