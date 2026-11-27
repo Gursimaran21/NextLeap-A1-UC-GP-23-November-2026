@@ -50,6 +50,22 @@ st.markdown(
       [data-testid="stExpander"] > details > summary * {
         color: #FFFFFF !important;
       }
+      [data-testid="stButton"]:has([title="Edit guided answers"]) > button {
+        background-color: #500C6B !important;
+        border: 1px solid #500C6B !important;
+      }
+      [data-testid="stButton"]:has([title="Edit guided answers"]) > button,
+      [data-testid="stButton"]:has([title="Edit guided answers"]) > button * {
+        color: #FFFFFF !important;
+      }
+      [data-testid="stButton"]:has([title="Reset guided notes"]) > button {
+        background-color: #EBDFF0 !important;
+        border: 1px solid #D9C6E0 !important;
+      }
+      [data-testid="stButton"]:has([title="Reset guided notes"]) > button,
+      [data-testid="stButton"]:has([title="Reset guided notes"]) > button * {
+        color: #500C6B !important;
+      }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
         background-color: #F1E4F5 !important;
