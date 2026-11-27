@@ -66,6 +66,14 @@ st.markdown(
       [data-testid="stButton"]:has([title="Reset guided notes"]) > button * {
         color: #500C6B !important;
       }
+      [data-testid="stButton"]:has([title="Add as personal note"]) > button {
+        background-color: #500C6B !important;
+        border: 1px solid #500C6B !important;
+      }
+      [data-testid="stButton"]:has([title="Add as personal note"]) > button,
+      [data-testid="stButton"]:has([title="Add as personal note"]) > button * {
+        color: #FFFFFF !important;
+      }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
         background-color: #F1E4F5 !important;
