@@ -38,6 +38,14 @@ st.markdown(
       }
       .stAlert { border-radius: 8px; }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
+      [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
+        background-color: #F1E4F5 !important;
+        color: #500C6B !important;
+        border: 1px solid #D9C6E0 !important;
+      }
+      [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"]:hover {
+        background-color: #EBDFF0 !important;
+      }
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
         background-color: #500C6B !important;
       }
