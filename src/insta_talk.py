@@ -57,6 +57,9 @@ _WHY_NOT = {
     "CARE_PLAN": (
         "A single route today is less useful than a private care plan built from public guidance."
     ),
+    "CONTINUITY": (
+        "A new route today is not needed; a private reflection and review window carry the continuity."
+    ),
 }
 
 _GENERIC_GUIDANCE = (
@@ -408,6 +411,49 @@ def _relative_months(text: str) -> int | None:
     return None
 
 
+_SOURCE_CLASS_WEIGHT = {
+    "public_guidance": 0.86,
+    "manufacturer_guidance": 0.82,
+    "customer_input": 0.40,
+}
+_FRESHNESS_WEIGHT = {
+    "updated_2025-01": 0.95,
+    "checked_2026-11": 0.88,
+    "search_indexed_2026-11": 0.68,
+    "blocked_2026-11": 0.52,
+    "not_recorded": 0.55,
+}
+_MATCH_WEIGHT = {
+    "exact": 0.95,
+    "partial": 0.72,
+    "category": 0.55,
+    "template": 0.50,
+    "none": 0.35,
+}
+
+
+def confidence_v2(source_class: str = "", freshness: str = "", match_strength: str = "") -> dict[str, Any]:
+    """Score guidance using source class, freshness and source-to-need match."""
+    sc = str(source_class or "customer_input").strip().lower()
+    fr = str(freshness or "not_recorded").strip().lower()
+    ms = str(match_strength or "template").strip().lower()
+    source_w = float(_SOURCE_CLASS_WEIGHT.get(sc, 0.55))
+    fresh_w = float(_FRESHNESS_WEIGHT.get(fr, 0.55))
+    match_w = float(_MATCH_WEIGHT.get(ms, 0.50))
+    score = round(min(0.95, max(0.20, 0.45 * source_w + 0.25 * fresh_w + 0.30 * match_w)), 2)
+    label = "higher" if score >= 0.80 else "moderate" if score >= 0.60 else "low"
+    return {
+        "score": score,
+        "label": label,
+        "source_class": sc,
+        "freshness": fr,
+        "match_strength": ms,
+        "source_class_weight": round(source_w, 2),
+        "freshness_weight": round(fresh_w, 2),
+        "match_weight": round(match_w, 2),
+    }
+
+
 def _reference_lookup() -> dict[str, dict[str, str]]:
     """Return public timing references keyed by need, without any network call."""
     try:
@@ -424,6 +470,8 @@ def _reference_lookup() -> dict[str, dict[str, str]]:
             "basis": str(row.get("public_basis", "") or ""),
             "source_url": str(row.get("source_url", "") or ""),
             "source_class": str(row.get("source_class", "") or ""),
+            "freshness": str(row.get("freshness", "") or "not_recorded"),
+            "match_strength": str(row.get("match_strength", "") or "partial"),
         }
     return out
 
@@ -449,6 +497,8 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
             "basis": info.get("basis", ""),
             "source_url": info.get("source_url", ""),
             "source_class": info.get("source_class", ""),
+            "freshness": info.get("freshness", "not_recorded"),
+            "match_strength": info.get("match_strength", "partial"),
         })
 
     guide_row = next(
@@ -461,8 +511,11 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
     )
     source_url = str(guide_row.get("source_url", "") or (reviews[0]["source_url"] if reviews else ""))
     basis = str(guide_row.get("covers", "") or (reviews[0]["basis"] if reviews else "Your own observation"))
-    source_class = str(reviews[0].get("source_class", "") or "public_guidance") if reviews else "customer_input"
-    confidence = 0.72 if source_url else 0.38
+    source_class = str(reviews[0].get("source_class", "") or ("public_guidance" if source_url else "customer_input"))
+    freshness = str(reviews[0].get("freshness", "") or "not_recorded") if reviews else "not_recorded"
+    match_strength = str(reviews[0].get("match_strength", "") or ("category" if source_url else "template"))
+    confidence_parts = confidence_v2(source_class, freshness, match_strength)
+    confidence = float(confidence_parts["score"])
 
     watch = [guard(str(x)) for x in template.get("watch_for", [])]
     note = [guard(str(x)) for x in template.get("note_down", [])]
@@ -471,7 +524,7 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
             "signal": guard(str(c.get("signal", ""))),
             "category": guard(str(c.get("category", ""))),
             "basis": guard(str(c.get("basis", ""))),
-            "confidence": round(float(c.get("confidence", 0.5)), 2),
+            "confidence": round(min(float(c.get("confidence", 0.5)), confidence), 2),
         }
         for c in template.get("cues", [])
     ]
@@ -512,6 +565,9 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
     why = (
         f"Why this guidance: {basis}. "
         f"Source class: {source_class}. "
+        f"Freshness: {freshness}. "
+        f"Source-to-need match: {match_strength}. "
+        f"Confidence basis: {confidence_parts['label']} ({confidence:.2f}) from source class, freshness and match. "
         + (f"Public source: {source_url}. " if source_url else "No public source was available for this item. ")
         + "The service name came from what you selected in this session."
     )
@@ -527,11 +583,179 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
         "source_url": source_url,
         "basis": basis,
         "source_class": source_class,
+        "freshness": freshness,
+        "match_strength": match_strength,
         "confidence": round(confidence, 2),
+        "confidence_parts": confidence_parts,
         "reason": guard(reason),
         "why": guard(why),
         "steps": [guard(s) for s in steps],
         "plan_item": plan_item,
+    }
+
+
+def guided_intake_plan(answers: dict[str, Any] | None = None, session_hash: str = "") -> dict[str, Any]:
+    """Tailor a care plan from three session-only intake answers."""
+    data = dict(answers or {})
+    category = str(data.get("category", "") or "").strip()
+    change = guard(str(data.get("change", "") or "").strip()[:120])
+    timing = str(data.get("timing", "Routine") or "Routine").strip()
+    plan = care_plan(category, session_hash=session_hash)
+    plan["intake"] = {"category": category, "change": change, "timing": timing}
+
+    lowered = timing.lower()
+    if "urgent" in lowered or lowered.startswith("possible"):
+        reason = ensure_why_not(
+            (
+                "Because you marked possible urgency, this plan pauses category suggestions. "
+                "Use immediate help for a possible hazard; no DIY or service route is recommended from this answer."
+            ),
+            "SEEK_IMMEDIATE_HELP",
+        )
+        urgent_conf = confidence_v2("customer_input", "not_recorded", "none")
+        plan.update({
+            "route": "SEEK_IMMEDIATE_HELP",
+            "confidence": urgent_conf["score"],
+            "confidence_parts": urgent_conf,
+            "source_class": "customer_input",
+            "freshness": "not_recorded",
+            "match_strength": "none",
+            "source_url": "",
+            "watch_for": [guard("Safety warning signs you should not ignore")],
+            "note_down": [guard("Only what you observed, without personal details")],
+            "review": [],
+            "need_cues": [],
+            "decision_questions": [guard("Is anyone at risk right now?")],
+            "steps": [
+                guard("Pause category suggestions."),
+                guard("Use immediate help if there is a hazard."),
+                guard("You can return for a care plan once the situation is stable."),
+            ],
+            "reason": guard(reason),
+            "why": guard(
+                "Why this guidance: your urgency answer controls the route. "
+                "Safety comes before planning, and no external action is taken here."
+            ),
+            "plan_item": None,
+            "intake_paused": True,
+        })
+        return plan
+
+    if change:
+        plan["watch_for"] = [guard(f"Your note: {change}")] + list(plan.get("watch_for", []))
+    plan["note_down"] = [
+        guard("Whether the change is still present"),
+        guard("What you observed without personal details"),
+    ] + list(plan.get("note_down", []))
+    plan["decision_questions"] = list(plan.get("decision_questions", [])) + [
+        guard("Did the change match what was explained to you?")
+    ]
+    if not lowered.startswith("routine"):
+        plan["review"] = sorted(list(plan.get("review", [])), key=lambda x: -int(x.get("days", 0)))[:1]
+
+    detail = f" Your note was: {change}." if change else " You did not add an extra change note."
+    plan["reason"] = guard(ensure_why_not(
+        (
+            f"Here is a private care plan for {plan['category']} based on your three answers. "
+            f"Timing answer: {timing}.{detail} "
+            "Use the watch list and review window as prompts to check your own situation; no external action is taken here."
+        ),
+        "CARE_PLAN",
+    ))
+    plan["why"] = guard(str(plan.get("why", "")) + " The plan was tailored by your three intake answers.")
+    plan["steps"] = [guard(f"Watch for: {x}") for x in plan.get("watch_for", [])]
+    plan["steps"].extend(guard(f"Note down: {x}") for x in plan.get("note_down", []))
+    plan["steps"].extend(
+        guard(f"Review around {r['days']} day(s): {r['need']}") for r in plan.get("review", [])
+    )
+    plan["steps"].extend(guard(f"Decision question: {q}") for q in plan.get("decision_questions", []))
+    plan["intake_paused"] = False
+    return plan
+
+
+def continuity_loop(
+    reflection: dict[str, Any] | None = None,
+    care_plan_data: dict[str, Any] | None = None,
+    text: str = "",
+    session_hash: str = "",
+) -> dict[str, Any]:
+    """Turn a reflection and optional care plan into a private continuity loop."""
+    ref = dict(reflection or {})
+    cp = dict(care_plan_data or {})
+    lowered = str(text or "").lower()
+    detected, _, _ = _service_match(str(text or ""))
+    completed = str(cp.get("category") or detected or "the service you completed")
+
+    monitor = [guard(str(x)) for x in cp.get("watch_for", [])]
+    if not monitor:
+        monitor = [
+            guard(f"Changes around {str(topic).lower()}")
+            for topic in ref.get("open_topics", [])[:3]
+        ]
+    if not monitor:
+        monitor = [guard("Any change that keeps recurring")]
+
+    notes = [guard(str(x)) for x in cp.get("note_down", [])]
+    if not notes:
+        notes = [
+            guard("What was completed"),
+            guard("What changed afterwards"),
+            guard("What you want to remember next time"),
+        ]
+
+    reviews = list(cp.get("review", []))
+    if reviews:
+        first = reviews[0]
+        review_window = guard(f"About {int(first.get('days', 90))} day(s): {first.get('need', 'private review')}")
+        plan_item = {
+            "need": str(first.get("need", "Private review note")),
+            "status": "Review window",
+            "due_in_days": int(first.get("days", 90)),
+            "why": guard(f"A private review cue after the {completed.lower()} you reflected on."),
+            "basis": str(first.get("basis", "") or "Public timing guidance."),
+            "source_url": str(first.get("source_url", "") or ""),
+            "confidence": round(float(cp.get("confidence", 0.45) or 0.45), 2),
+            "route_hint": "CONTINUITY",
+            "evidence": "customer reflection plus public guidance",
+        }
+    else:
+        review_window = guard("Use your own notes; review within 30-90 days if a change appears.")
+        plan_item = {
+            "need": "Private review note",
+            "status": "Review window",
+            "due_in_days": 90,
+            "why": guard(f"A private review cue after the {completed.lower()} you reflected on."),
+            "basis": "Your reflection; no public timing cue was available.",
+            "source_url": "",
+            "confidence": 0.40,
+            "route_hint": "CONTINUITY",
+            "evidence": "customer reflection",
+        }
+
+    reason = ensure_why_not(
+        (
+            f"Private continuity loop for {completed}. Monitor the watch items, keep the notes local, "
+            "and use the review window only as a prompt to check your own situation. No external action is taken here."
+        ),
+        "CONTINUITY",
+    )
+    followup = str(ref.get("followup_question", "") or "What home need might come up next based on what you noticed?")
+    return {
+        "completed_service": guard(completed),
+        "monitor": monitor[:4],
+        "private_notes": notes[:4],
+        "review_window": review_window,
+        "followup_question": guard(followup),
+        "confidence": round(float(cp.get("confidence", 0.45) or 0.45), 2),
+        "reason": guard(reason),
+        "why": guard(
+            "Why this guidance: built from your reflection and, when available, the care plan from this session. "
+            "It stays private and does not contact anyone."
+        ),
+        "plan_item": plan_item,
+        "reflection_topics": [guard(str(x)) for x in ref.get("open_topics", [])],
+        "source_url": str(cp.get("source_url", "") or ""),
+        "session_hash": session_hash,
     }
 
 

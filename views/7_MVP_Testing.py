@@ -75,6 +75,34 @@ def render() -> None:
             st.write("**Observed:**", t["observed"])
             st.write("**Change for next iteration:**", t["change_next_iteration"])
 
+    st.subheader("Iteration 2 task cards (unrun)")
+    iteration_2 = [
+        {
+            "user": "R_T4 (placeholder)",
+            "task": "Use guided intake with a routine answer, then with Possible urgency.",
+            "expected_evidence": "guided_intake_plan route CARE_PLAN for routine; SEEK_IMMEDIATE_HELP for urgency",
+            "observed": "[Fill after test]",
+        },
+        {
+            "user": "R_T5 (placeholder)",
+            "task": "Explain why one care-plan item has higher confidence than another using source class, freshness and match.",
+            "expected_evidence": "confidence_v2 breakdown shown in the guidance tab; no overclaim",
+            "observed": "[Fill after test]",
+        },
+        {
+            "user": "R_T6 (placeholder)",
+            "task": "Generate a reflection, build the continuity loop, add its review cue to Step 2 and download the summary.",
+            "expected_evidence": "capture_reflection -> continuity_loop -> local JSON; no upload",
+            "observed": "[Fill after test]",
+        },
+    ]
+    for t in iteration_2:
+        with st.container(border=True):
+            st.markdown(f"**{t['user']}**")
+            st.write("**Task:**", t["task"])
+            st.write("**Expected evidence:**", t["expected_evidence"])
+            st.write("**Observed:**", t["observed"])
+
     st.subheader("Synthesis (pending real tests)")
     c1, c2 = st.columns(2)
     with c1:

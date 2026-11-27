@@ -46,6 +46,8 @@ def _about_html() -> str:
         "Need recognition",
         "Post-service continuity",
         "Care plans",
+        "Guided intake",
+        "Continuity loop",
         "Informed choice",
         "Service clarity",
         "Voice guidance",
@@ -84,6 +86,16 @@ def _about_html() -> str:
             "09",
             "Next-cycle care plans",
             "See Watch for, Note down and Review windows for the service you tell us you completed, with need cues and decision questions.",
+        ),
+        (
+            "10",
+            "Guided intake",
+            "Answer three quick questions and get a plan tailored by session-only context, with safety pausing category advice when urgency is possible.",
+        ),
+        (
+            "11",
+            "Continuity loop",
+            "Turn a private reflection into monitor notes, a review window and a local summary that can feed Step 2.",
         ),
     ]
     pillar_html = "".join(

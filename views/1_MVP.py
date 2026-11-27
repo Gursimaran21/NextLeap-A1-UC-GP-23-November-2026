@@ -171,6 +171,16 @@ DEMO_TASKS = [
         "Note down and Review, one need-recognition cue, a decision question and the source confidence.",
     ),
     (
+        "Run guided intake",
+        "In Step 2, answer the three guided questions, including 'Possible urgency', and show how "
+        "the plan changes. In the guidance tab, point out the source class, freshness and match score.",
+    ),
+    (
+        "Test continuity loop",
+        "In Step 4, generate a reflection, build the continuity loop, add its review cue to Step 2, "
+        "and download the private summary.",
+    ),
+    (
         "Test continuity",
         "In Step 4, speak or type 'What should I remember for next time?', download the private "
         "checklist, and submit feedback on usefulness, real need match, route clarity and "
@@ -239,6 +249,7 @@ def _init_state() -> None:
         "mvp_plan_summary": "",
         "mvp_care_category": "AC Service",
         "mvp_care_plan": None,
+        "mvp_continuity": None,
         "mvp_custom_need": "",
         "mvp_chat": [],
         "mvp_reflection": None,
@@ -328,6 +339,7 @@ def _reset_profile_state() -> None:
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
     st.session_state.mvp_care_plan = None
+    st.session_state.mvp_continuity = None
     st.rerun()
 
 
@@ -337,6 +349,7 @@ def _reset_history_state() -> None:
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
     st.session_state.mvp_care_plan = None
+    st.session_state.mvp_continuity = None
     st.rerun()
 
 
@@ -468,8 +481,44 @@ def _render_calendar(profile: dict) -> None:
         "Based only on the service you say you completed and public guidance. "
         "No prices, availability, messages, or account access."
     )
-    care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
-    default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
+
+    st.markdown("**Guided intake - 3 quick questions**")
+    with st.container(border=True):
+        intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
+        care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
+        default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
+        with intake_cat:
+            intake_service = st.selectbox(
+                "1. Recently completed service",
+                care_options,
+                index=care_options.index(default_care) if default_care in care_options else 0,
+                key="intake_service",
+            )
+        with intake_change:
+            intake_note = st.text_input(
+                "2. What changed after it? (optional, no personal details)",
+                key="intake_note",
+                placeholder="e.g., airflow feels weaker",
+            )
+        with intake_timing:
+            intake_mode = st.radio(
+                "3. How should we treat it?",
+                ["Routine", "Planned", "Possible urgency"],
+                key="intake_mode",
+            )
+        if st.button("Build guided care plan", type="primary", width="stretch"):
+            st.session_state.mvp_care_category = intake_service
+            st.session_state.mvp_care_plan = insta_talk.guided_intake_plan(
+                {
+                    "category": intake_service,
+                    "change": intake_note,
+                    "timing": intake_mode,
+                },
+                session_hash=st.session_state.mvp_session_hash,
+            )
+            st.rerun()
+
+    st.caption("Or choose a service directly for a quick plan.")
     care_left, care_right = st.columns([2, 1])
     with care_left:
         selected_care = st.selectbox(
@@ -490,6 +539,13 @@ def _render_calendar(profile: dict) -> None:
     care = st.session_state.get("mvp_care_plan")
     if care:
         st.markdown(f"**Care plan for {care['category']}**")
+        if care.get("intake"):
+            st.caption(
+                f"Built from your answers: {care['intake'].get('timing', 'Routine')} · "
+                f"{care['intake'].get('change') or 'no extra detail'}"
+            )
+        if care.get("intake_paused"):
+            st.warning(insta_talk.guard(str(care.get("reason", ""))))
         care_tabs = st.tabs([
             "90-day plan",
             "Need cues",
@@ -580,7 +636,16 @@ def _render_calendar(profile: dict) -> None:
             st.caption("Decide what fits you. Nothing here contacts anyone.")
         with care_tabs[5]:
             st.info(care.get("why", ""))
-            st.write(f"**Confidence:** {float(care.get('confidence', 0)):.2f}")
+            parts = care.get("confidence_parts", {}) or {}
+            st.write(
+                f"**Confidence:** {float(care.get('confidence', 0)):.2f} "
+                f"({parts.get('label', 'not scored')})"
+            )
+            st.caption(
+                f"Source class: {parts.get('source_class', care.get('source_class', 'not recorded'))} · "
+                f"Freshness: {parts.get('freshness', 'not recorded')} · "
+                f"Match: {parts.get('match_strength', 'not recorded')}"
+            )
             if care.get("source_url"):
                 st.markdown(f"[Public source]({care['source_url']})")
             st.caption("Your service name stays in this session only.")
@@ -988,6 +1053,64 @@ def _render_reflection() -> None:
             file_name="home_care_checklist.json",
             mime="application/json",
         )
+
+        st.markdown("**Post-service continuity loop**")
+        if st.button("Build continuity loop", key="continuity_build", width="stretch"):
+            st.session_state.mvp_continuity = insta_talk.continuity_loop(
+                ref,
+                st.session_state.get("mvp_care_plan"),
+                text,
+                session_hash=st.session_state.mvp_session_hash,
+            )
+            st.rerun()
+
+        cont = st.session_state.get("mvp_continuity")
+        if cont:
+            st.info(insta_talk.guard(str(cont.get("reason", ""))))
+            done_col, watch_col, note_col, review_col = st.columns(4)
+            with done_col:
+                st.markdown("**Completed service**")
+                st.markdown(f"- {cont.get('completed_service', '')}")
+            with watch_col:
+                st.markdown("**What to monitor**")
+                for item in cont.get("monitor", []):
+                    st.markdown(f"- {item}")
+            with note_col:
+                st.markdown("**Private notes**")
+                for item in cont.get("private_notes", []):
+                    st.markdown(f"- {item}")
+            with review_col:
+                st.markdown("**Review window**")
+                st.markdown(f"- {cont.get('review_window', '')}")
+            st.caption(cont.get("why", ""))
+            cont_json = {
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "completed_service": cont.get("completed_service", ""),
+                "monitor": cont.get("monitor", []),
+                "private_notes": cont.get("private_notes", []),
+                "review_window": cont.get("review_window", ""),
+                "followup_question": cont.get("followup_question", ""),
+                "confidence": cont.get("confidence", 0),
+                "note": "Private summary generated locally. No upload and no external action.",
+            }
+            cont_col1, cont_col2 = st.columns(2)
+            with cont_col1:
+                if st.button("Add review cue to Step 2 plan", key="continuity_add_plan", width="stretch"):
+                    plan = list(st.session_state.get("mvp_plan", []))
+                    plan.append(dict(cont["plan_item"]))
+                    st.session_state.mvp_plan = plan
+                    st.success("Private review cue added to Step 2.")
+            with cont_col2:
+                if st.button("Open review window in Step 2", key="continuity_open_step2", width="stretch"):
+                    st.session_state.mvp_step = 2
+                    st.rerun()
+            st.download_button(
+                "Download continuity summary (JSON)",
+                data=json.dumps(cont_json, indent=2, ensure_ascii=False).encode("utf-8"),
+                file_name="continuity_summary.json",
+                mime="application/json",
+                width="stretch",
+            )
 
     st.divider()
     st.markdown("**Quick feedback**")

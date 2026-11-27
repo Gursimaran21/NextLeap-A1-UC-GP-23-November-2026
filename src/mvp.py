@@ -160,10 +160,14 @@ CATEGORY_KEYWORDS = {
 def load_public_reference(path: str | Path | None = None) -> pd.DataFrame:
     config.ensure_dirs()
     ref_path = Path(path) if path else config.REFERENCE
+    reference_columns = [
+        "need", "trigger", "typical_timing_days", "public_basis", "source_url",
+        "source_class", "freshness", "match_strength",
+    ]
     if not ref_path.exists():
-        return pd.DataFrame(columns=["need", "trigger", "typical_timing_days", "public_basis", "source_url", "source_class"])
+        return pd.DataFrame(columns=reference_columns)
     df = pd.read_csv(ref_path)
-    for col in ["need", "trigger", "typical_timing_days", "public_basis", "source_url", "source_class"]:
+    for col in reference_columns:
         if col not in df.columns:
             df[col] = ""
     df = df.fillna("")

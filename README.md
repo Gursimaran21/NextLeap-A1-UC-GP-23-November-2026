@@ -25,12 +25,12 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 - **Real data:** `data/public_corpus.csv` now holds **500 real public App Store (India) reviews** (465 kept after cleaning), collected 2026-11-23 via `scripts/collect_appstore.py`. Discovery results, evidence log, and deck regenerated from real data. Golden template regenerated from real reviews (20 rows, unlabelled).
 - **QA:** `python -m scripts.qa_check` currently reports **14/15 PASS**.
   - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
-- **Insta Talk guidance:** next-cycle care plans (Watch for / Note down / Review), need cues, category awareness, decision-confidence questions, route-choice guidance, source/confidence disclosure, and a no-action path. All are local, guidance-only, and based on user input plus `data/public_reference.csv`.
+- **Insta Talk guidance:** next-cycle care plans (Watch for / Note down / Review), 3-question guided intake with safety pausing, need cues, category awareness, decision-confidence questions, route-choice guidance, confidence v2 (source class + freshness + match), post-service continuity loop, and a no-action path. All are local, guidance-only, and based on user input plus `data/public_reference.csv`.
 - **Pending before submission:** 20 manual golden labels (`python -m scripts.label_golden`), 5–6 real anonymized interviews, >=3 MVP user tests, fellow-name exclusion set locally, final QA pass, Streamlit deployment/public links.
 
 ## What This Repo Contains
 
-- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, private 90-day care plan with Watch for / Note down / Review sections, need cues, category awareness, decision-confidence questions and route-choice guidance, grounded summary with Markdown/.ics/JSON export, Need Decider with explicit no-action route, and post-service reflection checklist.
+- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, guided 3-question intake, private 90-day care plan with Watch for / Note down / Review sections, need cues, category awareness, decision-confidence questions, route-choice guidance and confidence breakdown, grounded summary with Markdown/.ics/JSON export, Need Decider with explicit no-action route, and a post-service continuity loop with private reflection and review window.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
 - **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).
@@ -55,7 +55,7 @@ outputs/discovery_results.json, evidence_log.md/pdf
         ▼
 Streamlit app (app.py + views/*)
   - MVP (src/mvp.py): build_calendar, route_need, reflect
-  - Guidance (src/insta_talk.py): care_plan, mode_response, guardrails, why-not notes
+  - Guidance (src/insta_talk.py): guided_intake_plan, care_plan, confidence_v2, continuity_loop, mode_response, guardrails, why-not notes
   - Discovery/Evidence/Research/Problem/Testing/Metrics/Risks/Deck
         │
         ▼
@@ -99,7 +99,7 @@ python -m scripts.qa_check
 | `data/public_corpus.csv` | `item_id,source,source_class,source_url,access_date,text,rating,city,category,return_signal_hint,is_illustrative` | Public sources only (C3). No logged-in UC/app scraping. |
 | `data/golden_set.csv` | `item_id,text,human_primary_theme,human_return_signal,human_note` | 20 rows manually labelled; **do not fabricate labels**. |
 | `data/interviews.csv` | `respondent_id,interview_date,consent,city_tier,household_type,decision_maker,last_booking_date,category,total_bookings,anchor_booking_date,returner_90d,subsequent_need,Q4_discovery,Q5_booking_reason,Q6_provider_choice,Q7_post_service,Q8_expectations,Q9_next_need,Q10_arrangement,Q11_considered_UC,Q12_alternative,Q13_return_motivation,Q14_barriers,Q15_planning,Q16_tracking_value,Q17_decision_information,Q18_usefulness,main_barrier,notes,quote,theme_code` | 5–6 anonymized interviews (R01–R06), both `returner_90d` yes/no, >=2 `category` values, no PII (C6/C7). |
-| `data/public_reference.csv` | `need,trigger,typical_timing_days,public_basis,source_url,source_class` | Public, non-UC-specific reference facts with sources. |
+| `data/public_reference.csv` | `need,trigger,typical_timing_days,public_basis,source_url,source_class,freshness,match_strength` | Public, non-UC-specific reference facts with source class, link-freshness state and source-to-need match strength. |
 
 ## Re-collect / Replace Data
 
@@ -117,7 +117,7 @@ python -m scripts.qa_check
 |---|---|---|
 | AI Discovery Engine | `views/2_Discovery_Engine.py` | Implemented |
 | 10-slide deck | `outputs/NL_UrbanCompany.pdf`, `views/10_Deck.py` | Draft generated |
-| Deployed AI-native MVP | `app.py`, `views/1_MVP.py`, `src/insta_talk.py` | Implemented locally with history input, next-cycle care plans, need cues, decision questions, route guidance, plan export, reminders, and explicit no-action; deploy pending |
+| Deployed AI-native MVP | `app.py`, `views/1_MVP.py`, `src/insta_talk.py` | Implemented locally with history input, guided intake, next-cycle care plans, confidence v2, continuity loop, plan export, reminders, and explicit no-action; deploy pending |
 | AI Evidence Log | `views/3_Evidence_Log.py`, `outputs/evidence_log.md`, `outputs/evidence_log.pdf` | Draft generated |
 
 ## Deployed URLs
