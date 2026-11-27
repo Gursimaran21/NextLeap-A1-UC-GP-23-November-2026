@@ -361,11 +361,11 @@ def _nav_buttons() -> None:
     step = int(st.session_state.mvp_step)
     c1, c2, c3 = st.columns([1, 1, 6])
     with c1:
-        if st.button("Back", disabled=step <= 1, width="stretch"):
+        if st.button("Back", disabled=step <= 1, width="stretch", type="tertiary"):
             st.session_state.mvp_step = max(1, step - 1)
             st.rerun()
     with c2:
-        if st.button("Next", disabled=step >= len(STEPS), width="stretch"):
+        if st.button("Next", disabled=step >= len(STEPS), width="stretch", type="primary"):
             st.session_state.mvp_step = min(len(STEPS), step + 1)
             st.rerun()
 

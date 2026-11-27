@@ -46,6 +46,14 @@ st.markdown(
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"]:hover {
         background-color: #EBDFF0 !important;
       }
+      [data-testid="stBaseButton-tertiary"]:not([disabled]) {
+        background-color: #F1E4F5 !important;
+        color: #500C6B !important;
+        border: 1px solid #D9C6E0 !important;
+      }
+      [data-testid="stBaseButton-tertiary"]:not([disabled]):hover {
+        background-color: #EBDFF0 !important;
+      }
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
         background-color: #500C6B !important;
       }
