@@ -622,7 +622,7 @@ def _render_calendar(profile: dict) -> None:
             }, quiet=True)
             st.rerun()
 
-    with st.expander("2. Choose a service directly for a quick plan."):
+    with st.expander("2. Choose a service directly for a quick plan"):
         care_left, care_right = st.columns([2, 1])
         with care_left:
             selected_care = st.selectbox(
@@ -641,6 +641,7 @@ def _render_calendar(profile: dict) -> None:
                 st.rerun()
         if not care:
             st.caption("Choose a service above to see the care plan.")
+        _session_summary_panel()
 
     with st.expander("3. Build your own care plan"):
         history = st.session_state.get("mvp_history", {})
@@ -824,8 +825,6 @@ def _render_calendar(profile: dict) -> None:
             ("next_need_recall", "review_window_clarity", "confidence_rating"),
             "Save intake check",
         )
-
-    _session_summary_panel()
 
     st.divider()
 
