@@ -19,7 +19,7 @@ REQUIRED_INTERVIEW_COLS = [
     "category",
     "total_bookings",
     "anchor_booking_date",
-    "return_90d",
+    "returner_90d",
     "subsequent_need",
     "Q4_discovery",
     "Q5_booking_reason",
@@ -77,10 +77,10 @@ def load_interviews(path: str | Path | None = None) -> pd.DataFrame:
     if bad_ids:
         raise ValueError(f"respondent_id must be R01..R06; got: {bad_ids}")
 
-    df["return_90d"] = df["return_90d"].astype(str).str.strip().str.lower()
-    bad_ret = sorted(set(df["return_90d"]) - ALLOWED_RETURNER - {"", "nan"})
+    df["returner_90d"] = df["returner_90d"].astype(str).str.strip().str.lower()
+    bad_ret = sorted(set(df["returner_90d"]) - ALLOWED_RETURNER - {"", "nan"})
     if bad_ret:
-        raise ValueError(f"return_90d must be yes/no; got: {bad_ret}")
+        raise ValueError(f"returner_90d must be yes/no; got: {bad_ret}")
 
     df["total_bookings"] = pd.to_numeric(df["total_bookings"], errors="coerce").fillna(0).astype(int)
     if (df["total_bookings"] < 0).any():
@@ -102,7 +102,7 @@ def interview_template() -> pd.DataFrame:
         "category": "AC Service",
         "total_bookings": 1,
         "anchor_booking_date": "",
-        "return_90d": "no",
+        "returner_90d": "no",
         "subsequent_need": "",
         "Q4_discovery": "",
         "Q5_booking_reason": "",
