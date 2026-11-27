@@ -705,15 +705,15 @@ def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
 
-    st.markdown("### Next-cycle care plan (guidance only)")
-    st.caption(
-        "Based only on the service you say you completed and public guidance. "
-        "No prices, availability, messages, or account access."
-    )
-
     care = st.session_state.get("mvp_care_plan")
 
     with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
+        st.markdown("### Next-cycle care plan (guidance only)")
+        st.caption(
+            "Based only on the service you say you completed and public guidance. "
+            "No prices, availability, messages, or account access."
+        )
+
         intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
         care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
         default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
