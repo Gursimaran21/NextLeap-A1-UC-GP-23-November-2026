@@ -37,6 +37,14 @@ st.markdown(
         outline-offset: 2px;
       }
       .stAlert { border-radius: 8px; }
+      [data-testid="stExpander"] > details > summary {
+        background-color: #500C6B !important;
+        border-radius: 8px !important;
+      }
+      [data-testid="stExpander"] > details > summary,
+      [data-testid="stExpander"] > details > summary * {
+        color: #FFFFFF !important;
+      }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
         background-color: #F1E4F5 !important;
