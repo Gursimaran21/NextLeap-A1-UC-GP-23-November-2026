@@ -576,19 +576,16 @@ def _care_pdf_markdown(care: dict) -> str:
         "",
         f"# Your Next-Cycle Care Plan: {care.get('category', 'your home')}",
         "",
-        "Based only on the service you selected and public guidance. "
-        "No prices, availability, messages, or account access.",
+        "## 1. 90-day Plan",
         "",
-        "## **1. 90-day Plan**",
-        "",
-        "### **Watch for**",
+        "### Watch for",
     ]
     watch = list(care.get("watch_for", [])) or ["Use your own notes for this service."]
     lines.extend(f"{i}.) {item}" for i, item in enumerate(watch, 1))
-    lines.extend(["", "### **Note down**"])
+    lines.extend(["", "### Note down"])
     note = list(care.get("note_down", [])) or ["Use your own notes for this service."]
     lines.extend(f"{i}.) {item}" for i, item in enumerate(note, 1))
-    lines.extend(["", "### **Review around this time**"])
+    lines.extend(["", "### Review around this time"])
     review = list(care.get("review", []))
     if review:
         lines.extend(
@@ -598,7 +595,7 @@ def _care_pdf_markdown(care: dict) -> str:
         )
     else:
         lines.append("Use your own notes; no public timing cue is available.")
-    lines.extend(["", "## **2. Need Cues**"])
+    lines.extend(["", "## 2. Need Cues"])
     cues = list(care.get("need_cues", []))
     if cues:
         lines.extend(
@@ -608,30 +605,30 @@ def _care_pdf_markdown(care: dict) -> str:
         )
     else:
         lines.append("No public cue is available for this service. Use your own notes.")
-    lines.extend(["", "## **3. Category Awareness**"])
+    lines.extend(["", "## 3. Category Awareness"])
     guide = {row["category"]: row for row in mvp.category_guide()}
     for category in care.get("adjacent_categories", []):
         row = guide.get(category, {})
         lines.extend([
             "",
-            f"### **{category}**",
+            f"### {category}",
             f"Covers: {row.get('covers', 'Public guidance')}",
             f"Consider when: {row.get('consider_when', 'Your own observation')}",
         ])
     lines.extend(["", "Category information only. No provider names or availability are shown."])
-    lines.extend(["", "## **4. Decision Confidence**"])
+    lines.extend(["", "## 4. Decision Confidence"])
     questions = list(care.get("decision_questions", [])) or ["What would help you decide calmly?"]
     lines.extend(f"{i}.) {question}" for i, question in enumerate(questions, 1))
-    lines.extend(["", "## **5. Route Choice**"])
+    lines.extend(["", "## 5. Route Choice"])
     for item in care.get("route_guide", []):
         lines.extend([
             "",
-            f"### **{item['route']}**",
+            f"### {item['route']}",
             f"Fits: {item.get('fits', '')}",
             f"Caution: {item.get('caution', '')}",
         ])
     lines.extend(["", "Decide what fits you. Nothing here contacts anyone."])
-    lines.extend(["", "## **6. Why This Guidance?**", "", "### **Why this guidance:**"])
+    lines.extend(["", "## 6. Why This Guidance?", "", "### Why this guidance:"])
     why_text = str(care.get("why", ""))
     if why_text.lower().startswith("why this guidance:"):
         why_text = why_text.split(":", 1)[1].strip()
@@ -639,7 +636,7 @@ def _care_pdf_markdown(care: dict) -> str:
     lines.extend(f"{part}." for part in sentences[:-1] if part)
     if sentences[-1]:
         lines.append(sentences[-1])
-    lines.extend(["", "**Urban Company Signature**"])
+    lines.extend(["", "From Urban Company,", "Insta Talk (Next-Cycle Care Plan)"])
     return "\n".join(lines)
 
 
