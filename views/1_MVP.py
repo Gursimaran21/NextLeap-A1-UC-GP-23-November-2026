@@ -765,6 +765,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     guide_df = pd.DataFrame(mvp.category_guide())
                     st.dataframe(guide_df, width="stretch", hide_index=True)
                     st.caption("Category descriptions use public information. No external action is taken from this page.")
+                st.divider()
 
             pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
             with pdf_col:
@@ -1090,7 +1091,12 @@ def _leading_check(
         first = st.radio(labels[0], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[0])
         second = st.radio(labels[1], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[1])
         third = st.slider(labels[2], 1, 5, 3, key=keys[2])
-        if st.button(button_label, key=f"leading_{flow}", width="stretch"):
+        if st.button(
+            button_label,
+            key=f"leading_{flow}",
+            width="content" if button_label == "Save intake check" else "stretch",
+            type="primary" if button_label == "Save intake check" else "secondary",
+        ):
             if first == "Select" or second == "Select":
                 st.warning("Choose an answer for both questions before saving.")
             else:
