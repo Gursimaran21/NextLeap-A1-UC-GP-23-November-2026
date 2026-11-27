@@ -95,6 +95,18 @@ def render() -> None:
             "expected_evidence": "capture_reflection -> continuity_loop -> local JSON; no upload",
             "observed": "[Fill after test]",
         },
+        {
+            "user": "R_T7 (placeholder)",
+            "task": "Save the guided-intake and continuity leading checks, then explain what they can and cannot show.",
+            "expected_evidence": "insta_talk_leading_indicator for guided_intake_check and continuity_loop_check; leading indicators only",
+            "observed": "[Fill after test]",
+        },
+        {
+            "user": "R_T8 (placeholder)",
+            "task": "Use a quick prompt in Step 3, then open the session summary, edit the answers and reset guided notes.",
+            "expected_evidence": "quick_prompt_0 -> chat turn; session summary shows service, change, timing and review window",
+            "observed": "[Fill after test]",
+        },
     ]
     for t in iteration_2:
         with st.container(border=True):

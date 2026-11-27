@@ -25,12 +25,12 @@ All work must respect [`docs/constraints.md`](docs/constraints.md).
 - **Real data:** `data/public_corpus.csv` now holds **500 real public App Store (India) reviews** (465 kept after cleaning), collected 2026-11-23 via `scripts/collect_appstore.py`. Discovery results, evidence log, and deck regenerated from real data. Golden template regenerated from real reviews (20 rows, unlabelled).
 - **QA:** `python -m scripts.qa_check` currently reports **14/15 PASS**.
   - Failing: golden set has 0/20 manually labelled rows (do not fabricate).
-- **Insta Talk guidance:** next-cycle care plans (Watch for / Note down / Review), 3-question guided intake with safety pausing, need cues, category awareness, decision-confidence questions, route-choice guidance, confidence v2 (source class + freshness + match), post-service continuity loop, and a no-action path. All are local, guidance-only, and based on user input plus `data/public_reference.csv`.
+- **Insta Talk guidance:** next-cycle care plans (Watch for / Note down / Review), 3-question guided intake with safety pausing, need cues, category awareness, decision-confidence questions, route-choice guidance, confidence v2 (source class + freshness + match), coverage badges per review cue, quick prompt chips, a private session summary with edit/reset, leading-indicator capture for intake and continuity, post-service continuity loop, and a no-action path. All are local, guidance-only, and based on user input plus `data/public_reference.csv`.
 - **Pending before submission:** 20 manual golden labels (`python -m scripts.label_golden`), 5–6 real anonymized interviews, >=3 MVP user tests, fellow-name exclusion set locally, final QA pass, Streamlit deployment/public links.
 
 ## What This Repo Contains
 
-- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, guided 3-question intake, private 90-day care plan with Watch for / Note down / Review sections, need cues, category awareness, decision-confidence questions, route-choice guidance and confidence breakdown, grounded summary with Markdown/.ics/JSON export, Need Decider with explicit no-action route, and a post-service continuity loop with private reflection and review window.
+- **Home Care Companion MVP** (Streamlit): 4-step wizard — anonymous household profile + optional service history, guided 3-question intake, private 90-day care plan with Watch for / Note down / Review sections, coverage badges and confidence breakdown, need cues, category awareness, decision-confidence questions and route-choice guidance, grounded summary with Markdown/.ics/JSON export, Need Decider with quick prompt chips and explicit no-action route, post-service continuity loop, private session summary, and local leading-indicator capture.
 - **AI Discovery Engine**: ingests public feedback, codes into fixed T1–T11 taxonomy, aggregates, bias report, golden-set evaluation.
 - **Evidence Log**: sources/volume, agreement, per-theme precision/recall, confusion matrix, corrections, bias/limitations; MD/PDF downloads.
 - **Deck**: 10-slide message-first PDF (`outputs/NL_UrbanCompany.pdf`).
@@ -55,7 +55,7 @@ outputs/discovery_results.json, evidence_log.md/pdf
         ▼
 Streamlit app (app.py + views/*)
   - MVP (src/mvp.py): build_calendar, route_need, reflect
-  - Guidance (src/insta_talk.py): guided_intake_plan, care_plan, confidence_v2, continuity_loop, mode_response, guardrails, why-not notes
+  - Guidance (src/insta_talk.py): guided_intake_plan, care_plan, confidence_v2, coverage_badge, continuity_loop, mode_response, guardrails, why-not notes
   - Discovery/Evidence/Research/Problem/Testing/Metrics/Risks/Deck
         │
         ▼
@@ -117,7 +117,7 @@ python -m scripts.qa_check
 |---|---|---|
 | AI Discovery Engine | `views/2_Discovery_Engine.py` | Implemented |
 | 10-slide deck | `outputs/NL_UrbanCompany.pdf`, `views/10_Deck.py` | Draft generated |
-| Deployed AI-native MVP | `app.py`, `views/1_MVP.py`, `src/insta_talk.py` | Implemented locally with history input, guided intake, next-cycle care plans, confidence v2, continuity loop, plan export, reminders, and explicit no-action; deploy pending |
+| Deployed AI-native MVP | `app.py`, `views/1_MVP.py`, `src/insta_talk.py` | Implemented locally with history input, guided intake, coverage badges, confidence v2, quick prompts, session summary, continuity loop, leading-indicator capture, plan export, reminders, and explicit no-action; deploy pending |
 | AI Evidence Log | `views/3_Evidence_Log.py`, `outputs/evidence_log.md`, `outputs/evidence_log.pdf` | Draft generated |
 
 ## Deployed URLs

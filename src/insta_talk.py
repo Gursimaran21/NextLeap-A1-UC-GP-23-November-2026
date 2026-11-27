@@ -454,6 +454,42 @@ def confidence_v2(source_class: str = "", freshness: str = "", match_strength: s
     }
 
 
+_COVERAGE_STYLES = {
+    "exact": ("Strong public basis", "#EAF6EE", "#1F5130", "#BFE3C8"),
+    "partial": ("Partial public basis", "#FFF4E5", "#7A4B00", "#F0D9A8"),
+    "category": ("Category-level basis", "#EBDFF0", "#500C6B", "#D9C6E0"),
+    "template": ("No public basis", "#F8F9FA", "#7A858D", "#E3E6E8"),
+    "none": ("No public basis", "#F8F9FA", "#7A858D", "#E3E6E8"),
+}
+
+
+def coverage_badge(match_strength: str = "", freshness: str = "", source_url: str = "") -> dict[str, str]:
+    """Return a small, honest coverage label for one public-guidance cue."""
+    ms = str(match_strength or "template").strip().lower()
+    label, bg, fg, border = _COVERAGE_STYLES.get(ms, _COVERAGE_STYLES["template"])
+    fr = str(freshness or "not_recorded").strip().lower()
+    if not source_url:
+        note = "No source link recorded. Use your own notes."
+    elif fr == "blocked_2026-11":
+        note = "Source link check was blocked; treat this as partial basis."
+    elif fr == "search_indexed_2026-11":
+        note = "Source found in a public search index; direct fetch was not confirmed."
+    elif fr == "updated_2025-01":
+        note = "Source page dated 2025-01-31."
+    elif fr == "checked_2026-11":
+        note = "Source link checked 2026-11."
+    else:
+        note = "Freshness not recorded."
+    return {
+        "label": label,
+        "bg": bg,
+        "fg": fg,
+        "border": border,
+        "note": note,
+        "match_strength": ms,
+    }
+
+
 def _reference_lookup() -> dict[str, dict[str, str]]:
     """Return public timing references keyed by need, without any network call."""
     try:
@@ -551,6 +587,7 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
             "confidence": round(confidence, 2),
             "route_hint": "CARE_PLAN",
             "evidence": "customer input plus public guidance",
+            "coverage": coverage_badge(first["match_strength"], first["freshness"], first["source_url"]),
         }
 
     label = matched or "your home"
@@ -682,7 +719,6 @@ def continuity_loop(
     """Turn a reflection and optional care plan into a private continuity loop."""
     ref = dict(reflection or {})
     cp = dict(care_plan_data or {})
-    lowered = str(text or "").lower()
     detected, _, _ = _service_match(str(text or ""))
     completed = str(cp.get("category") or detected or "the service you completed")
 
@@ -717,6 +753,9 @@ def continuity_loop(
             "confidence": round(float(cp.get("confidence", 0.45) or 0.45), 2),
             "route_hint": "CONTINUITY",
             "evidence": "customer reflection plus public guidance",
+            "coverage": coverage_badge(
+                first.get("match_strength", ""), first.get("freshness", ""), first.get("source_url", "")
+            ),
         }
     else:
         review_window = guard("Use your own notes; review within 30-90 days if a change appears.")
@@ -730,6 +769,7 @@ def continuity_loop(
             "confidence": 0.40,
             "route_hint": "CONTINUITY",
             "evidence": "customer reflection",
+            "coverage": coverage_badge("none", "not_recorded", ""),
         }
 
     reason = ensure_why_not(

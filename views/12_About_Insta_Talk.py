@@ -48,6 +48,8 @@ def _about_html() -> str:
         "Care plans",
         "Guided intake",
         "Continuity loop",
+        "Quick prompts",
+        "Session summary",
         "Informed choice",
         "Service clarity",
         "Voice guidance",
@@ -80,7 +82,7 @@ def _about_html() -> str:
         (
             "08",
             "Public grounding",
-            "Use public service information as the basis for guidance, with confidence and source shown where available.",
+            "Use public service information as the basis for guidance, with confidence, source and a coverage badge shown where available.",
         ),
         (
             "09",
@@ -96,6 +98,21 @@ def _about_html() -> str:
             "11",
             "Continuity loop",
             "Turn a private reflection into monitor notes, a review window and a local summary that can feed Step 2.",
+        ),
+        (
+            "12",
+            "Quick prompts",
+            "Tap an example need instead of starting from a blank box, then edit or type your own wording.",
+        ),
+        (
+            "13",
+            "Session summary",
+            "See the service, change, timing and review window you gave, with simple edit and reset controls.",
+        ),
+        (
+            "14",
+            "Local evaluation",
+            "Save short leading indicators on recall, clarity and confidence. No outcome claim and no personal text is stored.",
         ),
     ]
     pillar_html = "".join(

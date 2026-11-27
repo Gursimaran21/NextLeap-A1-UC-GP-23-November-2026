@@ -133,6 +133,13 @@ STEPS = [
     "After a service",
 ]
 
+QUICK_PROMPTS = [
+    ("AC not cooling", "Decide", "AC not cooling"),
+    ("Tap dripping", "Decide", "Tap dripping"),
+    ("No need right now", "No action", "No service needed right now"),
+    ("Planning cue", "Next 90 days", "Deep cleaning was 9 months ago"),
+]
+
 
 def _clean_html(value: str) -> str:
     """Strip indentation from small inline-HTML fragments."""
@@ -179,6 +186,16 @@ DEMO_TASKS = [
         "Test continuity loop",
         "In Step 4, generate a reflection, build the continuity loop, add its review cue to Step 2, "
         "and download the private summary.",
+    ),
+    (
+        "Record leading indicators",
+        "After a guided plan and a continuity loop, save the short local checks on next-need recall, "
+        "review-window clarity and confidence. Show that the evidence is leading, not a booking claim.",
+    ),
+    (
+        "Use quick prompts and summary",
+        "In Step 3, tap a quick prompt instead of typing. Then open the session summary to see service, "
+        "change, timing and review window, with edit and reset controls.",
     ),
     (
         "Test continuity",
@@ -250,6 +267,9 @@ def _init_state() -> None:
         "mvp_care_category": "AC Service",
         "mvp_care_plan": None,
         "mvp_continuity": None,
+        "mvp_intake_edit": False,
+        "mvp_leading": {},
+        "mvp_reflection_text": "",
         "mvp_custom_need": "",
         "mvp_chat": [],
         "mvp_reflection": None,
@@ -482,8 +502,7 @@ def _render_calendar(profile: dict) -> None:
         "No prices, availability, messages, or account access."
     )
 
-    st.markdown("**Guided intake - 3 quick questions**")
-    with st.container(border=True):
+    with st.expander("Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
         care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
         default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
@@ -507,8 +526,7 @@ def _render_calendar(profile: dict) -> None:
                 key="intake_mode",
             )
         if st.button("Build guided care plan", type="primary", width="stretch"):
-            st.session_state.mvp_care_category = intake_service
-            st.session_state.mvp_care_plan = insta_talk.guided_intake_plan(
+            built = insta_talk.guided_intake_plan(
                 {
                     "category": intake_service,
                     "change": intake_note,
@@ -516,6 +534,18 @@ def _render_calendar(profile: dict) -> None:
                 },
                 session_hash=st.session_state.mvp_session_hash,
             )
+            st.session_state.mvp_care_category = intake_service
+            st.session_state.mvp_care_plan = built
+            st.session_state.mvp_intake_edit = False
+            _log_leading_indicator("guided_intake_built", "guided_intake", {
+                "category": intake_service,
+                "timing": intake_mode,
+                "paused": bool(built.get("intake_paused")),
+                "confidence": built.get("confidence", 0),
+                "source_class": built.get("source_class", ""),
+                "freshness": built.get("freshness", ""),
+                "match_strength": built.get("match_strength", ""),
+            }, quiet=True)
             st.rerun()
 
     st.caption("Or choose a service directly for a quick plan.")
@@ -568,8 +598,15 @@ def _render_calendar(profile: dict) -> None:
                 st.markdown("**Review around this time**")
                 if care.get("review"):
                     for item in care["review"]:
-                        st.markdown(f"- **{item['need']}**: about {item['days']} day(s)")
-                        st.caption(item.get("basis", "Public timing guidance"))
+                        badge = insta_talk.coverage_badge(
+                            item.get("match_strength", ""), item.get("freshness", ""), item.get("source_url", "")
+                        )
+                        st.markdown(
+                            f"- **{item['need']}**: about {item['days']} day(s) "
+                            f"{_coverage_html(badge)}",
+                            unsafe_allow_html=True,
+                        )
+                        st.caption(f"{badge['note']} · {item.get('basis', 'Public timing guidance')}")
                 else:
                     st.caption("Use your own notes; no public timing cue is available.")
             st.caption("Review windows are prompts to check your own situation, not service requirements.")
@@ -594,7 +631,7 @@ def _render_calendar(profile: dict) -> None:
                 *[f"- {x}" for x in care.get("note_down", [])],
                 "",
                 "## Review around this time",
-                *[f"- {x['need']}: about {x['days']} day(s) - {x.get('basis','')}" for x in care.get("review", [])],
+                *[f"- {x['need']}: about {x['days']} day(s) - {insta_talk.coverage_badge(x.get('match_strength',''), x.get('freshness',''), x.get('source_url',''))['label']} - {x.get('basis','')}" for x in care.get("review", [])],
                 "",
                 "## Decision questions",
                 *[f"- {x}" for x in care.get("decision_questions", [])],
@@ -611,11 +648,17 @@ def _render_calendar(profile: dict) -> None:
         with care_tabs[1]:
             if care.get("need_cues"):
                 for cue in care["need_cues"]:
+                    badge = insta_talk.coverage_badge(
+                        cue.get("match_strength", care.get("match_strength", "")),
+                        cue.get("freshness", care.get("freshness", "")),
+                        cue.get("source_url", ""),
+                    )
                     st.markdown(
                         f"- **{cue['signal']}** - check {cue['category']} "
-                        f"(confidence {float(cue['confidence']):.2f})"
+                        f"(confidence {float(cue['confidence']):.2f}) {_coverage_html(badge)}",
+                        unsafe_allow_html=True,
                     )
-                    st.caption(cue.get("basis", "Public guidance"))
+                    st.caption(f"{badge['note']} · {cue.get('basis', 'Public guidance')}")
             else:
                 st.caption("No public cue is available for this service. Use your own notes.")
         with care_tabs[2]:
@@ -651,6 +694,22 @@ def _render_calendar(profile: dict) -> None:
             st.caption("Your service name stays in this session only.")
     else:
         st.caption("Choose a service above to see the care plan.")
+
+    if care and care.get("intake") and not care.get("intake_paused"):
+        _leading_check(
+            "guided_intake",
+            "guided_intake_check",
+            ("li_intake_name", "li_intake_clear", "li_intake_conf"),
+            (
+                "Could you name a plausible next need?",
+                "Is the review window clear?",
+                "How confident do you feel now?",
+            ),
+            ("next_need_recall", "review_window_clarity", "confidence_rating"),
+            "Save intake check",
+        )
+
+    _session_summary_panel()
 
     st.divider()
 
@@ -849,6 +908,109 @@ def _log_decision_event(event: str, msg: dict) -> None:
     st.toast("Saved locally for evaluation.")
 
 
+def _log_leading_indicator(event: str, flow: str, fields: dict, quiet: bool = False) -> None:
+    """Record a session-only leading indicator without any personal text."""
+    record = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "session_hash": st.session_state.mvp_session_hash,
+        "turn": 0,
+        "chosen_tool": "insta_talk_leading_indicator",
+        "reason": event,
+        "flow": flow,
+        "user_input_length": 0,
+    }
+    record.update({k: v for k, v in fields.items() if v not in (None, "", "Select")})
+    mvp.log_tool_trace(record)
+    st.session_state.mvp_leading[event] = dict(fields)
+    if not quiet:
+        st.toast("Saved locally for evaluation.")
+
+
+def _leading_check(
+    flow: str,
+    event: str,
+    keys: tuple[str, str, str],
+    labels: tuple[str, str, str],
+    fields: tuple[str, str, str],
+    button_label: str,
+) -> None:
+    """Render and save a short leading-indicator check for one flow."""
+    with st.container(border=True):
+        st.markdown("**Quick check (local evaluation only)**")
+        first = st.radio(labels[0], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[0])
+        second = st.radio(labels[1], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[1])
+        third = st.slider(labels[2], 1, 5, 3, key=keys[2])
+        if st.button(button_label, key=f"leading_{flow}", width="stretch"):
+            if first == "Select" or second == "Select":
+                st.warning("Choose an answer for both questions before saving.")
+            else:
+                _log_leading_indicator(event, flow, {
+                    fields[0]: first,
+                    fields[1]: second,
+                    fields[2]: int(third),
+                })
+
+
+def _coverage_html(badge: dict) -> str:
+    """Inline a small public-basis badge next to one cue."""
+    return (
+        f'<span style="display:inline-block; background:{badge["bg"]}; color:{badge["fg"]}; '
+        f'border:1px solid {badge["border"]}; border-radius:999px; padding:2px 8px; '
+        f'font-size:10px; font-weight:700; white-space:nowrap;">{badge["label"]}</span>'
+    )
+
+
+def _session_summary_panel() -> None:
+    """Show the session-only inputs and outputs in one resettable panel."""
+    care = st.session_state.get("mvp_care_plan") or {}
+    cont = st.session_state.get("mvp_continuity") or {}
+    intake = care.get("intake") or {}
+    service = intake.get("category") or care.get("category") or cont.get("completed_service") or "not provided"
+    change = intake.get("change") or "not added"
+    timing = intake.get("timing") or "not answered"
+    if cont.get("review_window"):
+        review = str(cont["review_window"])
+    elif care.get("review"):
+        first = care["review"][0]
+        review = f"About {first['days']} day(s): {first['need']}"
+    else:
+        review = "none available"
+
+    with st.container(border=True):
+        st.markdown("**Session summary (private)**")
+        s1, s2, s3, s4 = st.columns(4)
+        with s1:
+            st.caption("Service you told us")
+            st.markdown(f"**{service}**")
+        with s2:
+            st.caption("What changed")
+            st.markdown(f"**{change}**")
+        with s3:
+            st.caption("Timing answer")
+            st.markdown(f"**{timing}**")
+        with s4:
+            st.caption("Review window")
+            st.markdown(f"**{review}**")
+        st.caption(
+            f"Session ID: `{st.session_state.mvp_session_hash}` · "
+            "This panel stays in your browser session. No upload and no external action."
+        )
+        edit_col, reset_col = st.columns(2)
+        with edit_col:
+            if st.button("Edit guided answers", key="summary_edit", width="stretch"):
+                st.session_state.mvp_intake_edit = True
+                st.session_state.mvp_step = 2
+                st.rerun()
+        with reset_col:
+            if st.button("Reset guided notes", key="summary_reset", width="stretch"):
+                st.session_state.mvp_care_plan = None
+                st.session_state.mvp_continuity = None
+                st.session_state.mvp_reflection = None
+                st.session_state.mvp_reflection_text = ""
+                st.session_state.mvp_intake_edit = False
+                st.rerun()
+
+
 def _append_decider_result(result: dict, mode: str = "") -> None:
     trace = result.get("tool_trace", {})
     parts = []
@@ -924,6 +1086,16 @@ def _render_decider(profile: dict) -> None:
     )
 
     active_mode = _talk_mode_selector()
+
+    st.markdown("**Quick prompts**")
+    st.caption("Tap an example to send it, or type your own below. Examples are not instructions.")
+    prompt_cols = st.columns(len(QUICK_PROMPTS))
+    for idx, (label, mode, text) in enumerate(QUICK_PROMPTS):
+        with prompt_cols[idx]:
+            if st.button(label, key=f"quick_prompt_{idx}", width="stretch"):
+                st.session_state.mvp_talk_mode = mode
+                _handle_talk(mode, text, profile)
+
     context = st.text_input(
         "Add context for this mode (optional)",
         key=f"talk_context_{active_mode}",
@@ -1036,6 +1208,7 @@ def _render_reflection() -> None:
         st.rerun()
 
     ref = st.session_state.get("mvp_reflection")
+    cont = st.session_state.get("mvp_continuity")
     if ref:
         st.markdown("**Open topics to keep in mind**")
         for t in ref.get("open_topics", []):
@@ -1056,12 +1229,19 @@ def _render_reflection() -> None:
 
         st.markdown("**Post-service continuity loop**")
         if st.button("Build continuity loop", key="continuity_build", width="stretch"):
-            st.session_state.mvp_continuity = insta_talk.continuity_loop(
+            built_cont = insta_talk.continuity_loop(
                 ref,
                 st.session_state.get("mvp_care_plan"),
                 text,
                 session_hash=st.session_state.mvp_session_hash,
             )
+            st.session_state.mvp_continuity = built_cont
+            _log_leading_indicator("continuity_loop_built", "continuity_loop", {
+                "completed_service": built_cont.get("completed_service", ""),
+                "review_source": "public" if built_cont.get("source_url") else "own notes",
+                "confidence": built_cont.get("confidence", 0),
+                "coverage": (built_cont.get("plan_item", {}).get("coverage", {}) or {}).get("label", ""),
+            }, quiet=True)
             st.rerun()
 
         cont = st.session_state.get("mvp_continuity")
@@ -1082,6 +1262,9 @@ def _render_reflection() -> None:
             with review_col:
                 st.markdown("**Review window**")
                 st.markdown(f"- {cont.get('review_window', '')}")
+                coverage = (cont.get("plan_item", {}) or {}).get("coverage") or {}
+                if coverage:
+                    st.markdown(_coverage_html(coverage), unsafe_allow_html=True)
             st.caption(cont.get("why", ""))
             cont_json = {
                 "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -1111,6 +1294,22 @@ def _render_reflection() -> None:
                 mime="application/json",
                 width="stretch",
             )
+
+    if cont:
+        _leading_check(
+            "continuity_loop",
+            "continuity_loop_check",
+            ("li_cont_monitor", "li_cont_clear", "li_cont_useful"),
+            (
+                "Could you name what to monitor?",
+                "Is the review window clear?",
+                "How useful is this private summary?",
+            ),
+            ("monitor_clarity", "review_window_clarity", "usefulness_rating"),
+            "Save continuity check",
+        )
+
+    _session_summary_panel()
 
     st.divider()
     st.markdown("**Quick feedback**")
