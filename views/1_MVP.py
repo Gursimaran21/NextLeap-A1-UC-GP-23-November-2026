@@ -578,6 +578,11 @@ def _tinted_note(text: str) -> str:
     )
 
 
+def _vertical_space(px: int = 16) -> None:
+    """Add a small vertical gap between adjacent content blocks."""
+    st.markdown(f'<div style="height:{px}px;"></div>', unsafe_allow_html=True)
+
+
 def _care_pdf_markdown(care: dict) -> str:
     """Render the full on-screen care plan as a structured PDF document."""
     lines = [
@@ -754,6 +759,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     st.markdown(_tinted_note(st.session_state["mvp_plan_summary"]), unsafe_allow_html=True)
                 else:
                     st.caption("Generate a short summary grounded only in the items above.")
+                _vertical_space()
 
                 with st.expander("Understand service categories"):
                     guide_df = pd.DataFrame(mvp.category_guide())
@@ -811,6 +817,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
             st.caption("Decide what fits you. Nothing here contacts anyone.")
         with care_tabs[5]:
             st.markdown(_tinted_note(care.get("why", "")), unsafe_allow_html=True)
+            _vertical_space()
             parts = care.get("confidence_parts", {}) or {}
             st.write(
                 f"**Confidence:** {float(care.get('confidence', 0)):.2f} "
