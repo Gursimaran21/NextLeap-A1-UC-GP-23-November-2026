@@ -15,7 +15,7 @@ from typing import Any
 import pandas as pd
 import streamlit as st
 
-from src import config, insta_talk, llm as llm_mod, mvp
+from src import config, export, insta_talk, llm as llm_mod, mvp
 
 
 LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "HCA-LOGO-6.png"
@@ -564,7 +564,7 @@ def _render_profile() -> dict:
             type="primary",
         )
         if snapshot_downloaded:
-            st.success("Home snapshot (CSV) downloaded.")
+            st.success("Home snapshot (CSV) is downloaded.")
 
     return st.session_state.get("mvp_profile", profile)
 
@@ -622,7 +622,7 @@ def _render_care_plan(care: dict) -> None:
                     st.session_state.mvp_plan = plan
                     st.success("Private cue added to the plan below.")
             with none_col:
-                if st.button("No need right now", key="care_no_need", width="stretch"):
+                if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
                     st.success("Nothing added. You can return if that changes.")
             care_md = "\n".join([
@@ -642,13 +642,16 @@ def _render_care_plan(care: dict) -> None:
                 "",
                 f"Why this guidance: {care.get('why','')}",
             ])
-            st.download_button(
-                "Download care plan (Markdown)",
-                data=care_md.encode("utf-8"),
-                file_name="next_cycle_care_plan.md",
-                mime="text/markdown",
-                width="stretch",
+            care_pdf_downloaded = st.download_button(
+                "Download care plan (PDF)",
+                data=export.md_to_pdf_bytes(care_md),
+                file_name="next_cycle_care_plan.pdf",
+                mime="application/pdf",
+                type="primary",
+                width="content",
             )
+            if care_pdf_downloaded:
+                st.success("Care plan (PDF) is downloaded.")
         with care_tabs[1]:
             if care.get("need_cues"):
                 for cue in care["need_cues"]:
