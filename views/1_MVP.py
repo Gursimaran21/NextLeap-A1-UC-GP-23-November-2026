@@ -640,7 +640,7 @@ def _care_pdf_markdown(care: dict) -> str:
     return "\n".join(lines)
 
 
-def _render_care_plan(care: dict) -> None:
+def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
     """Render the care plan display inside the guided intake expander."""
     if care:
         st.markdown(f"**Care plan for {care['category']}**")
@@ -685,11 +685,114 @@ def _render_care_plan(care: dict) -> None:
                 else:
                     st.caption("Use your own notes; no public timing cue is available.")
             st.caption("Review windows are prompts to check your own situation, not service requirements.")
-            if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", width="stretch"):
+            if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", type="primary", width="content"):
                 plan = list(st.session_state.get("mvp_plan", []))
                 plan.append(dict(care["plan_item"]))
                 st.session_state.mvp_plan = plan
                 st.success("Private cue added to the plan below.")
+            plan = list(st.session_state.get("mvp_plan", []))
+
+            st.markdown("**Planning cues**")
+            for item in plan:
+                conf = float(item.get("confidence", 0))
+                conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
+                status = str(item.get("status", "Unclear"))
+                with st.container(border=True):
+                    head_left, head_right = st.columns([4, 1])
+                    with head_left:
+                        st.markdown(f"**{item.get('need', 'Cue')}**")
+                        st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
+                    with head_right:
+                        st.metric("Confidence", f"{conf:.2f}")
+                    if item.get("due_in_days") is not None:
+                        st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
+                    st.write(f"**Why:** {item.get('why', '')}")
+                    st.write(f"**Basis:** {item.get('basis', '')}")
+                    src = item.get("source_url", "")
+                    if src:
+                        st.markdown(f"**Public source:** [{src}]({src})")
+                    if status == "Not needed":
+                        st.success("You marked this as not needed. No action is suggested.")
+                    elif status == "Needs more detail":
+                        st.warning("Add more detail if you want a specific timing cue.")
+                    else:
+                        st.caption("Planning cue only — not a service requirement.")
+
+            st.divider()
+            st.markdown("**Plain-language summary**")
+            if st.button("Generate grounded summary"):
+                summary = mvp.summarise_plan(
+                    profile,
+                    history,
+                    plan,
+                    llm=llm_mod if llm_mod.available() else None,
+                )
+                st.session_state.mvp_plan_summary = summary
+                mvp.log_tool_trace({
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "session_hash": st.session_state.mvp_session_hash,
+                    "turn": 0,
+                    "chosen_tool": "summarise_plan",
+                    "reason": "User requested grounded summary of household plan",
+                    "user_input_length": len(summary),
+                    "route": "PLAN",
+                    "confidence": 1.0,
+                })
+                st.rerun()
+            if st.session_state.get("mvp_plan_summary"):
+                st.info(st.session_state["mvp_plan_summary"])
+            else:
+                st.caption("Generate a short summary grounded only in the items above.")
+
+            with st.expander("Understand service categories"):
+                guide_df = pd.DataFrame(mvp.category_guide())
+                st.dataframe(guide_df, width="stretch", hide_index=True)
+                st.caption("Category descriptions use public information. No external action is taken from this page.")
+
+            st.divider()
+            st.subheader("Export your private plan")
+            summary = str(st.session_state.get("mvp_plan_summary", "") or "")
+            md_plan = mvp.plan_to_markdown(profile, history, plan, summary)
+            ics_plan = mvp.plan_to_ics(plan)
+            json_plan = json.dumps(
+                {
+                    "generated_on": date.today().isoformat(),
+                    "profile": profile,
+                    "history": history,
+                    "plan": plan,
+                    "summary": summary,
+                    "note": "Private planning cues only. No account access or external action.",
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+            exp1, exp2, exp3 = st.columns(3)
+            with exp1:
+                st.download_button(
+                    "Download plan (Markdown)",
+                    data=md_plan.encode("utf-8"),
+                    file_name=f"home_care_plan_{date.today().isoformat()}.md",
+                    mime="text/markdown",
+                    width="stretch",
+                )
+            with exp2:
+                st.download_button(
+                    "Download reminders (.ics)",
+                    data=ics_plan.encode("utf-8"),
+                    file_name="home_care_reminders.ics",
+                    mime="text/calendar",
+                    width="stretch",
+                )
+            with exp3:
+                st.download_button(
+                    "Download plan data (JSON)",
+                    data=json_plan.encode("utf-8"),
+                    file_name="home_care_plan.json",
+                    mime="application/json",
+                    width="stretch",
+                )
+            st.caption("The calendar file uses one-day-before reminders and stays on your device.")
+
             pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
@@ -770,6 +873,7 @@ def _render_calendar(profile: dict) -> None:
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
 
     care = st.session_state.get("mvp_care_plan")
+    history = st.session_state.get("mvp_history", {})
 
     with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         st.markdown("### Next-cycle care plan (guidance only)")
@@ -832,7 +936,7 @@ def _render_calendar(profile: dict) -> None:
                 on_click=_reset_guided_care_plan,
             )
 
-        _render_care_plan(care)
+        _render_care_plan(care, profile, history)
 
         if care and care.get("intake") and not care.get("intake_paused"):
             _leading_check(
@@ -929,106 +1033,6 @@ def _render_calendar(profile: dict) -> None:
     if not plan:
         return
 
-    st.markdown("**Planning cues**")
-    for item in plan:
-        conf = float(item.get("confidence", 0))
-        conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
-        status = str(item.get("status", "Unclear"))
-        with st.container(border=True):
-            head_left, head_right = st.columns([4, 1])
-            with head_left:
-                st.markdown(f"**{item.get('need', 'Cue')}**")
-                st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
-            with head_right:
-                st.metric("Confidence", f"{conf:.2f}")
-            if item.get("due_in_days") is not None:
-                st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
-            st.write(f"**Why:** {item.get('why', '')}")
-            st.write(f"**Basis:** {item.get('basis', '')}")
-            src = item.get("source_url", "")
-            if src:
-                st.markdown(f"**Public source:** [{src}]({src})")
-            if status == "Not needed":
-                st.success("You marked this as not needed. No action is suggested.")
-            elif status == "Needs more detail":
-                st.warning("Add more detail if you want a specific timing cue.")
-            else:
-                st.caption("Planning cue only — not a service requirement.")
-
-    st.divider()
-    st.markdown("**Plain-language summary**")
-    if st.button("Generate grounded summary"):
-        summary = mvp.summarise_plan(
-            profile,
-            history,
-            plan,
-            llm=llm_mod if llm_mod.available() else None,
-        )
-        st.session_state.mvp_plan_summary = summary
-        mvp.log_tool_trace({
-            "ts": datetime.now(timezone.utc).isoformat(),
-            "session_hash": st.session_state.mvp_session_hash,
-            "turn": 0,
-            "chosen_tool": "summarise_plan",
-            "reason": "User requested grounded summary of household plan",
-            "user_input_length": len(summary),
-            "route": "PLAN",
-            "confidence": 1.0,
-        })
-        st.rerun()
-    if st.session_state.get("mvp_plan_summary"):
-        st.info(st.session_state["mvp_plan_summary"])
-    else:
-        st.caption("Generate a short summary grounded only in the items above.")
-
-    with st.expander("Understand service categories"):
-        guide_df = pd.DataFrame(mvp.category_guide())
-        st.dataframe(guide_df, width="stretch", hide_index=True)
-        st.caption("Category descriptions use public information. No external action is taken from this page.")
-
-    st.divider()
-    st.subheader("Export your private plan")
-    summary = str(st.session_state.get("mvp_plan_summary", "") or "")
-    md_plan = mvp.plan_to_markdown(profile, history, plan, summary)
-    ics_plan = mvp.plan_to_ics(plan)
-    json_plan = json.dumps(
-        {
-            "generated_on": date.today().isoformat(),
-            "profile": profile,
-            "history": history,
-            "plan": plan,
-            "summary": summary,
-            "note": "Private planning cues only. No account access or external action.",
-        },
-        indent=2,
-        ensure_ascii=False,
-    )
-    exp1, exp2, exp3 = st.columns(3)
-    with exp1:
-        st.download_button(
-            "Download plan (Markdown)",
-            data=md_plan.encode("utf-8"),
-            file_name=f"home_care_plan_{date.today().isoformat()}.md",
-            mime="text/markdown",
-            width="stretch",
-        )
-    with exp2:
-        st.download_button(
-            "Download reminders (.ics)",
-            data=ics_plan.encode("utf-8"),
-            file_name="home_care_reminders.ics",
-            mime="text/calendar",
-            width="stretch",
-        )
-    with exp3:
-        st.download_button(
-            "Download plan data (JSON)",
-            data=json_plan.encode("utf-8"),
-            file_name="home_care_plan.json",
-            mime="application/json",
-            width="stretch",
-        )
-    st.caption("The calendar file uses one-day-before reminders and stays on your device.")
 
 
 def _plain_speech(text: str) -> str:
