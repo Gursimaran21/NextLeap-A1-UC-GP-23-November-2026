@@ -98,6 +98,22 @@ st.markdown(
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) > button * {
         color: #FFFFFF !important;
       }
+      [data-testid="stButton"]:has([title="Build guided care plan"]) > button,
+      [data-testid="stButton"]:has([title="Reset guided care plan"]) > button,
+      [data-testid="stButton"]:has([title="No need right now"]) > button,
+      [data-testid="stDownloadButton"]:has(button[kind="primary"]) > button {
+        width: auto !important;
+        min-width: max-content !important;
+      }
+      [data-testid="stButton"]:has([title="Build guided care plan"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Reset guided care plan"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="No need right now"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stDownloadButton"]:has(button[kind="primary"]) [data-testid="stMarkdownContainer"] {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        width: auto !important;
+      }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
         background-color: #F1E4F5 !important;
