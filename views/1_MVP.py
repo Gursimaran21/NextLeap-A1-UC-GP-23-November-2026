@@ -285,6 +285,7 @@ def _init_state() -> None:
         "mvp_care_plan": None,
         "mvp_continuity": None,
         "mvp_intake_edit": False,
+        "mvp_edit_guided_notice": False,
         "mvp_leading": {},
         "mvp_reflection_text": "",
         "mvp_custom_need": "",
@@ -858,6 +859,7 @@ def _edit_guided_answers(service: str, change: str, timing: str) -> None:
     st.session_state.mvp_care_category = st.session_state.intake_service
     st.session_state.mvp_intake_edit = True
     st.session_state.mvp_step = 2
+    st.session_state.mvp_edit_guided_notice = True
 
 
 def _render_calendar(profile: dict) -> None:
@@ -1207,6 +1209,8 @@ def _session_summary_panel() -> None:
                 st.session_state.mvp_reflection_text = ""
                 st.session_state.mvp_intake_edit = False
                 st.rerun()
+        if st.session_state.pop("mvp_edit_guided_notice", False):
+            st.info("Guided answers are ready to edit in section 1 above.")
 
 
 def _append_decider_result(result: dict, mode: str = "") -> None:
