@@ -1104,7 +1104,7 @@ def _leading_check(
                     fields[0]: first,
                     fields[1]: second,
                     fields[2]: int(third),
-                })
+                }, quiet=button_label == "Save intake check")
                 if button_label == "Save intake check":
                     st.success("Saved locally for evaluation.")
 
