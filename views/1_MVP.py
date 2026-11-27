@@ -569,6 +569,80 @@ def _render_profile() -> dict:
     return st.session_state.get("mvp_profile", profile)
 
 
+def _care_pdf_markdown(care: dict) -> str:
+    """Render the full on-screen care plan as a structured PDF document."""
+    lines = [
+        f"Date and Time: {datetime.now().strftime('%d %B %Y, %H:%M')}",
+        "",
+        f"# Your Next-Cycle Care Plan: {care.get('category', 'your home')}",
+        "",
+        "Based only on the service you selected and public guidance. "
+        "No prices, availability, messages, or account access.",
+        "",
+        "## **1. 90-day Plan**",
+        "",
+        "### **Watch for**",
+    ]
+    watch = list(care.get("watch_for", [])) or ["Use your own notes for this service."]
+    lines.extend(f"{i}.) {item}" for i, item in enumerate(watch, 1))
+    lines.extend(["", "### **Note down**"])
+    note = list(care.get("note_down", [])) or ["Use your own notes for this service."]
+    lines.extend(f"{i}.) {item}" for i, item in enumerate(note, 1))
+    lines.extend(["", "### **Review around this time**"])
+    review = list(care.get("review", []))
+    if review:
+        lines.extend(
+            f"{i}.) {row.get('need', '')}: about {row.get('days', 0)} day(s) - "
+            f"{row.get('basis', '') or 'public timing guidance'}"
+            for i, row in enumerate(review, 1)
+        )
+    else:
+        lines.append("Use your own notes; no public timing cue is available.")
+    lines.extend(["", "## **2. Need Cues**"])
+    cues = list(care.get("need_cues", []))
+    if cues:
+        lines.extend(
+            f"{i}.) {cue.get('signal', '')} - check {cue.get('category', '')} "
+            f"(confidence {float(cue.get('confidence', 0)):.2f}) - {cue.get('basis', 'Public guidance')}"
+            for i, cue in enumerate(cues, 1)
+        )
+    else:
+        lines.append("No public cue is available for this service. Use your own notes.")
+    lines.extend(["", "## **3. Category Awareness**"])
+    guide = {row["category"]: row for row in mvp.category_guide()}
+    for category in care.get("adjacent_categories", []):
+        row = guide.get(category, {})
+        lines.extend([
+            "",
+            f"### **{category}**",
+            f"Covers: {row.get('covers', 'Public guidance')}",
+            f"Consider when: {row.get('consider_when', 'Your own observation')}",
+        ])
+    lines.extend(["", "Category information only. No provider names or availability are shown."])
+    lines.extend(["", "## **4. Decision Confidence**"])
+    questions = list(care.get("decision_questions", [])) or ["What would help you decide calmly?"]
+    lines.extend(f"{i}.) {question}" for i, question in enumerate(questions, 1))
+    lines.extend(["", "## **5. Route Choice**"])
+    for item in care.get("route_guide", []):
+        lines.extend([
+            "",
+            f"### **{item['route']}**",
+            f"Fits: {item.get('fits', '')}",
+            f"Caution: {item.get('caution', '')}",
+        ])
+    lines.extend(["", "Decide what fits you. Nothing here contacts anyone."])
+    lines.extend(["", "## **6. Why This Guidance?**", "", "### **Why this guidance:**"])
+    why_text = str(care.get("why", ""))
+    if why_text.lower().startswith("why this guidance:"):
+        why_text = why_text.split(":", 1)[1].strip()
+    sentences = why_text.split(". ")
+    lines.extend(f"{part}." for part in sentences[:-1] if part)
+    if sentences[-1]:
+        lines.append(sentences[-1])
+    lines.extend(["", "**Urban Company Signature**"])
+    return "\n".join(lines)
+
+
 def _render_care_plan(care: dict) -> None:
     """Render the care plan display inside the guided intake expander."""
     if care:
@@ -625,26 +699,9 @@ def _render_care_plan(care: dict) -> None:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
                     st.success("Nothing added. You can return if that changes.")
-            care_md = "\n".join([
-                f"# Next-cycle care plan: {care['category']}",
-                "",
-                "## Watch for",
-                *[f"- {x}" for x in care.get("watch_for", [])],
-                "",
-                "## Note down",
-                *[f"- {x}" for x in care.get("note_down", [])],
-                "",
-                "## Review around this time",
-                *[f"- {x['need']}: about {x['days']} day(s) - {insta_talk.coverage_badge(x.get('match_strength',''), x.get('freshness',''), x.get('source_url',''))['label']} - {x.get('basis','')}" for x in care.get("review", [])],
-                "",
-                "## Decision questions",
-                *[f"- {x}" for x in care.get("decision_questions", [])],
-                "",
-                f"Why this guidance: {care.get('why','')}",
-            ])
             care_pdf_downloaded = st.download_button(
                 "Download care plan (PDF)",
-                data=export.md_to_pdf_bytes(care_md),
+                data=export.md_to_pdf_bytes(_care_pdf_markdown(care)),
                 file_name="next_cycle_care_plan.pdf",
                 mime="application/pdf",
                 type="primary",

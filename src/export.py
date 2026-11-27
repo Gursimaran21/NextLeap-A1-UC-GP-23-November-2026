@@ -5,6 +5,7 @@ Respect docs/constraints.md.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 
@@ -16,6 +17,9 @@ def _build_md_story(md_text: str):
 
     def escape(text: str) -> str:
         return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    def render(text: str) -> str:
+        return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escape(text))
 
     styles = getSampleStyleSheet()
     if "BodySmall" not in styles:
@@ -34,17 +38,17 @@ def _build_md_story(md_text: str):
             story.append(Spacer(1, 4 * mm))
             continue
         if line.startswith("# "):
-            story.append(Paragraph(escape(line[2:].strip()), styles["MdH1"]))
+            story.append(Paragraph(render(line[2:].strip()), styles["MdH1"]))
         elif line.startswith("## "):
-            story.append(Paragraph(escape(line[3:].strip()), styles["MdH2"]))
+            story.append(Paragraph(render(line[3:].strip()), styles["MdH2"]))
         elif line.startswith("### "):
-            story.append(Paragraph(escape(line[4:].strip()), styles["MdH3"]))
+            story.append(Paragraph(render(line[4:].strip()), styles["MdH3"]))
         elif line.startswith("|"):
             story.append(Preformatted(line, styles["BodySmall"]))
         elif line.startswith("- "):
-            story.append(Paragraph("• " + escape(line[2:].strip()), styles["BodySmall"]))
+            story.append(Paragraph("• " + render(line[2:].strip()), styles["BodySmall"]))
         else:
-            story.append(Paragraph(escape(line), styles["BodySmall"]))
+            story.append(Paragraph(render(line), styles["BodySmall"]))
     if not story:
         story.append(Paragraph("Empty document", styles["Normal"]))
     return story
