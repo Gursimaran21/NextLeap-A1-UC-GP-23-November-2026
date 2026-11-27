@@ -740,8 +740,8 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                         "route": "PLAN",
                         "confidence": 1.0,
                     })
-                    st.rerun()
                 if st.session_state.get("mvp_plan_summary"):
+                    st.markdown("**Grounded summary**")
                     st.info(st.session_state["mvp_plan_summary"])
                 else:
                     st.caption("Generate a short summary grounded only in the items above.")
