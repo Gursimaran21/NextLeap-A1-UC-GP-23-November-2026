@@ -767,7 +767,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     st.caption("Category descriptions use public information. No external action is taken from this page.")
                 st.divider()
 
-            pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
+            pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.30, 0.29])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
                     "Download care plan (PDF)",
@@ -777,10 +777,14 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     type="primary",
                     width="content",
                 )
+            no_need_clicked = False
             with none_col:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
                     st.session_state.mvp_plan_details_visible = False
+                    no_need_clicked = True
+            with note_col:
+                if no_need_clicked:
                     st.success("Nothing added. You can return if that changes.")
             if care_pdf_downloaded:
                 st.success("Care plan (PDF) is downloaded.")
