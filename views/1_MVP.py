@@ -690,64 +690,66 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 plan.append(dict(care["plan_item"]))
                 st.session_state.mvp_plan = plan
                 st.success("Private cue added to the plan below.")
+                st.session_state.mvp_plan_details_visible = True
             plan = list(st.session_state.get("mvp_plan", []))
 
-            st.markdown("**Planning cues**")
-            for item in plan:
-                conf = float(item.get("confidence", 0))
-                conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
-                status = str(item.get("status", "Unclear"))
-                with st.container(border=True):
-                    head_left, head_right = st.columns([4, 1])
-                    with head_left:
-                        st.markdown(f"**{item.get('need', 'Cue')}**")
-                        st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
-                    with head_right:
-                        st.metric("Confidence", f"{conf:.2f}")
-                    if item.get("due_in_days") is not None:
-                        st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
-                    st.write(f"**Why:** {item.get('why', '')}")
-                    st.write(f"**Basis:** {item.get('basis', '')}")
-                    src = item.get("source_url", "")
-                    if src:
-                        st.markdown(f"**Public source:** [{src}]({src})")
-                    if status == "Not needed":
-                        st.success("You marked this as not needed. No action is suggested.")
-                    elif status == "Needs more detail":
-                        st.warning("Add more detail if you want a specific timing cue.")
-                    else:
-                        st.caption("Planning cue only — not a service requirement.")
+            if st.session_state.get("mvp_plan_details_visible"):
+                st.markdown("**Planning cues**")
+                for item in plan:
+                    conf = float(item.get("confidence", 0))
+                    conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
+                    status = str(item.get("status", "Unclear"))
+                    with st.container(border=True):
+                        head_left, head_right = st.columns([4, 1])
+                        with head_left:
+                            st.markdown(f"**{item.get('need', 'Cue')}**")
+                            st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
+                        with head_right:
+                            st.metric("Confidence", f"{conf:.2f}")
+                        if item.get("due_in_days") is not None:
+                            st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
+                        st.write(f"**Why:** {item.get('why', '')}")
+                        st.write(f"**Basis:** {item.get('basis', '')}")
+                        src = item.get("source_url", "")
+                        if src:
+                            st.markdown(f"**Public source:** [{src}]({src})")
+                        if status == "Not needed":
+                            st.success("You marked this as not needed. No action is suggested.")
+                        elif status == "Needs more detail":
+                            st.warning("Add more detail if you want a specific timing cue.")
+                        else:
+                            st.caption("Planning cue only — not a service requirement.")
 
-            st.divider()
-            st.markdown("**Plain-language summary**")
-            if st.button("Generate grounded summary"):
-                summary = mvp.summarise_plan(
-                    profile,
-                    history,
-                    plan,
-                    llm=llm_mod if llm_mod.available() else None,
-                )
-                st.session_state.mvp_plan_summary = summary
-                mvp.log_tool_trace({
-                    "ts": datetime.now(timezone.utc).isoformat(),
-                    "session_hash": st.session_state.mvp_session_hash,
-                    "turn": 0,
-                    "chosen_tool": "summarise_plan",
-                    "reason": "User requested grounded summary of household plan",
-                    "user_input_length": len(summary),
-                    "route": "PLAN",
-                    "confidence": 1.0,
-                })
-                st.rerun()
-            if st.session_state.get("mvp_plan_summary"):
-                st.info(st.session_state["mvp_plan_summary"])
-            else:
-                st.caption("Generate a short summary grounded only in the items above.")
+                st.divider()
+                st.markdown("**Plain-language summary**")
+                if st.button("Generate grounded summary"):
+                    summary = mvp.summarise_plan(
+                        profile,
+                        history,
+                        plan,
+                        llm=llm_mod if llm_mod.available() else None,
+                    )
+                    st.session_state.mvp_plan_summary = summary
+                    mvp.log_tool_trace({
+                        "ts": datetime.now(timezone.utc).isoformat(),
+                        "session_hash": st.session_state.mvp_session_hash,
+                        "turn": 0,
+                        "chosen_tool": "summarise_plan",
+                        "reason": "User requested grounded summary of household plan",
+                        "user_input_length": len(summary),
+                        "route": "PLAN",
+                        "confidence": 1.0,
+                    })
+                    st.rerun()
+                if st.session_state.get("mvp_plan_summary"):
+                    st.info(st.session_state["mvp_plan_summary"])
+                else:
+                    st.caption("Generate a short summary grounded only in the items above.")
 
-            with st.expander("Understand service categories"):
-                guide_df = pd.DataFrame(mvp.category_guide())
-                st.dataframe(guide_df, width="stretch", hide_index=True)
-                st.caption("Category descriptions use public information. No external action is taken from this page.")
+                with st.expander("Understand service categories"):
+                    guide_df = pd.DataFrame(mvp.category_guide())
+                    st.dataframe(guide_df, width="stretch", hide_index=True)
+                    st.caption("Category descriptions use public information. No external action is taken from this page.")
 
             pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
             with pdf_col:
@@ -762,6 +764,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
             with none_col:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
+                    st.session_state.mvp_plan_details_visible = False
                     st.success("Nothing added. You can return if that changes.")
             if care_pdf_downloaded:
                 st.success("Care plan (PDF) is downloaded.")
@@ -819,6 +822,7 @@ def _reset_guided_care_plan() -> None:
     st.session_state.mvp_care_plan = None
     st.session_state.mvp_care_category = ""
     st.session_state.mvp_intake_edit = True
+    st.session_state.mvp_plan_details_visible = False
     st.session_state.intake_service = insta_talk.CARE_PLAN_CATEGORIES[0]
     st.session_state.intake_note = ""
     st.session_state.intake_mode = "Routine"
@@ -874,6 +878,7 @@ def _render_calendar(profile: dict) -> None:
                 st.session_state.mvp_care_category = intake_service
                 st.session_state.mvp_care_plan = built
                 st.session_state.mvp_intake_edit = True
+                st.session_state.mvp_plan_details_visible = False
                 _log_leading_indicator("guided_intake_built", "guided_intake", {
                     "category": intake_service,
                     "timing": intake_mode,
