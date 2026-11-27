@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import html
 import json
 import textwrap
 import time
@@ -529,7 +530,26 @@ def _render_profile() -> dict:
                 "Value": ", ".join(map(str, value)) if isinstance(value, list) else str(value or "Not provided"),
             })
         st.caption("Saved home snapshot for this session")
-        st.dataframe(pd.DataFrame(snapshot_rows), width="stretch", hide_index=True)
+        header_html = "".join(
+            f'<th style="background:#500C6B; color:#FFFFFF; text-align:left; '
+            f'padding:8px 10px; font-size:13px;">{col}</th>'
+            for col in ("Section", "Field", "Value")
+        )
+        body_html = "".join(
+            "<tr>"
+            + "".join(
+                f'<td style="padding:8px 10px; border-bottom:1px solid #E6D9EA; '
+                f'font-size:13px;">{html.escape(str(row[col]))}</td>'
+                for col in ("Section", "Field", "Value")
+            )
+            + "</tr>"
+            for row in snapshot_rows
+        )
+        st.markdown(
+            f'<table style="width:100%; border-collapse:collapse;">'
+            f"<thead><tr>{header_html}</tr></thead><tbody>{body_html}</tbody></table>",
+            unsafe_allow_html=True,
+        )
 
     return st.session_state.get("mvp_profile", profile)
 
