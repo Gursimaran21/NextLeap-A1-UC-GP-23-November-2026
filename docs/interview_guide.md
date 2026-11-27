@@ -65,18 +65,41 @@ Planning style + closing (5 min)
 
 ## 5. Coding each interview into `data/interviews.csv`
 
-Columns (exact): `respondent_id,category,returner_90d,total_bookings,city_tier,quote,theme_code,notes`
+Columns (exact): `respondent_id,interview_date,consent,city_tier,household_type,decision_maker,last_booking_date,category,total_bookings,anchor_booking_date,return_90d,subsequent_need,Q4_discovery,Q5_booking_reason,Q6_provider_choice,Q7_post_service,Q8_expectations,Q9_next_need,Q10_arrangement,Q11_considered_UC,Q12_alternative,Q13_return_motivation,Q14_barriers,Q15_planning,Q16_tracking_value,Q17_decision_information,Q18_usefulness,main_barrier,researcher_notes,quote,theme_code`
 
 | Column | How to fill |
 |---|---|
-| `respondent_id` | R01…R06 |
-| `category` | Their anchor category (e.g., `AC Service`, `Deep Cleaning`, `Plumbing`, `Salon`, `Pest Control`, `Appliance Repair`) |
-| `returner_90d` | `yes` only if they **completed another booking within 90 days** (any category; redos/warranty/refunds don't count — C5). Otherwise `no`. |
+| `respondent_id` | R01 to R06 |
+| `interview_date` | Date of interview; leave blank until recorded |
+| `consent` | Consent status; leave blank until recorded |
+| `city_tier` | `Metro` or `Tier 2`; no address or identifying detail |
+| `household_type` | e.g., apartment / independent / family / kids / pets |
+| `decision_maker` | Who decides on the service, in anonymized terms |
+| `last_booking_date` | Most recent completed booking date |
+| `category` | Anchor category (e.g., `AC Service`, `Deep Cleaning`, `Plumbing`, `Salon`) |
 | `total_bookings` | Integer, their estimate |
-| `city_tier` | `Metro` or `Tier 2` |
-| `quote` | One **verbatim anonymized quote** that best captures their pattern (no names/places/numbers that identify) |
+| `anchor_booking_date` | Date of the anchor completed booking |
+| `return_90d` | `yes` only if another completed booking happened within 90 days (any category; redos/warranty/refunds do not count - C5). Otherwise `no`. |
+| `subsequent_need` | Next home need that arose after the anchor service |
+| `Q4_discovery` | How they discovered or recognised the need |
+| `Q5_booking_reason` | Why they booked the anchor service |
+| `Q6_provider_choice` | How they chose the provider |
+| `Q7_post_service` | What happened after the service |
+| `Q8_expectations` | Expectations after the service |
+| `Q9_next_need` | Next need they anticipated or missed |
+| `Q10_arrangement` | How the service was arranged |
+| `Q11_considered_UC` | Whether Urban Company was considered when the need arose |
+| `Q12_alternative` | Alternative used or considered |
+| `Q13_return_motivation` | What would motivate another booking |
+| `Q14_barriers` | What would prevent another booking |
+| `Q15_planning` | How they plan home services |
+| `Q16_tracking_value` | Value of tracking service timing |
+| `Q17_decision_information` | Information needed to decide confidently |
+| `Q18_usefulness` | Usefulness of planning guidance |
+| `main_barrier` | Primary barrier in their own words |
+| `researcher_notes` | 1–3 sentences: context, workaround, what validates/challenges engine findings. No PII. |
+| `quote` | One verbatim anonymized quote that best captures their pattern |
 | `theme_code` | Primary theme from the legend below |
-| `notes` | 1–3 sentences: context, workaround, what validates/challenges the engine findings. No PII. |
 
 Theme legend (pick ONE primary):
 - `T1_POST_SERVICE_CLOSURE` — no clear next step after service; need faded
@@ -91,9 +114,11 @@ Theme legend (pick ONE primary):
 - `T10_REDO_REFUND` — redo/warranty/refund case (excluded from metric)
 - `T11_UNCLASSIFIED` — insufficient signal
 
-Row format example (**structure only — replace with real interview content**):
-```csv
-R01,AC Service,no,1,Metro,<verbatim anonymized quote>,T1_POST_SERVICE_CLOSURE,<1-3 sentence context; no PII>
+Required column order is the header above. Fill only anonymized values; leave unrecorded fields empty until the real interview is coded.
+
+Key-field example (**structure only — replace with real interview content**):
+```text
+respondent_id=R01 | category=AC Service | return_90d=no | total_bookings=1 | quote=<verbatim anonymized quote> | theme_code=T1_POST_SERVICE_CLOSURE | researcher_notes=<1-3 sentence context; no PII>
 ```
 
 ## 6. After all interviews

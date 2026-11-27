@@ -61,10 +61,10 @@ def render() -> None:
         st.warning("No interviews loaded yet. Add anonymized rows to data/interviews.csv (R01–R06).")
         st.dataframe(research.interview_template(), width="stretch", hide_index=True)
     else:
-        show_cols = [c for c in ["respondent_id", "category", "returner_90d", "total_bookings", "city_tier", "theme_code"] if c in df.columns]
+        show_cols = [c for c in ["respondent_id", "interview_date", "city_tier", "category", "return_90d", "total_bookings", "theme_code"] if c in df.columns]
         st.dataframe(df[show_cols], width="stretch", hide_index=True)
         st.metric("Respondents", df["respondent_id"].nunique())
-        st.metric("Returners (90d)", int((df["returner_90d"] == "yes").sum()) if "returner_90d" in df.columns else 0)
+        st.metric("Returners (90d)", int((df["return_90d"] == "yes").sum()) if "return_90d" in df.columns else 0)
 
     st.subheader("Findings: validates vs challenges AI discovery")
     c1, c2 = st.columns(2)

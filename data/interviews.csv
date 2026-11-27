@@ -1,7 +1,7 @@
-respondent_id,category,returner_90d,total_bookings,city_tier,quote,theme_code,notes
-R01,AC Service,no,1,Metro,"[TODO: anonymized quote from interview]","T1_POST_SERVICE_CLOSURE","TODO: replace with real anonymized interview"
-R02,Deep Cleaning,yes,2,Metro,"[TODO: anonymized quote from interview]","T5_LOCAL_WHATSAPP_DEFAULT","TODO: replace with real anonymized interview"
-R03,Plumbing,no,1,Tier 2,"[TODO: anonymized quote from interview]","T6_DECISION_CONFIDENCE","TODO: replace with real anonymized interview"
-R04,Salon,yes,3,Metro,"[TODO: anonymized quote from interview]","T3_MENTAL_AVAILABILITY","TODO: replace with real anonymized interview"
-R05,AC Service,no,2,Metro,"[TODO: anonymized quote from interview]","T2_NEED_RECOGNITION","TODO: replace with real anonymized interview"
-R06,Deep Cleaning,no,1,Metro,"[TODO: anonymized quote from interview]","T7_PLANNING_SEASONALITY","TODO: replace with real anonymized interview"
+respondent_id,interview_date,consent,city_tier,household_type,decision_maker,last_booking_date,category,total_bookings,anchor_booking_date,return_90d,subsequent_need,Q4_discovery,Q5_booking_reason,Q6_provider_choice,Q7_post_service,Q8_expectations,Q9_next_need,Q10_arrangement,Q11_considered_UC,Q12_alternative,Q13_return_motivation,Q14_barriers,Q15_planning,Q16_tracking_value,Q17_decision_information,Q18_usefulness,main_barrier,researcher_notes,quote,theme_code
+R01,,,,,,,AC Service,1,,no,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T1_POST_SERVICE_CLOSURE
+R02,,,,,,,Deep Cleaning,2,,yes,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T5_LOCAL_WHATSAPP_DEFAULT
+R03,,,,,,,Plumbing,1,,no,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T6_DECISION_CONFIDENCE
+R04,,,,,,,Salon,3,,yes,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T3_MENTAL_AVAILABILITY
+R05,,,,,,,AC Service,2,,no,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T2_NEED_RECOGNITION
+R06,,,,,,,Deep Cleaning,1,,no,,,,,,,,,,,,,,,,,,TODO: replace with real anonymized interview,[TODO: anonymized quote from interview],T7_PLANNING_SEASONALITY

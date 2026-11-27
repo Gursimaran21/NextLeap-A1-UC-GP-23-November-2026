@@ -132,7 +132,7 @@ def main() -> int:
                 msg += ". Do not fabricate labels; please label the golden set manually."
             check("Golden set has 20 labelled rows", ok, msg)
 
-    # Interviews 5-6 rows, both returner values present, >=2 categories, total_bookings filled
+    # Interviews 5-6 rows, both repeat values present, >=2 categories, total_bookings filled
     int_path = config.INTERVIEWS
     if not int_path.exists():
         check("Interviews 5-6 rows with required coverage", False, "data/interviews.csv missing")
@@ -141,7 +141,7 @@ def main() -> int:
         try:
             df = pd.read_csv(int_path)
             rows = len(df)
-            ret_vals = set(df.get("returner_90d", pd.Series(dtype=str)).astype(str).str.lower().str.strip()) - {"", "nan"}
+            ret_vals = set(df.get("return_90d", pd.Series(dtype=str)).astype(str).str.lower().str.strip()) - {"", "nan"}
             cats = set(df.get("category", pd.Series(dtype=str)).astype(str).str.strip()) - {"", "nan"}
             tb_filled = df.get("total_bookings", pd.Series(dtype=float)).notna().all() and (pd.to_numeric(df.get("total_bookings", pd.Series([0])), errors="coerce").fillna(-1) >= 0).all() if "total_bookings" in df.columns else False
             ok = (5 <= rows <= 6) and {"yes", "no"}.issubset(ret_vals) and len(cats) >= 2 and tb_filled

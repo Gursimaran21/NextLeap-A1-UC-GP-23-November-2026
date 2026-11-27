@@ -37,7 +37,7 @@ python -m scripts.qa_check
 
 ## Remaining blockers (must be completed manually)
 1. **Label golden set:** Fill 20 rows in `data/golden_set.csv` (`human_primary_theme`, `human_return_signal`). Do not fabricate labels.
-2. **Add interviews:** Create `data/interviews.csv` with 5–6 anonymized rows (R01–R06), both `returner_90d` yes/no present, >=2 categories, `total_bookings` filled. No PII.
+2. **Add interviews:** Create `data/interviews.csv` with 5–6 anonymized rows (R01–R06), both `return_90d` yes/no present, >=2 `category` values, `total_bookings` filled. No PII.
 3. **Set fellow name guard:** Set `FELLOW_NAME_TO_EXCLUDE` locally in `src/config.py` before final deck QA/submission; do not commit personal name.
 4. **Run 3 MVP user tests:** Update `views/7_MVP_Testing.py` with observed results and iteration changes.
 5. **Deploy and add public links:** Update README placeholders after Streamlit Cloud deploy.
