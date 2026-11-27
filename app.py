@@ -74,9 +74,20 @@ st.markdown(
       [data-testid="stButton"]:has([title="Reset guided care plan"]) > button * {
         color: #500C6B !important;
       }
+      [data-testid="stButton"]:has([title="Reset intake check"]) {
+        margin-left: -10px !important;
+      }
       [data-testid="stButton"]:has([title="Reset intake check"]) > button {
         background-color: #EBDFF0 !important;
         border: 1px solid #D9C6E0 !important;
+        width: auto !important;
+        min-width: max-content !important;
+      }
+      [data-testid="stButton"]:has([title="Reset intake check"]) [data-testid="stMarkdownContainer"] {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        width: auto !important;
       }
       [data-testid="stButton"]:has([title="Reset intake check"]) > button,
       [data-testid="stButton"]:has([title="Reset intake check"]) > button * {
