@@ -758,6 +758,20 @@ def _render_calendar(profile: dict) -> None:
 
         _render_care_plan(care)
 
+        if care and care.get("intake") and not care.get("intake_paused"):
+            _leading_check(
+                "guided_intake",
+                "guided_intake_check",
+                ("li_intake_name", "li_intake_clear", "li_intake_conf"),
+                (
+                    "Could you name a plausible next need?",
+                    "Is the review window clear?",
+                    "How confident do you feel now?",
+                ),
+                ("next_need_recall", "review_window_clarity", "confidence_rating"),
+                "Save intake check",
+            )
+
     with st.expander("2. Choose a service directly for a quick plan"):
         care_left, care_right = st.columns([2, 1])
         with care_left:
@@ -821,20 +835,6 @@ def _render_calendar(profile: dict) -> None:
                 })
                 st.session_state.mvp_plan = plan
                 st.rerun()
-
-    if care and care.get("intake") and not care.get("intake_paused"):
-        _leading_check(
-            "guided_intake",
-            "guided_intake_check",
-            ("li_intake_name", "li_intake_clear", "li_intake_conf"),
-            (
-                "Could you name a plausible next need?",
-                "Is the review window clear?",
-                "How confident do you feel now?",
-            ),
-            ("next_need_recall", "review_window_clarity", "confidence_rating"),
-            "Save intake check",
-        )
 
     plan = list(st.session_state.get("mvp_plan", []))
 
