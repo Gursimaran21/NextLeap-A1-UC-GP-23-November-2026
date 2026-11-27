@@ -1083,7 +1083,7 @@ def _session_summary_panel() -> None:
             f"Session ID: `{st.session_state.mvp_session_hash}` · "
             "This panel stays in your browser session. No upload and no external action."
         )
-        edit_col, reset_col = st.columns(2)
+        edit_col, reset_col, _spacer = st.columns([1, 1, 3])
         with edit_col:
             if st.button("Edit guided answers", key="summary_edit", width="content"):
                 st.session_state.mvp_intake_edit = True
