@@ -849,6 +849,17 @@ def _reset_guided_care_plan() -> None:
     st.session_state.intake_mode = "Routine"
 
 
+def _edit_guided_answers(service: str, change: str, timing: str) -> None:
+    """Return to guided intake with the current summary answers prefilled."""
+    options = list(insta_talk.CARE_PLAN_CATEGORIES)
+    st.session_state.intake_service = service if service in options else options[0]
+    st.session_state.intake_note = "" if change == "not added" else change
+    st.session_state.intake_mode = timing if timing in ("Routine", "Planned", "Possible urgency") else "Routine"
+    st.session_state.mvp_care_category = st.session_state.intake_service
+    st.session_state.mvp_intake_edit = True
+    st.session_state.mvp_step = 2
+
+
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -1181,10 +1192,13 @@ def _session_summary_panel() -> None:
         )
         edit_col, reset_col, _spacer = st.columns([1, 1, 3])
         with edit_col:
-            if st.button("Edit guided answers", key="summary_edit", width="content"):
-                st.session_state.mvp_intake_edit = True
-                st.session_state.mvp_step = 2
-                st.rerun()
+            st.button(
+                "Edit guided answers",
+                key="summary_edit",
+                width="content",
+                on_click=_edit_guided_answers,
+                args=(service, change, timing),
+            )
         with reset_col:
             if st.button("Reset guided notes", key="summary_reset", width="content"):
                 st.session_state.mvp_care_plan = None
