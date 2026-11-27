@@ -652,7 +652,7 @@ def _render_calendar(profile: dict) -> None:
         history = st.session_state.get("mvp_history", {})
         col_a, col_b = st.columns([1, 2])
         with col_a:
-            if st.button("Build / refresh plan", type="primary", width="stretch"):
+            if st.button("Build / refresh plan", type="primary", width="content"):
                 ref = mvp.load_public_reference()
                 plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
                 st.session_state.mvp_plan = plan
