@@ -66,6 +66,14 @@ st.markdown(
       [data-testid="stButton"]:has([title="Reset guided notes"]) > button * {
         color: #500C6B !important;
       }
+      [data-testid="stButton"]:has([title="Reset guided care plan"]) > button {
+        background-color: #EBDFF0 !important;
+        border: 1px solid #D9C6E0 !important;
+      }
+      [data-testid="stButton"]:has([title="Reset guided care plan"]) > button,
+      [data-testid="stButton"]:has([title="Reset guided care plan"]) > button * {
+        color: #500C6B !important;
+      }
       [data-testid="stButton"]:has([title="Add as personal note"]) > button {
         background-color: #500C6B !important;
         border: 1px solid #500C6B !important;

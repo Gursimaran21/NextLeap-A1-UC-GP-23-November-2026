@@ -685,25 +685,25 @@ def _render_care_plan(care: dict) -> None:
                 else:
                     st.caption("Use your own notes; no public timing cue is available.")
             st.caption("Review windows are prompts to check your own situation, not service requirements.")
-            add_col, none_col = st.columns(2)
-            with add_col:
-                if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", width="stretch"):
-                    plan = list(st.session_state.get("mvp_plan", []))
-                    plan.append(dict(care["plan_item"]))
-                    st.session_state.mvp_plan = plan
-                    st.success("Private cue added to the plan below.")
+            if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", width="stretch"):
+                plan = list(st.session_state.get("mvp_plan", []))
+                plan.append(dict(care["plan_item"]))
+                st.session_state.mvp_plan = plan
+                st.success("Private cue added to the plan below.")
+            pdf_col, none_col = st.columns([1, 1])
+            with pdf_col:
+                care_pdf_downloaded = st.download_button(
+                    "Download care plan (PDF)",
+                    data=export.md_to_pdf_bytes(_care_pdf_markdown(care)),
+                    file_name="next_cycle_care_plan.pdf",
+                    mime="application/pdf",
+                    type="primary",
+                    width="content",
+                )
             with none_col:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
                     st.success("Nothing added. You can return if that changes.")
-            care_pdf_downloaded = st.download_button(
-                "Download care plan (PDF)",
-                data=export.md_to_pdf_bytes(_care_pdf_markdown(care)),
-                file_name="next_cycle_care_plan.pdf",
-                mime="application/pdf",
-                type="primary",
-                width="content",
-            )
             if care_pdf_downloaded:
                 st.success("Care plan (PDF) is downloaded.")
         with care_tabs[1]:
@@ -790,28 +790,36 @@ def _render_calendar(profile: dict) -> None:
                 ["Routine", "Planned", "Possible urgency"],
                 key="intake_mode",
             )
-        if st.button("Build guided care plan", type="primary", width="content"):
-            built = insta_talk.guided_intake_plan(
-                {
+        build_col, reset_col = st.columns([1, 1])
+        with build_col:
+            if st.button("Build guided care plan", type="primary", width="content"):
+                built = insta_talk.guided_intake_plan(
+                    {
+                        "category": intake_service,
+                        "change": intake_note,
+                        "timing": intake_mode,
+                    },
+                    session_hash=st.session_state.mvp_session_hash,
+                )
+                st.session_state.mvp_care_category = intake_service
+                st.session_state.mvp_care_plan = built
+                st.session_state.mvp_intake_edit = True
+                _log_leading_indicator("guided_intake_built", "guided_intake", {
                     "category": intake_service,
-                    "change": intake_note,
                     "timing": intake_mode,
-                },
-                session_hash=st.session_state.mvp_session_hash,
-            )
-            st.session_state.mvp_care_category = intake_service
-            st.session_state.mvp_care_plan = built
-            st.session_state.mvp_intake_edit = True
-            _log_leading_indicator("guided_intake_built", "guided_intake", {
-                "category": intake_service,
-                "timing": intake_mode,
-                "paused": bool(built.get("intake_paused")),
-                "confidence": built.get("confidence", 0),
-                "source_class": built.get("source_class", ""),
-                "freshness": built.get("freshness", ""),
-                "match_strength": built.get("match_strength", ""),
-            }, quiet=True)
-            st.rerun()
+                    "paused": bool(built.get("intake_paused")),
+                    "confidence": built.get("confidence", 0),
+                    "source_class": built.get("source_class", ""),
+                    "freshness": built.get("freshness", ""),
+                    "match_strength": built.get("match_strength", ""),
+                }, quiet=True)
+                st.rerun()
+        with reset_col:
+            if st.button("Reset guided care plan", key="care_plan_reset", width="content"):
+                st.session_state.mvp_care_plan = None
+                st.session_state.mvp_care_category = ""
+                st.session_state.mvp_intake_edit = True
+                st.rerun()
 
         _render_care_plan(care)
 
