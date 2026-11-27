@@ -637,7 +637,7 @@ def _render_calendar(profile: dict) -> None:
                 key="care_category_select",
             )
         with care_right:
-            if st.button("Show care plan", type="primary", width="stretch"):
+            if st.button("Show care plan", type="primary", width="content"):
                 st.session_state.mvp_care_category = selected_care
                 st.session_state.mvp_care_plan = insta_talk.care_plan(
                     selected_care,
@@ -1085,12 +1085,12 @@ def _session_summary_panel() -> None:
         )
         edit_col, reset_col = st.columns(2)
         with edit_col:
-            if st.button("Edit guided answers", key="summary_edit", width="stretch"):
+            if st.button("Edit guided answers", key="summary_edit", width="content"):
                 st.session_state.mvp_intake_edit = True
                 st.session_state.mvp_step = 2
                 st.rerun()
         with reset_col:
-            if st.button("Reset guided notes", key="summary_reset", width="stretch"):
+            if st.button("Reset guided notes", key="summary_reset", width="content"):
                 st.session_state.mvp_care_plan = None
                 st.session_state.mvp_continuity = None
                 st.session_state.mvp_reflection = None
