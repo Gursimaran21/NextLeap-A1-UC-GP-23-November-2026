@@ -885,7 +885,7 @@ def _render_calendar(profile: dict) -> None:
                 ["Routine", "Planned", "Possible urgency"],
                 key="intake_mode",
             )
-        build_col, reset_col, _build_spacer = st.columns([0.175, 0.175, 0.65])
+        build_col, reset_col, _build_spacer = st.columns([0.205, 0.205, 0.59])
         with build_col:
             if st.button("Build guided care plan", type="primary", width="content"):
                 built = insta_talk.guided_intake_plan(
