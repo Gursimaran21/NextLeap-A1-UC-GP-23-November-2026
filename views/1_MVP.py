@@ -885,7 +885,7 @@ def _render_calendar(profile: dict) -> None:
                 ["Routine", "Planned", "Possible urgency"],
                 key="intake_mode",
             )
-        build_col, reset_col, _build_spacer = st.columns([0.205, 0.205, 0.59])
+        build_col, reset_col, _build_spacer = st.columns([0.175, 0.175, 0.65])
         with build_col:
             if st.button("Build guided care plan", type="primary", width="content"):
                 built = insta_talk.guided_intake_plan(
@@ -1081,6 +1081,14 @@ def _log_leading_indicator(event: str, flow: str, fields: dict, quiet: bool = Fa
         st.toast("Saved locally for evaluation.")
 
 
+def _reset_leading_check(keys: tuple[str, str, str], event: str) -> None:
+    """Reset one quick check's answers and its saved local record."""
+    st.session_state[keys[0]] = "Select"
+    st.session_state[keys[1]] = "Select"
+    st.session_state[keys[2]] = 3
+    st.session_state.get("mvp_leading", {}).pop(event, None)
+
+
 def _leading_check(
     flow: str,
     event: str,
@@ -1095,22 +1103,36 @@ def _leading_check(
         first = st.radio(labels[0], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[0])
         second = st.radio(labels[1], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[1])
         third = st.slider(labels[2], 1, 5, 3, key=keys[2])
-        if st.button(
-            button_label,
-            key=f"leading_{flow}",
-            width="content" if button_label == "Save intake check" else "stretch",
-            type="primary" if button_label == "Save intake check" else "secondary",
-        ):
-            if first == "Select" or second == "Select":
-                st.warning("Choose an answer for both questions before saving.")
-            else:
-                _log_leading_indicator(event, flow, {
-                    fields[0]: first,
-                    fields[1]: second,
-                    fields[2]: int(third),
-                }, quiet=button_label == "Save intake check")
-                if button_label == "Save intake check":
-                    st.success("Saved locally for evaluation.")
+        if button_label == "Save intake check":
+            save_col, reset_col, _check_spacer = st.columns([0.205, 0.205, 0.59])
+        else:
+            save_col = st.container()
+        with save_col:
+            if st.button(
+                button_label,
+                key=f"leading_{flow}",
+                width="content" if button_label == "Save intake check" else "stretch",
+                type="primary" if button_label == "Save intake check" else "secondary",
+            ):
+                if first == "Select" or second == "Select":
+                    st.warning("Choose an answer for both questions before saving.")
+                else:
+                    _log_leading_indicator(event, flow, {
+                        fields[0]: first,
+                        fields[1]: second,
+                        fields[2]: int(third),
+                    }, quiet=button_label == "Save intake check")
+                    if button_label == "Save intake check":
+                        st.success("Saved locally for evaluation.")
+        if button_label == "Save intake check":
+            with reset_col:
+                st.button(
+                    "Reset intake check",
+                    key=f"leading_{flow}_reset",
+                    width="content",
+                    on_click=_reset_leading_check,
+                    args=(keys, event),
+                )
 
 
 def _coverage_html(badge: dict) -> str:
