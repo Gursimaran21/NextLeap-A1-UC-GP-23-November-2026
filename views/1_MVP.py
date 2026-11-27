@@ -722,7 +722,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
 
                 st.divider()
                 st.markdown("**Plain-language summary**")
-                if st.button("Generate grounded summary"):
+                if st.button("Generate grounded summary", type="primary"):
                     summary = mvp.summarise_plan(
                         profile,
                         history,
