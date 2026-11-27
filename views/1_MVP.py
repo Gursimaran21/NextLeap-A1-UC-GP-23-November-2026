@@ -365,12 +365,14 @@ def _nav_buttons() -> None:
             st.session_state.mvp_step = max(1, step - 1)
             st.rerun()
     with c2:
-        if st.button("Next", disabled=step >= len(STEPS), width="stretch", type="primary"):
-            if step == 1 and not st.session_state.get("mvp_profile"):
+        next_clicked = st.button("Next", disabled=step >= len(STEPS), width="stretch", type="primary")
+    if next_clicked:
+        if step == 1 and not st.session_state.get("mvp_profile"):
+            with c3:
                 st.warning("Save home details in Step 1 before continuing.")
-            else:
-                st.session_state.mvp_step = min(len(STEPS), step + 1)
-                st.rerun()
+        else:
+            st.session_state.mvp_step = min(len(STEPS), step + 1)
+            st.rerun()
 
 
 def _reset_home_intake_state() -> None:
