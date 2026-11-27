@@ -492,13 +492,11 @@ def _render_profile() -> dict:
         )
 
         st.markdown("---")
-        save_col, reset_col, note_col = st.columns([1, 1, 4])
+        save_col, reset_col, _ = st.columns([1, 1, 4])
         with save_col:
             save_all = st.form_submit_button("Save home details", type="primary", width="stretch", wrap=True)
         with reset_col:
             reset_all = st.form_submit_button("Reset", width="stretch", wrap=True)
-        with note_col:
-            st.caption("Save stores both sections for this session only. Reset clears both sections together.")
 
     if save_all:
         history["upcoming_need"] = str(history.get("upcoming_need", "") or "").strip()
