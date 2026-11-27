@@ -109,6 +109,12 @@ PROFILE_QUESTIONS = [
         "options": config.CORE_CATEGORIES + ["Other"],
     },
     {
+        "id": "last_completed_service",
+        "question": "Which is your last completed service?",
+        "type": "single",
+        "options": ["Not sure"] + config.CORE_CATEGORIES + ["Other"],
+    },
+    {
         "id": "months_since_last_service",
         "question": "How many months since your last completed service?",
         "type": "single",

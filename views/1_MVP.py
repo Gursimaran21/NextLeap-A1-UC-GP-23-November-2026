@@ -150,9 +150,11 @@ HISTORY_FIELDS = [
     ("upcoming_need", "Upcoming requirement you already know"),
     ("no_need_now", "Services I do not need right now"),
 ]
-HISTORY_FIELD_LABELS = {
-    key: f"{idx}. {label}" for idx, (key, label) in enumerate(HISTORY_FIELDS, start=1)
-}
+
+
+def _numbered_history_labels(start: int) -> dict[str, str]:
+    """Number history fields continuously after the profile fields."""
+    return {key: f"{start + idx}. {label}" for idx, (key, label) in enumerate(HISTORY_FIELDS)}
 
 
 def _clean_html(value: str) -> str:
@@ -399,6 +401,7 @@ def _render_profile() -> dict:
     saved_history = dict(st.session_state.get("mvp_history", {}))
     profile_version = int(st.session_state.mvp_profile_version)
     history_version = int(st.session_state.mvp_history_version)
+    history_labels = _numbered_history_labels(len(mvp.PROFILE_QUESTIONS) + 1)
 
     def _timing_index(key: str) -> int:
         value = str(saved_history.get(key, "Not sure") or "Not sure")
@@ -437,26 +440,26 @@ def _render_profile() -> dict:
         history_cols = st.columns(2)
         with history_cols[0]:
             history["last_ac_service"] = st.selectbox(
-                HISTORY_FIELD_LABELS["last_ac_service"],
+                history_labels["last_ac_service"],
                 mvp.HISTORY_TIMING_OPTIONS,
                 index=_timing_index("last_ac_service"),
                 key=f"hist_ac_{history_version}",
             )
             history["last_deep_clean"] = st.selectbox(
-                HISTORY_FIELD_LABELS["last_deep_clean"],
+                history_labels["last_deep_clean"],
                 mvp.HISTORY_TIMING_OPTIONS,
                 index=_timing_index("last_deep_clean"),
                 key=f"hist_deep_{history_version}",
             )
         with history_cols[1]:
             history["last_pest_control"] = st.selectbox(
-                HISTORY_FIELD_LABELS["last_pest_control"],
+                history_labels["last_pest_control"],
                 mvp.HISTORY_TIMING_OPTIONS,
                 index=_timing_index("last_pest_control"),
                 key=f"hist_pest_{history_version}",
             )
             history["last_plumbing_check"] = st.selectbox(
-                HISTORY_FIELD_LABELS["last_plumbing_check"],
+                history_labels["last_plumbing_check"],
                 mvp.HISTORY_TIMING_OPTIONS,
                 index=_timing_index("last_plumbing_check"),
                 key=f"hist_plumb_{history_version}",
@@ -466,7 +469,7 @@ def _render_profile() -> dict:
         with issue_col:
             issue_default = str(saved_history.get("plumbing_issue", "None") or "None")
             history["plumbing_issue"] = st.selectbox(
-                HISTORY_FIELD_LABELS["plumbing_issue"],
+                history_labels["plumbing_issue"],
                 mvp.PLUMBING_ISSUE_OPTIONS,
                 index=mvp.PLUMBING_ISSUE_OPTIONS.index(issue_default)
                 if issue_default in mvp.PLUMBING_ISSUE_OPTIONS else 0,
@@ -474,7 +477,7 @@ def _render_profile() -> dict:
             )
         with upcoming_col:
             history["upcoming_need"] = st.text_input(
-                HISTORY_FIELD_LABELS["upcoming_need"],
+                history_labels["upcoming_need"],
                 value=str(saved_history.get("upcoming_need", "") or ""),
                 placeholder="e.g., Bathroom cleaning",
                 key=f"hist_upcoming_{history_version}",
@@ -482,7 +485,7 @@ def _render_profile() -> dict:
 
         saved_no_need = [str(x) for x in saved_history.get("no_need_now", []) if str(x) in mvp.NO_NEED_OPTIONS]
         history["no_need_now"] = st.multiselect(
-            HISTORY_FIELD_LABELS["no_need_now"],
+            history_labels["no_need_now"],
             mvp.NO_NEED_OPTIONS,
             default=saved_no_need,
             key=f"hist_no_need_{history_version}",
@@ -524,7 +527,7 @@ def _render_profile() -> dict:
             value = current_history.get(key, "")
             snapshot_rows.append({
                 "Section": "Household",
-                "Field": HISTORY_FIELD_LABELS[key],
+                "Field": history_labels[key],
                 "Value": ", ".join(map(str, value)) if isinstance(value, list) else str(value or "Not provided"),
             })
         st.caption("Saved home snapshot for this session")
