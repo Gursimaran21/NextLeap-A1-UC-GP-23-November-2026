@@ -587,7 +587,7 @@ def _render_calendar(profile: dict) -> None:
         default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
         with intake_cat:
             intake_service = st.selectbox(
-                "1. Recent completed service",
+                "1. Recently completed service",
                 care_options,
                 index=care_options.index(default_care) if default_care in care_options else 0,
                 key="intake_service",
