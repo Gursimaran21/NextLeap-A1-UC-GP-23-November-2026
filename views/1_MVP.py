@@ -869,6 +869,8 @@ def _render_calendar(profile: dict) -> None:
     care = st.session_state.get("mvp_care_plan")
     history = st.session_state.get("mvp_history", {})
 
+    st.subheader("Your care plan options")
+
     with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         st.markdown("### Next-cycle care plan (guidance only)")
         st.caption(
