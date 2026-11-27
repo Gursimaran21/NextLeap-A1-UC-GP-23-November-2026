@@ -38,7 +38,7 @@ st.markdown(
       }
       .stAlert { border-radius: 8px; }
       [data-testid="stExpander"] {
-        max-width: 720px !important;
+        max-width: 840px !important;
       }
       [data-testid="stExpander"] > details > summary {
         background-color: #500C6B !important;
