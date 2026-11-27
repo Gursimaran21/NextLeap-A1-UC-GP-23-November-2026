@@ -749,50 +749,6 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 st.dataframe(guide_df, width="stretch", hide_index=True)
                 st.caption("Category descriptions use public information. No external action is taken from this page.")
 
-            st.divider()
-            st.subheader("Export your private plan")
-            summary = str(st.session_state.get("mvp_plan_summary", "") or "")
-            md_plan = mvp.plan_to_markdown(profile, history, plan, summary)
-            ics_plan = mvp.plan_to_ics(plan)
-            json_plan = json.dumps(
-                {
-                    "generated_on": date.today().isoformat(),
-                    "profile": profile,
-                    "history": history,
-                    "plan": plan,
-                    "summary": summary,
-                    "note": "Private planning cues only. No account access or external action.",
-                },
-                indent=2,
-                ensure_ascii=False,
-            )
-            exp1, exp2, exp3 = st.columns(3)
-            with exp1:
-                st.download_button(
-                    "Download plan (Markdown)",
-                    data=md_plan.encode("utf-8"),
-                    file_name=f"home_care_plan_{date.today().isoformat()}.md",
-                    mime="text/markdown",
-                    width="stretch",
-                )
-            with exp2:
-                st.download_button(
-                    "Download reminders (.ics)",
-                    data=ics_plan.encode("utf-8"),
-                    file_name="home_care_reminders.ics",
-                    mime="text/calendar",
-                    width="stretch",
-                )
-            with exp3:
-                st.download_button(
-                    "Download plan data (JSON)",
-                    data=json_plan.encode("utf-8"),
-                    file_name="home_care_plan.json",
-                    mime="application/json",
-                    width="stretch",
-                )
-            st.caption("The calendar file uses one-day-before reminders and stays on your device.")
-
             pdf_col, none_col, _pdf_spacer = st.columns([0.23, 0.18, 0.59])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
