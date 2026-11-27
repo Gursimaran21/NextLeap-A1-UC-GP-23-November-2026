@@ -37,7 +37,7 @@ REQUIRED_INTERVIEW_COLS = [
     "Q17_decision_information",
     "Q18_usefulness",
     "main_barrier",
-    "researcher_notes",
+    "notes",
     "quote",
     "theme_code",
 ]
@@ -120,7 +120,7 @@ def interview_template() -> pd.DataFrame:
         "Q17_decision_information": "",
         "Q18_usefulness": "",
         "main_barrier": "",
-        "researcher_notes": "",
+        "notes": "",
         "quote": "",
         "theme_code": "T1_POST_SERVICE_CLOSURE",
     }])
