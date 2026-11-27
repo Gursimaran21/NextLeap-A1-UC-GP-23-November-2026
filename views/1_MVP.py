@@ -574,6 +574,8 @@ def _render_calendar(profile: dict) -> None:
         "No prices, availability, messages, or account access."
     )
 
+    care = st.session_state.get("mvp_care_plan")
+
     with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
         care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
@@ -637,6 +639,8 @@ def _render_calendar(profile: dict) -> None:
                     session_hash=st.session_state.mvp_session_hash,
                 )
                 st.rerun()
+        if not care:
+            st.caption("Choose a service above to see the care plan.")
 
     with st.expander("3. Build your own care plan"):
         history = st.session_state.get("mvp_history", {})
@@ -681,7 +685,6 @@ def _render_calendar(profile: dict) -> None:
                 st.session_state.mvp_plan = plan
                 st.rerun()
 
-    care = st.session_state.get("mvp_care_plan")
     if care:
         st.markdown(f"**Care plan for {care['category']}**")
         if care.get("intake"):
@@ -807,8 +810,6 @@ def _render_calendar(profile: dict) -> None:
             if care.get("source_url"):
                 st.markdown(f"[Public source]({care['source_url']})")
             st.caption("Your service name stays in this session only.")
-    else:
-        st.caption("Choose a service above to see the care plan.")
 
     if care and care.get("intake") and not care.get("intake_paused"):
         _leading_check(
