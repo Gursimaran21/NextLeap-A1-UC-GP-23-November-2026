@@ -569,128 +569,8 @@ def _render_profile() -> dict:
     return st.session_state.get("mvp_profile", profile)
 
 
-def _render_calendar(profile: dict) -> None:
-    st.subheader("Step 2: Your next 90 days")
-    st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
-
-    st.markdown("### Next-cycle care plan (guidance only)")
-    st.caption(
-        "Based only on the service you say you completed and public guidance. "
-        "No prices, availability, messages, or account access."
-    )
-
-    care = st.session_state.get("mvp_care_plan")
-
-    with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
-        intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
-        care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
-        default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
-        with intake_cat:
-            intake_service = st.selectbox(
-                "1. Recently completed service",
-                care_options,
-                index=care_options.index(default_care) if default_care in care_options else 0,
-                key="intake_service",
-            )
-        with intake_change:
-            intake_note = st.text_input(
-                "2. What changed after it? (optional, no personal details)",
-                key="intake_note",
-                placeholder="e.g., airflow feels weaker",
-            )
-        with intake_timing:
-            intake_mode = st.radio(
-                "3. How should we treat it?",
-                ["Routine", "Planned", "Possible urgency"],
-                key="intake_mode",
-            )
-        if st.button("Build guided care plan", type="primary", width="content"):
-            built = insta_talk.guided_intake_plan(
-                {
-                    "category": intake_service,
-                    "change": intake_note,
-                    "timing": intake_mode,
-                },
-                session_hash=st.session_state.mvp_session_hash,
-            )
-            st.session_state.mvp_care_category = intake_service
-            st.session_state.mvp_care_plan = built
-            st.session_state.mvp_intake_edit = False
-            _log_leading_indicator("guided_intake_built", "guided_intake", {
-                "category": intake_service,
-                "timing": intake_mode,
-                "paused": bool(built.get("intake_paused")),
-                "confidence": built.get("confidence", 0),
-                "source_class": built.get("source_class", ""),
-                "freshness": built.get("freshness", ""),
-                "match_strength": built.get("match_strength", ""),
-            }, quiet=True)
-            st.rerun()
-
-    with st.expander("2. Choose a service directly for a quick plan"):
-        care_left, care_right = st.columns([2, 1])
-        with care_left:
-            selected_care = st.selectbox(
-                "Which service did you most recently complete?",
-                care_options,
-                index=care_options.index(default_care) if default_care in care_options else 0,
-                key="care_category_select",
-            )
-        with care_right:
-            if st.button("Show care plan", type="primary", width="content"):
-                st.session_state.mvp_care_category = selected_care
-                st.session_state.mvp_care_plan = insta_talk.care_plan(
-                    selected_care,
-                    session_hash=st.session_state.mvp_session_hash,
-                )
-                st.rerun()
-        if not care:
-            st.caption("Choose a service above to see the care plan.")
-        _session_summary_panel()
-
-    with st.expander("3. Build your own care plan"):
-        history = st.session_state.get("mvp_history", {})
-        col_a, col_b = st.columns([1, 2])
-        with col_a:
-            if st.button("Build / refresh plan", type="primary", width="content"):
-                ref = mvp.load_public_reference()
-                plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
-                st.session_state.mvp_plan = plan
-                st.session_state.mvp_plan_summary = ""
-                mvp.log_tool_trace({
-                    "ts": datetime.now(timezone.utc).isoformat(),
-                    "session_hash": st.session_state.mvp_session_hash,
-                    "turn": 0,
-                    "chosen_tool": "build_calendar",
-                    "reason": "User requested plan refresh from household history",
-                    "user_input_length": len(json.dumps(history, ensure_ascii=False)),
-                    "route": "PLAN",
-                    "confidence": 1.0,
-                })
-                st.rerun()
-        with col_b:
-            custom = st.text_input(
-                "Add an upcoming need you already know (optional)",
-                value=st.session_state.get("mvp_custom_need", ""),
-                placeholder="e.g., Bathroom cleaning",
-            )
-            st.session_state.mvp_custom_need = custom
-            if st.button("Add as personal note") and custom.strip():
-                plan = list(st.session_state.get("mvp_plan", []))
-                plan.append({
-                    "need": custom.strip(),
-                    "status": "Your note",
-                    "due_in_days": 30,
-                    "why": "You added this as an upcoming requirement.",
-                    "basis": "Your own note; no external claim is made.",
-                    "source_url": "",
-                    "confidence": 0.4,
-                    "route_hint": "USER_NOTE",
-                    "evidence": "customer input only",
-                })
-                st.session_state.mvp_plan = plan
-                st.rerun()
-
+def _render_care_plan(care: dict) -> None:
+    """Render the care plan display inside the guided intake expander."""
     if care:
         st.markdown(f"**Care plan for {care['category']}**")
         if care.get("intake"):
@@ -816,6 +696,131 @@ def _render_calendar(profile: dict) -> None:
             if care.get("source_url"):
                 st.markdown(f"[Public source]({care['source_url']})")
             st.caption("Your service name stays in this session only.")
+
+
+def _render_calendar(profile: dict) -> None:
+    st.subheader("Step 2: Your next 90 days")
+    st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
+
+    st.markdown("### Next-cycle care plan (guidance only)")
+    st.caption(
+        "Based only on the service you say you completed and public guidance. "
+        "No prices, availability, messages, or account access."
+    )
+
+    care = st.session_state.get("mvp_care_plan")
+
+    with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
+        intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
+        care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
+        default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
+        with intake_cat:
+            intake_service = st.selectbox(
+                "1. Recently completed service",
+                care_options,
+                index=care_options.index(default_care) if default_care in care_options else 0,
+                key="intake_service",
+            )
+        with intake_change:
+            intake_note = st.text_input(
+                "2. What changed after it? (optional, no personal details)",
+                key="intake_note",
+                placeholder="e.g., airflow feels weaker",
+            )
+        with intake_timing:
+            intake_mode = st.radio(
+                "3. How should we treat it?",
+                ["Routine", "Planned", "Possible urgency"],
+                key="intake_mode",
+            )
+        if st.button("Build guided care plan", type="primary", width="content"):
+            built = insta_talk.guided_intake_plan(
+                {
+                    "category": intake_service,
+                    "change": intake_note,
+                    "timing": intake_mode,
+                },
+                session_hash=st.session_state.mvp_session_hash,
+            )
+            st.session_state.mvp_care_category = intake_service
+            st.session_state.mvp_care_plan = built
+            st.session_state.mvp_intake_edit = True
+            _log_leading_indicator("guided_intake_built", "guided_intake", {
+                "category": intake_service,
+                "timing": intake_mode,
+                "paused": bool(built.get("intake_paused")),
+                "confidence": built.get("confidence", 0),
+                "source_class": built.get("source_class", ""),
+                "freshness": built.get("freshness", ""),
+                "match_strength": built.get("match_strength", ""),
+            }, quiet=True)
+            st.rerun()
+
+        _render_care_plan(care)
+
+    with st.expander("2. Choose a service directly for a quick plan"):
+        care_left, care_right = st.columns([2, 1])
+        with care_left:
+            selected_care = st.selectbox(
+                "Which service did you most recently complete?",
+                care_options,
+                index=care_options.index(default_care) if default_care in care_options else 0,
+                key="care_category_select",
+            )
+        with care_right:
+            if st.button("Show care plan", type="primary", width="content"):
+                st.session_state.mvp_care_category = selected_care
+                st.session_state.mvp_care_plan = insta_talk.care_plan(
+                    selected_care,
+                    session_hash=st.session_state.mvp_session_hash,
+                )
+                st.rerun()
+        if not care:
+            st.caption("Choose a service above to see the care plan.")
+        _session_summary_panel()
+
+    with st.expander("3. Build your own care plan"):
+        history = st.session_state.get("mvp_history", {})
+        col_a, col_b = st.columns([1, 2])
+        with col_a:
+            if st.button("Build / refresh plan", type="primary", width="content"):
+                ref = mvp.load_public_reference()
+                plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
+                st.session_state.mvp_plan = plan
+                st.session_state.mvp_plan_summary = ""
+                mvp.log_tool_trace({
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "session_hash": st.session_state.mvp_session_hash,
+                    "turn": 0,
+                    "chosen_tool": "build_calendar",
+                    "reason": "User requested plan refresh from household history",
+                    "user_input_length": len(json.dumps(history, ensure_ascii=False)),
+                    "route": "PLAN",
+                    "confidence": 1.0,
+                })
+                st.rerun()
+        with col_b:
+            custom = st.text_input(
+                "Add an upcoming need you already know (optional)",
+                value=st.session_state.get("mvp_custom_need", ""),
+                placeholder="e.g., Bathroom cleaning",
+            )
+            st.session_state.mvp_custom_need = custom
+            if st.button("Add as personal note") and custom.strip():
+                plan = list(st.session_state.get("mvp_plan", []))
+                plan.append({
+                    "need": custom.strip(),
+                    "status": "Your note",
+                    "due_in_days": 30,
+                    "why": "You added this as an upcoming requirement.",
+                    "basis": "Your own note; no external claim is made.",
+                    "source_url": "",
+                    "confidence": 0.4,
+                    "route_hint": "USER_NOTE",
+                    "evidence": "customer input only",
+                })
+                st.session_state.mvp_plan = plan
+                st.rerun()
 
     if care and care.get("intake") and not care.get("intake_paused"):
         _leading_check(
