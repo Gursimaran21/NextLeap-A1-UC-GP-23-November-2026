@@ -636,7 +636,7 @@ def _care_pdf_markdown(care: dict) -> str:
     lines.extend(f"{part}." for part in sentences[:-1] if part)
     if sentences[-1]:
         lines.append(sentences[-1])
-    lines.extend(["", "", "", "", "", "", ":: From Urban Company,", ":: Insta Talk (Next-Cycle Care Plan)"])
+    lines.extend(["", "", "", "", "", "", "From Urban Company,", "Insta Talk (Next-Cycle Care Plan)"])
     return "\n".join(lines)
 
 
