@@ -545,11 +545,12 @@ def care_plan(category: str = "", session_hash: str = "") -> dict[str, Any]:
         ),
         {},
     )
-    source_url = str(guide_row.get("source_url", "") or (reviews[0]["source_url"] if reviews else ""))
-    basis = str(guide_row.get("covers", "") or (reviews[0]["basis"] if reviews else "Your own observation"))
-    source_class = str(reviews[0].get("source_class", "") or ("public_guidance" if source_url else "customer_input"))
-    freshness = str(reviews[0].get("freshness", "") or "not_recorded") if reviews else "not_recorded"
-    match_strength = str(reviews[0].get("match_strength", "") or ("category" if source_url else "template"))
+    first_review = reviews[0] if reviews else {}
+    source_url = str(guide_row.get("source_url", "") or first_review.get("source_url", ""))
+    basis = str(guide_row.get("covers", "") or first_review.get("basis", "") or "Your own observation")
+    source_class = str(first_review.get("source_class", "") or ("public_guidance" if source_url else "customer_input"))
+    freshness = str(first_review.get("freshness", "") or "not_recorded")
+    match_strength = str(first_review.get("match_strength", "") or ("category" if source_url else "template"))
     confidence_parts = confidence_v2(source_class, freshness, match_strength)
     confidence = float(confidence_parts["score"])
 
