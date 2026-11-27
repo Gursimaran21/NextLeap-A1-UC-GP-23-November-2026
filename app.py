@@ -39,7 +39,9 @@ st.markdown(
       .stAlert { border-radius: 8px; }
       [data-testid="stExpander"] > details > summary {
         background-color: #500C6B !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
+        min-height: 30px !important;
+        padding: 2px 12px !important;
       }
       [data-testid="stExpander"] > details > summary,
       [data-testid="stExpander"] > details > summary * {
