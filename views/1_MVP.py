@@ -574,7 +574,7 @@ def _render_calendar(profile: dict) -> None:
         "No prices, availability, messages, or account access."
     )
 
-    with st.expander("Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
+    with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
         care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
         default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
@@ -620,23 +620,66 @@ def _render_calendar(profile: dict) -> None:
             }, quiet=True)
             st.rerun()
 
-    st.caption("Or choose a service directly for a quick plan.")
-    care_left, care_right = st.columns([2, 1])
-    with care_left:
-        selected_care = st.selectbox(
-            "Which service did you most recently complete?",
-            care_options,
-            index=care_options.index(default_care) if default_care in care_options else 0,
-            key="care_category_select",
-        )
-    with care_right:
-        if st.button("Show care plan", type="primary", width="stretch"):
-            st.session_state.mvp_care_category = selected_care
-            st.session_state.mvp_care_plan = insta_talk.care_plan(
-                selected_care,
-                session_hash=st.session_state.mvp_session_hash,
+    with st.expander("2. Choose a service directly for a quick plan."):
+        care_left, care_right = st.columns([2, 1])
+        with care_left:
+            selected_care = st.selectbox(
+                "Which service did you most recently complete?",
+                care_options,
+                index=care_options.index(default_care) if default_care in care_options else 0,
+                key="care_category_select",
             )
-            st.rerun()
+        with care_right:
+            if st.button("Show care plan", type="primary", width="stretch"):
+                st.session_state.mvp_care_category = selected_care
+                st.session_state.mvp_care_plan = insta_talk.care_plan(
+                    selected_care,
+                    session_hash=st.session_state.mvp_session_hash,
+                )
+                st.rerun()
+
+    with st.expander("3. Build your own care plan"):
+        history = st.session_state.get("mvp_history", {})
+        col_a, col_b = st.columns([1, 2])
+        with col_a:
+            if st.button("Build / refresh plan", type="primary", width="stretch"):
+                ref = mvp.load_public_reference()
+                plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
+                st.session_state.mvp_plan = plan
+                st.session_state.mvp_plan_summary = ""
+                mvp.log_tool_trace({
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "session_hash": st.session_state.mvp_session_hash,
+                    "turn": 0,
+                    "chosen_tool": "build_calendar",
+                    "reason": "User requested plan refresh from household history",
+                    "user_input_length": len(json.dumps(history, ensure_ascii=False)),
+                    "route": "PLAN",
+                    "confidence": 1.0,
+                })
+                st.rerun()
+        with col_b:
+            custom = st.text_input(
+                "Add an upcoming need you already know (optional)",
+                value=st.session_state.get("mvp_custom_need", ""),
+                placeholder="e.g., Bathroom cleaning",
+            )
+            st.session_state.mvp_custom_need = custom
+            if st.button("Add as personal note") and custom.strip():
+                plan = list(st.session_state.get("mvp_plan", []))
+                plan.append({
+                    "need": custom.strip(),
+                    "status": "Your note",
+                    "due_in_days": 30,
+                    "why": "You added this as an upcoming requirement.",
+                    "basis": "Your own note; no external claim is made.",
+                    "source_url": "",
+                    "confidence": 0.4,
+                    "route_hint": "USER_NOTE",
+                    "evidence": "customer input only",
+                })
+                st.session_state.mvp_plan = plan
+                st.rerun()
 
     care = st.session_state.get("mvp_care_plan")
     if care:
@@ -784,48 +827,6 @@ def _render_calendar(profile: dict) -> None:
     _session_summary_panel()
 
     st.divider()
-
-    history = st.session_state.get("mvp_history", {})
-    col_a, col_b = st.columns([1, 2])
-    with col_a:
-        if st.button("Build / refresh plan", type="primary", width="stretch"):
-            ref = mvp.load_public_reference()
-            plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
-            st.session_state.mvp_plan = plan
-            st.session_state.mvp_plan_summary = ""
-            mvp.log_tool_trace({
-                "ts": datetime.now(timezone.utc).isoformat(),
-                "session_hash": st.session_state.mvp_session_hash,
-                "turn": 0,
-                "chosen_tool": "build_calendar",
-                "reason": "User requested plan refresh from household history",
-                "user_input_length": len(json.dumps(history, ensure_ascii=False)),
-                "route": "PLAN",
-                "confidence": 1.0,
-            })
-            st.rerun()
-    with col_b:
-        custom = st.text_input(
-            "Add an upcoming need you already know (optional)",
-            value=st.session_state.get("mvp_custom_need", ""),
-            placeholder="e.g., Bathroom cleaning",
-        )
-        st.session_state.mvp_custom_need = custom
-        if st.button("Add as personal note") and custom.strip():
-            plan = list(st.session_state.get("mvp_plan", []))
-            plan.append({
-                "need": custom.strip(),
-                "status": "Your note",
-                "due_in_days": 30,
-                "why": "You added this as an upcoming requirement.",
-                "basis": "Your own note; no external claim is made.",
-                "source_url": "",
-                "confidence": 0.4,
-                "route_hint": "USER_NOTE",
-                "evidence": "customer input only",
-            })
-            st.session_state.mvp_plan = plan
-            st.rerun()
 
     plan = list(st.session_state.get("mvp_plan", []))
     if not plan:
