@@ -30,6 +30,8 @@ def _build_md_story(md_text: str):
         styles.add(ParagraphStyle(name="MdH2", parent=styles["Heading2"], fontSize=13, leading=16, textColor=colors.HexColor("#0B6E4F")))
     if "MdH3" not in styles:
         styles.add(ParagraphStyle(name="MdH3", parent=styles["Heading3"], fontName="Helvetica-Bold", fontSize=11, leading=14, textColor=colors.HexColor("#12212B")))
+    if "MdBoldLine" not in styles:
+        styles.add(ParagraphStyle(name="MdBoldLine", parent=styles["Normal"], fontName="Helvetica-Bold", fontSize=10, leading=13, textColor=colors.HexColor("#12212B")))
 
     story = []
     for raw_line in md_text.splitlines():
@@ -43,6 +45,8 @@ def _build_md_story(md_text: str):
             story.append(Paragraph(render(line[3:].strip()), styles["MdH2"]))
         elif line.startswith("### "):
             story.append(Paragraph(render(line[4:].strip()), styles["MdH3"]))
+        elif line.startswith(":: "):
+            story.append(Paragraph(render(line[3:].strip()), styles["MdBoldLine"]))
         elif line.startswith("|"):
             story.append(Preformatted(line, styles["BodySmall"]))
         elif line.startswith("- "):
