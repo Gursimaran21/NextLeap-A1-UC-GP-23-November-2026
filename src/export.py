@@ -29,7 +29,7 @@ def _build_md_story(md_text: str):
     if "MdH2" not in styles:
         styles.add(ParagraphStyle(name="MdH2", parent=styles["Heading2"], fontSize=13, leading=16, textColor=colors.HexColor("#0B6E4F")))
     if "MdH3" not in styles:
-        styles.add(ParagraphStyle(name="MdH3", parent=styles["Heading3"], fontName="Helvetica-Bold", fontSize=11, leading=14, textColor=colors.HexColor("#12212B")))
+        styles.add(ParagraphStyle(name="MdH3", parent=styles["Normal"], fontName="Helvetica-Bold", fontSize=11, leading=14, textColor=colors.HexColor("#12212B")))
     if "MdBoldLine" not in styles:
         styles.add(ParagraphStyle(name="MdBoldLine", parent=styles["Normal"], fontName="Helvetica-Bold", fontSize=10, leading=13, textColor=colors.HexColor("#12212B")))
 
