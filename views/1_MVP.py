@@ -1104,7 +1104,7 @@ def _leading_check(
         second = st.radio(labels[1], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[1])
         third = st.slider(labels[2], 1, 5, 3, key=keys[2])
         if button_label == "Save intake check":
-            save_col, reset_col, _check_spacer = st.columns([0.205, 0.205, 0.59])
+            save_col, reset_col, _check_spacer = st.columns([0.188, 0.188, 0.624])
         else:
             save_col = st.container()
         with save_col:
