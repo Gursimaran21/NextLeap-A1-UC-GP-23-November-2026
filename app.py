@@ -37,6 +37,9 @@ st.markdown(
         outline-offset: 2px;
       }
       .stAlert { border-radius: 8px; }
+      [data-testid="stExpander"] {
+        max-width: 960px !important;
+      }
       [data-testid="stExpander"] > details > summary {
         background-color: #500C6B !important;
         border-radius: 6px !important;
