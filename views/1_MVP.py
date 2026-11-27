@@ -1105,6 +1105,8 @@ def _leading_check(
                     fields[1]: second,
                     fields[2]: int(third),
                 })
+                if button_label == "Save intake check":
+                    st.success("Saved locally for evaluation.")
 
 
 def _coverage_html(badge: dict) -> str:
