@@ -569,6 +569,15 @@ def _render_profile() -> dict:
     return st.session_state.get("mvp_profile", profile)
 
 
+def _reset_guided_notes() -> None:
+    st.session_state.mvp_care_plan = None
+    st.session_state.mvp_continuity = None
+    st.session_state.mvp_reflection = None
+    st.session_state.mvp_reflection_text = ""
+    st.session_state.mvp_intake_edit = False
+    st.rerun()
+
+
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -628,7 +637,7 @@ def _render_calendar(profile: dict) -> None:
             st.rerun()
 
     with st.expander("2. Choose a service directly for a quick plan"):
-        care_left, care_right = st.columns([2, 1])
+        care_left, care_plan_col, reset_col = st.columns([2, 1, 1])
         with care_left:
             selected_care = st.selectbox(
                 "Which service did you most recently complete?",
@@ -636,7 +645,7 @@ def _render_calendar(profile: dict) -> None:
                 index=care_options.index(default_care) if default_care in care_options else 0,
                 key="care_category_select",
             )
-        with care_right:
+        with care_plan_col:
             if st.button("Show care plan", type="primary", width="content"):
                 st.session_state.mvp_care_category = selected_care
                 st.session_state.mvp_care_plan = insta_talk.care_plan(
@@ -644,6 +653,9 @@ def _render_calendar(profile: dict) -> None:
                     session_hash=st.session_state.mvp_session_hash,
                 )
                 st.rerun()
+        with reset_col:
+            if st.button("Reset guided notes", key="summary_reset", width="content"):
+                _reset_guided_notes()
         if not care:
             st.caption("Choose a service above to see the care plan.")
         _session_summary_panel()
@@ -1083,20 +1095,10 @@ def _session_summary_panel() -> None:
             f"Session ID: `{st.session_state.mvp_session_hash}` · "
             "This panel stays in your browser session. No upload and no external action."
         )
-        edit_col, reset_col = st.columns(2)
-        with edit_col:
-            if st.button("Edit guided answers", key="summary_edit", width="content"):
-                st.session_state.mvp_intake_edit = True
-                st.session_state.mvp_step = 2
-                st.rerun()
-        with reset_col:
-            if st.button("Reset guided notes", key="summary_reset", width="content"):
-                st.session_state.mvp_care_plan = None
-                st.session_state.mvp_continuity = None
-                st.session_state.mvp_reflection = None
-                st.session_state.mvp_reflection_text = ""
-                st.session_state.mvp_intake_edit = False
-                st.rerun()
+        if st.button("Edit guided answers", key="summary_edit", width="content"):
+            st.session_state.mvp_intake_edit = True
+            st.session_state.mvp_step = 2
+            st.rerun()
 
 
 def _append_decider_result(result: dict, mode: str = "") -> None:
