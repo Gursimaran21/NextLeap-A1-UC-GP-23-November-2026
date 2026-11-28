@@ -1333,7 +1333,7 @@ def _mode_default_text(mode: str) -> str:
 def _talk_mode_selector() -> str:
     st.markdown("**Insta Talk modes**")
     st.caption("Tap a mode to run a sample turn. Use the context box below to send your own details.")
-    cols = st.columns([1.31, 1.24, 1.26, 1.01, 1.66, 1.46, 1.24, 2.84])
+    cols = st.columns([129, 122, 124, 98, 164, 143, 122, 376])
     for idx, (mode, label) in enumerate(insta_talk.TALK_MODES):
         with cols[idx]:
             if st.button(
