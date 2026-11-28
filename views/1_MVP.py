@@ -1054,7 +1054,8 @@ def _render_calendar(profile: dict) -> None:
                 st.rerun()
         with refresh_col:
             if st.button("Refresh own care plan", key="own_plan_refresh", width="content"):
-                _build_own_plan(profile, history)
+                st.session_state.mvp_plan = []
+                st.session_state.mvp_plan_summary = ""
                 st.session_state.mvp_own_refresh_notice = True
                 st.rerun()
         if st.session_state.pop("mvp_own_refresh_notice", False):
