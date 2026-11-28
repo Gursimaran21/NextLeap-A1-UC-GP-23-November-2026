@@ -756,13 +756,6 @@ def _render_plan_details(
         st.markdown(_tinted_note(st.session_state[summary_key]), unsafe_allow_html=True)
     else:
         st.caption("Generate a short summary grounded only in the items above.")
-    _vertical_space()
-
-    with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
-        guide_df = pd.DataFrame(mvp.category_guide())
-        st.dataframe(guide_df, width="stretch", hide_index=True)
-        if summary_key != "mvp_plan_summary":
-            st.caption("Category descriptions use public information. No external action is taken from this page.")
     if summary_key == "mvp_plan_summary":
         st.download_button(
             "Download own care plan (PDF)",
@@ -772,6 +765,13 @@ def _render_plan_details(
             type="primary",
             width="content",
         )
+    _vertical_space()
+
+    with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
+        guide_df = pd.DataFrame(mvp.category_guide())
+        st.dataframe(guide_df, width="stretch", hide_index=True)
+        if summary_key != "mvp_plan_summary":
+            st.caption("Category descriptions use public information. No external action is taken from this page.")
     st.divider()
 
 
