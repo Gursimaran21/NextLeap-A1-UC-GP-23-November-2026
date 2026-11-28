@@ -1334,27 +1334,34 @@ def _mode_default_text(mode: str) -> str:
     return category
 
 
-def _talk_mode_selector() -> str:
+def _talk_mode_selector(profile: dict) -> str:
     st.markdown("**Insta Talk modes**")
     st.caption("Tap a mode to run a sample turn. Use the context box below to send your own details.")
+    active = str(st.session_state.get("mvp_talk_mode", "Decide"))
     cols = st.columns([129, 122, 124, 98, 164, 143, 122, 376])
     for idx, (mode, label) in enumerate(insta_talk.TALK_MODES):
         with cols[idx]:
-            if st.button(
-                label,
-                key=f"talk_mode_{idx}",
-                width="content",
-                type="primary" if mode != "No action" else "tertiary",
-            ):
+            if st.button(label, key=f"talk_mode_{idx}", width="content", type="primary"):
                 st.session_state.mvp_talk_mode = mode
-                _handle_talk(
-                    mode,
-                    _mode_default_text(mode),
-                    st.session_state.get("mvp_profile", {}),
-                    replace=True,
-                )
-    active = str(st.session_state.get("mvp_talk_mode", "Decide"))
+                _handle_talk(mode, _mode_default_text(mode), profile, replace=True)
+    with cols[len(insta_talk.TALK_MODES)]:
+        if st.button(
+            "Clear Insta Talk modes",
+            key="talk_mode_clear",
+            width="content",
+            type="secondary",
+        ):
+            st.session_state.mvp_chat = []
+            st.session_state.mvp_talk_mode = "Decide"
+            st.rerun()
     st.caption(f"Active mode: {active}")
+    context = st.text_input(
+        "Add context for this mode (optional)",
+        key=f"talk_context_{active}",
+        placeholder="e.g., Deep cleaning was 9 months ago",
+    )
+    if st.button("Send to Insta Talk", key="talk_send_mode"):
+        _handle_talk(active, context, profile)
     return active
 
 
@@ -1376,16 +1383,8 @@ def _render_decider(profile: dict) -> None:
                 st.session_state.mvp_talk_mode = mode
                 _handle_talk(mode, text, profile)
 
-    context = st.text_input(
-        "Add context for this mode (optional)",
-        key=f"talk_context_{active_mode}",
-        placeholder="e.g., Deep cleaning was 9 months ago",
-    )
-    if st.button("Send to Insta Talk", key="talk_send_mode"):
-        _handle_talk(active_mode, context, profile)
-
     st.divider()
-    _talk_mode_selector()
+    _talk_mode_selector(profile)
 
     for idx, msg in enumerate(list(st.session_state.mvp_chat)):
         with st.chat_message(msg["role"]):

@@ -175,7 +175,8 @@ st.markdown(
       [data-testid="stButton"]:has([title="Aftercare check"]) > button,
       [data-testid="stButton"]:has([title="No service needed right now"]) > button,
       [data-testid="stButton"]:has([title="What should I plan next?"]) > button,
-      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button {
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button,
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button {
         width: auto !important;
         min-width: max-content !important;
         height: 30px !important;
@@ -189,7 +190,8 @@ st.markdown(
       [data-testid="stButton"]:has([title="Aftercare check"]) > button *,
       [data-testid="stButton"]:has([title="No service needed right now"]) > button *,
       [data-testid="stButton"]:has([title="What should I plan next?"]) > button *,
-      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button * {
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button *,
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button * {
         font-size: 12px !important;
       }
       [data-testid="stButton"]:has([title="Explain a service area"]) [data-testid="stMarkdownContainer"],
@@ -198,7 +200,8 @@ st.markdown(
       [data-testid="stButton"]:has([title="Aftercare check"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="No service needed right now"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="What should I plan next?"]) [data-testid="stMarkdownContainer"],
-      [data-testid="stButton"]:has([title="Next-cycle care plan"]) [data-testid="stMarkdownContainer"] {
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) [data-testid="stMarkdownContainer"] {
         white-space: nowrap !important;
         overflow: visible !important;
         text-overflow: clip !important;
@@ -212,6 +215,8 @@ st.markdown(
       [data-testid="stButton"]:has([title="Prepare for a service"]) > button:hover,
       [data-testid="stButton"]:has([title="Aftercare check"]) > button,
       [data-testid="stButton"]:has([title="Aftercare check"]) > button:hover,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button:hover,
       [data-testid="stButton"]:has([title="What should I plan next?"]) > button,
       [data-testid="stButton"]:has([title="What should I plan next?"]) > button:hover,
       [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button,
@@ -223,17 +228,18 @@ st.markdown(
       [data-testid="stButton"]:has([title="Decide my next step"]) > button *,
       [data-testid="stButton"]:has([title="Prepare for a service"]) > button *,
       [data-testid="stButton"]:has([title="Aftercare check"]) > button *,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button *,
       [data-testid="stButton"]:has([title="What should I plan next?"]) > button *,
       [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button * {
         color: #FFFFFF !important;
       }
-      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
-      [data-testid="stButton"]:has([title="No service needed right now"]) > button:hover {
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button,
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button:hover {
         background-color: #EBDFF0 !important;
         border: 1px solid #D9C6E0 !important;
       }
-      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
-      [data-testid="stButton"]:has([title="No service needed right now"]) > button * {
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button,
+      [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button * {
         color: #500C6B !important;
       }
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
