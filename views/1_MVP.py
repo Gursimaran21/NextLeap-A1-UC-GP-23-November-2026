@@ -288,6 +288,7 @@ def _init_state() -> None:
         "mvp_care_plan": None,
         "mvp_continuity": None,
         "mvp_intake_edit": False,
+        "mvp_step2_ack": False,
         "mvp_edit_guided_notice": False,
         "intake_service": insta_talk.CARE_PLAN_CATEGORIES[0],
         "mvp_leading": {},
@@ -362,6 +363,24 @@ def _stepper() -> None:
     )
 
 
+def _step2_complete() -> bool:
+    """Step 2 is done once a plan is built or the user explicitly skips care cues."""
+    return (
+        bool(st.session_state.get("mvp_care_plan"))
+        or bool(st.session_state.get("mvp_plan"))
+        or bool(st.session_state.get("mvp_step2_ack"))
+    )
+
+
+def _step3_complete() -> bool:
+    """Step 3 is done once Insta Talk has produced an assistant response."""
+    return any(
+        str(msg.get("role")) == "assistant"
+        for msg in st.session_state.get("mvp_chat", [])
+        if isinstance(msg, dict)
+    )
+
+
 def _nav_buttons() -> None:
     step = int(st.session_state.mvp_step)
     c1, c2, c3 = st.columns([1, 1, 6])
@@ -375,6 +394,12 @@ def _nav_buttons() -> None:
         if step == 1 and not st.session_state.get("mvp_profile"):
             with c3:
                 st.warning("Save home details in Step 1 before continuing.")
+        elif step == 2 and not _step2_complete():
+            with c3:
+                st.warning("Build a guided or own care plan in Step 2 before continuing.")
+        elif step == 3 and not _step3_complete():
+            with c3:
+                st.warning("Complete an Insta Talk turn in Step 3 before continuing.")
         else:
             st.session_state.mvp_step = min(len(STEPS), step + 1)
             st.rerun()
@@ -854,6 +879,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     st.session_state.mvp_care_plan = None
                     st.session_state.mvp_review_cues = []
                     st.session_state.mvp_review_summary = ""
+                    st.session_state.mvp_step2_ack = True
                     no_need_clicked = True
             with note_col:
                 if no_need_clicked:
