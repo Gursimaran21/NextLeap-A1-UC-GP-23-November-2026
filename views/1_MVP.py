@@ -1336,7 +1336,12 @@ def _talk_mode_selector() -> str:
     cols = st.columns(3)
     for idx, (mode, label) in enumerate(insta_talk.TALK_MODES):
         with cols[idx % 3]:
-            if st.button(label, key=f"talk_mode_{idx}", width="stretch"):
+            if st.button(
+                label,
+                key=f"talk_mode_{idx}",
+                width="content",
+                type="primary" if mode != "No action" else "tertiary",
+            ):
                 st.session_state.mvp_talk_mode = mode
                 _handle_talk(mode, _mode_default_text(mode), st.session_state.get("mvp_profile", {}))
     active = str(st.session_state.get("mvp_talk_mode", "Decide"))

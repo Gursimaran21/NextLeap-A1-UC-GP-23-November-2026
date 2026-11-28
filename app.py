@@ -167,6 +167,75 @@ st.markdown(
       [data-testid="stBaseButton-tertiary"]:not([disabled]):hover {
         background-color: #EBDFF0 !important;
       }
+
+      /* Compact Insta Talk mode buttons. */
+      [data-testid="stButton"]:has([title="Explain a service area"]) > button,
+      [data-testid="stButton"]:has([title="Decide my next step"]) > button,
+      [data-testid="stButton"]:has([title="Prepare for a service"]) > button,
+      [data-testid="stButton"]:has([title="Aftercare check"]) > button,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
+      [data-testid="stButton"]:has([title="What should I plan next?"]) > button,
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button {
+        width: auto !important;
+        min-width: max-content !important;
+        height: 30px !important;
+        min-height: 30px !important;
+        padding: 2px 10px !important;
+        font-size: 12px !important;
+      }
+      [data-testid="stButton"]:has([title="Explain a service area"]) > button *,
+      [data-testid="stButton"]:has([title="Decide my next step"]) > button *,
+      [data-testid="stButton"]:has([title="Prepare for a service"]) > button *,
+      [data-testid="stButton"]:has([title="Aftercare check"]) > button *,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button *,
+      [data-testid="stButton"]:has([title="What should I plan next?"]) > button *,
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button * {
+        font-size: 12px !important;
+      }
+      [data-testid="stButton"]:has([title="Explain a service area"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Decide my next step"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Prepare for a service"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Aftercare check"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="No service needed right now"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="What should I plan next?"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) [data-testid="stMarkdownContainer"] {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        width: auto !important;
+      }
+      [data-testid="stButton"]:has([title="Explain a service area"]) > button,
+      [data-testid="stButton"]:has([title="Explain a service area"]) > button:hover,
+      [data-testid="stButton"]:has([title="Decide my next step"]) > button,
+      [data-testid="stButton"]:has([title="Decide my next step"]) > button:hover,
+      [data-testid="stButton"]:has([title="Prepare for a service"]) > button,
+      [data-testid="stButton"]:has([title="Prepare for a service"]) > button:hover,
+      [data-testid="stButton"]:has([title="Aftercare check"]) > button,
+      [data-testid="stButton"]:has([title="Aftercare check"]) > button:hover,
+      [data-testid="stButton"]:has([title="What should I plan next?"]) > button,
+      [data-testid="stButton"]:has([title="What should I plan next?"]) > button:hover,
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button,
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button:hover {
+        background-color: #500C6B !important;
+        border: 1px solid #500C6B !important;
+      }
+      [data-testid="stButton"]:has([title="Explain a service area"]) > button *,
+      [data-testid="stButton"]:has([title="Decide my next step"]) > button *,
+      [data-testid="stButton"]:has([title="Prepare for a service"]) > button *,
+      [data-testid="stButton"]:has([title="Aftercare check"]) > button *,
+      [data-testid="stButton"]:has([title="What should I plan next?"]) > button *,
+      [data-testid="stButton"]:has([title="Next-cycle care plan"]) > button * {
+        color: #FFFFFF !important;
+      }
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button:hover {
+        background-color: #EBDFF0 !important;
+        border: 1px solid #D9C6E0 !important;
+      }
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button,
+      [data-testid="stButton"]:has([title="No service needed right now"]) > button * {
+        color: #500C6B !important;
+      }
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
         background-color: #500C6B !important;
       }
