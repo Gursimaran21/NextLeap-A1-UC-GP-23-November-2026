@@ -765,7 +765,7 @@ def _render_plan_details(
             st.caption("Category descriptions use public information. No external action is taken from this page.")
     if summary_key == "mvp_plan_summary":
         st.divider()
-        st.download_button(
+        own_pdf_downloaded = st.download_button(
             "Download own care plan (PDF)",
             data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
             file_name="own_care_plan.pdf",
@@ -773,6 +773,8 @@ def _render_plan_details(
             type="primary",
             width="content",
         )
+        if own_pdf_downloaded:
+            st.success("Own care plan (PDF) is downloaded.")
 
 
 
@@ -837,7 +839,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
             pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.44, 0.15])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
-                    "Download care plan (PDF)",
+                    "Download Next-cycle care plan (PDF)",
                     data=export.md_to_pdf_bytes(_care_pdf_markdown(care)),
                     file_name="next_cycle_care_plan.pdf",
                     mime="application/pdf",
@@ -855,7 +857,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 if no_need_clicked:
                     st.success("Nothing added. You can return if that changes.")
             if care_pdf_downloaded:
-                st.success("Care plan (PDF) is downloaded.")
+                st.success("Next-cycle care plan (PDF) is downloaded.")
         with care_tabs[1]:
             if care.get("need_cues"):
                 for cue in care["need_cues"]:
