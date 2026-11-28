@@ -128,6 +128,22 @@ def _header_html() -> str:
     )
 
 
+def _service_logo_ui(category: str) -> str:
+    """Inline logo plus service-category badge for the Explain preview."""
+    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    safe_category = html.escape(str(category or "AC Service"))
+    return (
+        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">'
+        f'<img src="data:image/png;base64,{encoded}" alt="Insta Talk logo" '
+        'style="width:28px; height:28px; object-fit:contain; flex-shrink:0;" />'
+        '<span style="display:inline-block; background:#500C6B; color:#FFFFFF; '
+        'border:1px solid #500C6B; border-radius:999px; padding:4px 10px; '
+        'font-size:12px; font-weight:700; white-space:nowrap;">'
+        f"{safe_category}</span>"
+        "</div>"
+    )
+
+
 STEPS = [
     "Tell me about your home",
     "Your next 90 days",
@@ -1374,9 +1390,20 @@ def _render_decider(profile: dict) -> None:
     explain_idx = _latest_explain_index()
     if explain_idx is not None:
         explain_msg = st.session_state.mvp_chat[explain_idx]
+        preview_category = str(
+            st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0]
+        )
         with st.container(border=True):
+            st.markdown(_service_logo_ui(preview_category), unsafe_allow_html=True)
             st.markdown("**Explain a service area**")
             st.markdown(str(explain_msg.get("content", "")))
+            preview_clear_col, preview_revisit_col = st.columns(2)
+            with preview_clear_col:
+                if st.button("Route was clear", key="preview_route_clear", width="stretch"):
+                    _log_decision_event("route_clear", explain_msg)
+            with preview_revisit_col:
+                if st.button("I’ll revisit later", key="preview_revisit_later", width="stretch"):
+                    _log_decision_event("revisit_later", explain_msg)
         st.divider()
 
     st.markdown("**Quick prompts**")
@@ -1426,11 +1453,13 @@ def _render_decider(profile: dict) -> None:
                     st.session_state.mvp_plan_summary = ""
                     st.success("Private cue added to the Step 2 plan.")
 
-    last_assistant = next(
-        (m for m in reversed(list(st.session_state.mvp_chat)) if m["role"] == "assistant"),
+    chat = list(st.session_state.mvp_chat)
+    last_assistant_idx = next(
+        (i for i in range(len(chat) - 1, -1, -1) if str(chat[i].get("role")) == "assistant"),
         None,
     )
-    if last_assistant:
+    last_assistant = chat[last_assistant_idx] if last_assistant_idx is not None else None
+    if last_assistant and last_assistant_idx != explain_idx:
         clear_col, revisit_col = st.columns(2)
         with clear_col:
             if st.button("Route was clear", key="route_clear", width="stretch"):
