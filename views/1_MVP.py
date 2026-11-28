@@ -1067,7 +1067,7 @@ def _render_calendar(profile: dict) -> None:
                 placeholder="e.g., Bathroom cleaning",
                 key="mvp_custom_need",
             )
-            if st.button("Add as personal note") and st.session_state.get("mvp_custom_need", "").strip():
+            if st.button("Add as personal note", type="primary", width="content") and st.session_state.get("mvp_custom_need", "").strip():
                 custom = st.session_state.mvp_custom_need
                 plan = list(st.session_state.get("mvp_plan", []))
                 plan.append({

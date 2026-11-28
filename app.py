@@ -133,6 +133,7 @@ st.markdown(
       [data-testid="stButton"]:has([title="Build guided care plan"]) > button,
       [data-testid="stButton"]:has([title="Reset guided care plan"]) > button,
       [data-testid="stButton"]:has([title="No need right now"]) > button,
+      [data-testid="stButton"]:has([title="Add as personal note"]) > button,
       [data-testid="stButton"]:has([title="Refresh own care plan"]) > button,
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) > button {
         width: auto !important;
@@ -141,6 +142,7 @@ st.markdown(
       [data-testid="stButton"]:has([title="Build guided care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="Reset guided care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="No need right now"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Add as personal note"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="Refresh own care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) [data-testid="stMarkdownContainer"] {
         white-space: normal !important;
