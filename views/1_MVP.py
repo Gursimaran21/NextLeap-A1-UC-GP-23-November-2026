@@ -855,7 +855,12 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     no_need_clicked = True
             with note_col:
                 if no_need_clicked:
-                    st.success("Nothing added. You can return if that changes.")
+                    st.markdown(
+                        '<div style="background:#E8F5E9; color:#1B5E20; border:1px solid #C8E6C9; '
+                        'border-radius:8px; padding:8px 12px; font-size:14px; line-height:1.2; '
+                        'white-space:nowrap;">Nothing added. You can return if that changes.</div>',
+                        unsafe_allow_html=True,
+                    )
             if care_pdf_downloaded:
                 st.success("Next-cycle care plan (PDF) is downloaded.")
         with care_tabs[1]:
