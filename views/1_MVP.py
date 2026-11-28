@@ -772,7 +772,6 @@ def _render_plan_details(
         st.dataframe(guide_df, width="stretch", hide_index=True)
         if summary_key != "mvp_plan_summary":
             st.caption("Category descriptions use public information. No external action is taken from this page.")
-    st.divider()
 
 
 
@@ -1088,8 +1087,6 @@ def _render_calendar(profile: dict) -> None:
         plan = list(st.session_state.get("mvp_plan", []))
         if plan:
             _render_plan_details(plan, profile, history)
-
-        st.divider()
 
     if not plan:
         st.markdown(
