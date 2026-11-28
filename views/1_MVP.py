@@ -763,6 +763,8 @@ def _render_plan_details(
         st.dataframe(guide_df, width="stretch", hide_index=True)
         if summary_key != "mvp_plan_summary":
             st.caption("Category descriptions use public information. No external action is taken from this page.")
+    if summary_key != "mvp_plan_summary":
+        st.divider()
     if summary_key == "mvp_plan_summary":
         st.divider()
         own_pdf_downloaded = st.download_button(
@@ -1049,7 +1051,6 @@ def _render_calendar(profile: dict) -> None:
                 "Save intake check",
             )
 
-        _session_summary_panel()
 
     with st.expander("2. Build your own care plan"):
         st.markdown("### Build your own care plan")
@@ -1157,7 +1158,7 @@ def _log_decision_event(event: str, msg: dict) -> None:
         "revisit_intent": event == "revisit_later",
         "seconds_to_decision": seconds,
     })
-    st.toast("Saved locally for evaluation.")
+    st.toast("Intake check is saved locally.")
 
 
 def _log_leading_indicator(event: str, flow: str, fields: dict, quiet: bool = False) -> None:
@@ -1175,7 +1176,7 @@ def _log_leading_indicator(event: str, flow: str, fields: dict, quiet: bool = Fa
     mvp.log_tool_trace(record)
     st.session_state.mvp_leading[event] = dict(fields)
     if not quiet:
-        st.toast("Saved locally for evaluation.")
+        st.toast("Intake check is saved locally.")
 
 
 def _reset_leading_check(keys: tuple[str, str, str], event: str) -> None:
@@ -1196,7 +1197,7 @@ def _leading_check(
 ) -> None:
     """Render and save a short leading-indicator check for one flow."""
     with st.container(border=True):
-        st.markdown("**Quick check (local evaluation only)**")
+        st.markdown("**Quick check**")
         first = st.radio(labels[0], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[0])
         second = st.radio(labels[1], ["Select", "Yes", "Partly", "No"], horizontal=True, key=keys[1])
         third = st.slider(labels[2], 1, 5, 3, key=keys[2])
@@ -1220,7 +1221,7 @@ def _leading_check(
                         fields[2]: int(third),
                     }, quiet=button_label == "Save intake check")
                     if button_label == "Save intake check":
-                        st.success("Saved locally for evaluation.")
+                        st.success("Intake check is saved locally.")
         if button_label == "Save intake check":
             with reset_col:
                 st.button(
@@ -1239,64 +1240,6 @@ def _coverage_html(badge: dict) -> str:
         f'border:1px solid {badge["border"]}; border-radius:999px; padding:2px 8px; '
         f'font-size:10px; font-weight:700; white-space:nowrap;">{badge["label"]}</span>'
     )
-
-
-def _session_summary_panel() -> None:
-    """Show the session-only inputs and outputs in one resettable panel."""
-    care = st.session_state.get("mvp_care_plan") or {}
-    cont = st.session_state.get("mvp_continuity") or {}
-    intake = care.get("intake") or {}
-    service = intake.get("category") or care.get("category") or cont.get("completed_service") or "not provided"
-    change = intake.get("change") or "not added"
-    timing = intake.get("timing") or "not answered"
-    if cont.get("review_window"):
-        review = str(cont["review_window"])
-    elif care.get("review"):
-        first = care["review"][0]
-        review = f"About {first['days']} day(s): {first['need']}"
-    else:
-        review = "none available"
-
-    with st.container(border=True):
-        st.markdown("**Session summary (private)**")
-        s1, s2, s3, s4 = st.columns(4)
-        with s1:
-            st.caption("Service you told us")
-            st.markdown(f"**{service}**")
-        with s2:
-            st.caption("What changed")
-            st.markdown(f"**{change}**")
-        with s3:
-            st.caption("Timing answer")
-            st.markdown(f"**{timing}**")
-        with s4:
-            st.caption("Review window")
-            st.markdown(f"**{review}**")
-        st.caption(
-            f"Session ID: `{st.session_state.mvp_session_hash}` · "
-            "This panel stays in your browser session. No upload and no external action."
-        )
-        edit_col, reset_col, _spacer = st.columns([1, 1, 3])
-        with edit_col:
-            st.button(
-                "Edit guided answers",
-                key="summary_edit",
-                width="content",
-                on_click=_edit_guided_answers,
-                args=(service, change, timing),
-            )
-        with reset_col:
-            if st.button("Reset guided notes", key="summary_reset", width="content"):
-                st.session_state.mvp_care_plan = None
-                st.session_state.mvp_review_cues = []
-                st.session_state.mvp_review_summary = ""
-                st.session_state.mvp_continuity = None
-                st.session_state.mvp_reflection = None
-                st.session_state.mvp_reflection_text = ""
-                st.session_state.mvp_intake_edit = False
-                st.rerun()
-        if st.session_state.pop("mvp_edit_guided_notice", False):
-            st.info("Guided answers are ready to edit in section 1 above.")
 
 
 def _append_decider_result(result: dict, mode: str = "") -> None:
@@ -1599,7 +1542,6 @@ def _render_reflection() -> None:
             "Save continuity check",
         )
 
-    _session_summary_panel()
 
     st.divider()
     st.markdown("**Quick feedback**")
