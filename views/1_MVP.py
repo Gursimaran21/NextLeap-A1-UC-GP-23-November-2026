@@ -128,14 +128,11 @@ def _header_html() -> str:
     )
 
 
-def _service_logo_ui(category: str) -> str:
-    """Inline logo plus service-category badge for the Explain preview."""
-    encoded = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+def _service_badge_ui(category: str) -> str:
+    """Inline service-category badge for the Explain preview."""
     safe_category = html.escape(str(category or "AC Service"))
     return (
-        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">'
-        f'<img src="data:image/png;base64,{encoded}" alt="Insta Talk logo" '
-        'style="width:28px; height:28px; object-fit:contain; flex-shrink:0;" />'
+        '<div style="margin-bottom:8px;">'
         '<span style="display:inline-block; background:#500C6B; color:#FFFFFF; '
         'border:1px solid #500C6B; border-radius:999px; padding:4px 10px; '
         'font-size:12px; font-weight:700; white-space:nowrap;">'
@@ -1393,9 +1390,8 @@ def _render_decider(profile: dict) -> None:
         preview_category = str(
             st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0]
         )
-        with st.chat_message("assistant"):
-            st.markdown(_service_logo_ui(preview_category), unsafe_allow_html=True)
-            st.markdown("**Explain a service area**")
+        with st.expander("Explain a service area", expanded=True, icon=":material/smart_toy:"):
+            st.markdown(_service_badge_ui(preview_category), unsafe_allow_html=True)
             st.markdown(str(explain_msg.get("content", "")))
             preview_clear_col, preview_revisit_col = st.columns(2)
             with preview_clear_col:
