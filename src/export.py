@@ -45,7 +45,7 @@ def _build_md_story(md_text: str):
             story.append(Paragraph(render(line[3:].strip()), styles["MdH2"]))
         elif line.startswith("### "):
             story.append(Paragraph(render(line[4:].strip()), styles["MdH3"]))
-        elif line in ("From Urban Company,", "Insta Talk (Next-Cycle Care Plan)"):
+        elif line in ("From Urban Company,", "Insta Talk (Next-Cycle Care Plan)", "Insta Talk (Own Care Plan)"):
             story.append(Paragraph(render(line), styles["MdBoldLine"]))
         elif line.startswith("|"):
             story.append(Preformatted(line, styles["BodySmall"]))

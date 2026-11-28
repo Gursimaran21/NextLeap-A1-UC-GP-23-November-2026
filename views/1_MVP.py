@@ -288,7 +288,6 @@ def _init_state() -> None:
         "mvp_continuity": None,
         "mvp_intake_edit": False,
         "mvp_edit_guided_notice": False,
-        "mvp_direct_plan_notice": False,
         "intake_service": insta_talk.CARE_PLAN_CATEGORIES[0],
         "mvp_leading": {},
         "mvp_reflection_text": "",
@@ -663,6 +662,40 @@ def _care_pdf_markdown(care: dict) -> str:
     return "\n".join(lines)
 
 
+def _own_plan_pdf_markdown(plan: list[dict]) -> str:
+    """Render the displayed planning cues as a standalone PDF document."""
+    lines = [
+        f"Date and Time: {datetime.now().strftime('%d %B %Y, %H:%M')}",
+        "",
+        "# Your Own Care Plan: Planning Cues",
+        "",
+        "## 1. Planning cues",
+        "",
+    ]
+    if not plan:
+        lines.append("No planning cues yet.")
+    for i, item in enumerate(plan, 1):
+        lines.extend([
+            f"{i}.) {item.get('need', 'Cue')}",
+            f"Status: {item.get('status', 'Unclear')}",
+        ])
+        if item.get("due_in_days") is not None:
+            lines.append(f"When: about {int(item['due_in_days'])} day(s) from today")
+        lines.append(f"Why: {item.get('why', '')}")
+        lines.append(f"Basis: {item.get('basis', '')}")
+        if item.get("source_url"):
+            lines.append(f"Public source: {item['source_url']}")
+        lines.append("")
+    lines.extend([
+        "Planning cues only. No service is required by this plan.",
+        "",
+        "",
+        "From Urban Company,",
+        "Insta Talk (Own Care Plan)",
+    ])
+    return "\n".join(lines)
+
+
 def _render_plan_details(
     plan: list[dict],
     profile: dict,
@@ -727,7 +760,17 @@ def _render_plan_details(
     with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
         guide_df = pd.DataFrame(mvp.category_guide())
         st.dataframe(guide_df, width="stretch", hide_index=True)
-        st.caption("Category descriptions use public information. No external action is taken from this page.")
+        if summary_key == "mvp_plan_summary":
+            st.download_button(
+                "Download own care plan (PDF)",
+                data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
+                file_name="own_care_plan.pdf",
+                mime="application/pdf",
+                type="primary",
+                width="content",
+            )
+        else:
+            st.caption("Category descriptions use public information. No external action is taken from this page.")
     st.divider()
 
 
@@ -886,19 +929,6 @@ def _edit_guided_answers(service: str, change: str, timing: str) -> None:
     st.session_state.mvp_edit_guided_notice = True
 
 
-def _show_direct_care_plan(selected_service: str) -> None:
-    """Build a direct quick plan and reveal it in the guided intake section."""
-    st.session_state.mvp_care_category = selected_service
-    st.session_state.mvp_care_plan = insta_talk.care_plan(
-        selected_service,
-        session_hash=st.session_state.mvp_session_hash,
-    )
-    st.session_state.mvp_review_cues = []
-    st.session_state.mvp_review_summary = ""
-    st.session_state.mvp_intake_edit = True
-    st.session_state.mvp_direct_plan_notice = True
-
-
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -917,7 +947,6 @@ def _render_calendar(profile: dict) -> None:
 
         intake_cat, intake_change, intake_timing = st.columns([1, 2, 1])
         care_options = list(insta_talk.CARE_PLAN_CATEGORIES)
-        default_care = str(st.session_state.get("mvp_care_category", "AC Service"))
         with intake_cat:
             intake_service = st.selectbox(
                 "1. Recently completed service",
@@ -986,34 +1015,14 @@ def _render_calendar(profile: dict) -> None:
                 "Save intake check",
             )
 
-    with st.expander("2. Choose a service directly for a quick plan"):
-        care_left, care_right = st.columns([2, 1])
-        with care_left:
-            selected_care = st.selectbox(
-                "Which service did you most recently complete?",
-                care_options,
-                index=care_options.index(default_care) if default_care in care_options else 0,
-                key="care_category_select",
-            )
-        with care_right:
-            st.button(
-                "Show care plan",
-                type="primary",
-                width="content",
-                on_click=_show_direct_care_plan,
-                args=(selected_care,),
-            )
-        if st.session_state.pop("mvp_direct_plan_notice", False):
-            st.info("Quick plan ready in section 1 above.")
-        if not care:
-            st.caption("Choose a service above to see the care plan.")
         _session_summary_panel()
 
-    with st.expander("3. Build your own care plan"):
+    with st.expander("2. Build your own care plan"):
+        st.markdown("### Build your own care plan")
         history = st.session_state.get("mvp_history", {})
         col_a, col_b = st.columns([1, 2])
         with col_a:
-            if st.button("Build / refresh plan", type="primary", width="content"):
+            if st.button("Build own care plan", type="primary", width="content"):
                 ref = mvp.load_public_reference()
                 plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
                 st.session_state.mvp_plan = plan
