@@ -836,7 +836,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     history,
                     summary_key="mvp_review_summary",
                 )
-            pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.36, 0.18, 0.34, 0.12])
+            pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.313, 0.18, 0.387, 0.12])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
                     "Download Next-cycle care plan (PDF)",
