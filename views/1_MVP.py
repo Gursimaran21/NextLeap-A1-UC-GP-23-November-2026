@@ -1062,7 +1062,7 @@ def _render_calendar(profile: dict) -> None:
         st.markdown(
             '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
             'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5; '
-            'margin-top:16px; margin-bottom:16px;">'
+            'margin-top:16px; margin-bottom:-24px;">'
             "Save home details in Step 1, then build your plan to see upcoming home-care cues."
             "</div>",
             unsafe_allow_html=True,
