@@ -510,12 +510,16 @@ def summarise_plan(
     llm: Any = None,
 ) -> str:
     """Grounded summary with a deterministic fallback."""
-    actionable = [p for p in plan if p.get("status") != "Not needed"]
-    names = ", ".join(str(p.get("need", "cue")) for p in actionable) or "no actionable cues"
+    names = ", ".join(str(p.get("need", "cue")) for p in plan) or "no planning cues"
     detail_gaps = sum(1 for p in plan if p.get("status") == "Needs more detail")
+    not_needed = sum(1 for p in plan if p.get("status") == "Not needed")
+    no_action_note = (
+        f"{not_needed} item(s) are marked not needed and suggest no action. " if not_needed else ""
+    )
     deterministic = (
-        f"Your plan contains {len(actionable)} planning cue(s): {names}. "
+        f"Your plan contains {len(plan)} planning cue(s): {names}. "
         f"{detail_gaps} item(s) need more detail before a timing cue can be shown. "
+        f"{no_action_note}"
         "These are prompts to review your own home context, not proof that a service is necessary."
     )
     if llm is None or not hasattr(llm, "generate_json"):

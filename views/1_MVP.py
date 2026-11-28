@@ -1050,6 +1050,7 @@ def _render_calendar(profile: dict) -> None:
                     "evidence": "customer input only",
                 })
                 st.session_state.mvp_plan = plan
+                st.session_state.mvp_plan_summary = ""
                 st.rerun()
 
         plan = list(st.session_state.get("mvp_plan", []))
@@ -1376,6 +1377,7 @@ def _render_decider(profile: dict) -> None:
                     plan = list(st.session_state.get("mvp_plan", []))
                     plan.append(dict(m["plan_item"]))
                     st.session_state.mvp_plan = plan
+                    st.session_state.mvp_plan_summary = ""
                     st.success("Private cue added to the Step 2 plan.")
 
     last_assistant = next(
@@ -1529,6 +1531,7 @@ def _render_reflection() -> None:
                     plan = list(st.session_state.get("mvp_plan", []))
                     plan.append(dict(cont["plan_item"]))
                     st.session_state.mvp_plan = plan
+                    st.session_state.mvp_plan_summary = ""
                     st.success("Private review cue added to Step 2.")
             with cont_col2:
                 if st.button("Open review window in Step 2", key="continuity_open_step2", width="stretch"):
