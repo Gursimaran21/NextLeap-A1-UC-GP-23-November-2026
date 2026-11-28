@@ -1405,7 +1405,9 @@ def _render_decider(profile: dict) -> None:
                     if pr.get("source_url"):
                         st.markdown(f"[Source]({pr['source_url']})")
                 if m.get("plan_item") and st.button(
-                    "Add private reminder to Step 2", key=f"add_plan_cue_{idx}"
+                    "Add private reminder to Step 2",
+                    key=f"add_plan_cue_{idx}",
+                    type="primary",
                 ):
                     plan = list(st.session_state.get("mvp_plan", []))
                     plan.append(dict(m["plan_item"]))
