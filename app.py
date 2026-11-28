@@ -109,6 +109,19 @@ st.markdown(
       [data-testid="stButton"]:has([title="No need right now"]) > button * {
         color: #500C6B !important;
       }
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) {
+        margin-left: -16px !important;
+      }
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) > button {
+        background-color: #EBDFF0 !important;
+        border: 1px solid #D9C6E0 !important;
+        width: auto !important;
+        min-width: max-content !important;
+      }
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) > button,
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) > button * {
+        color: #500C6B !important;
+      }
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) > button {
         background-color: #500C6B !important;
         border: 1px solid #500C6B !important;
@@ -120,6 +133,7 @@ st.markdown(
       [data-testid="stButton"]:has([title="Build guided care plan"]) > button,
       [data-testid="stButton"]:has([title="Reset guided care plan"]) > button,
       [data-testid="stButton"]:has([title="No need right now"]) > button,
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) > button,
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) > button {
         width: auto !important;
         min-width: max-content !important;
@@ -127,6 +141,7 @@ st.markdown(
       [data-testid="stButton"]:has([title="Build guided care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="Reset guided care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stButton"]:has([title="No need right now"]) [data-testid="stMarkdownContainer"],
+      [data-testid="stButton"]:has([title="Refresh own care plan"]) [data-testid="stMarkdownContainer"],
       [data-testid="stDownloadButton"]:has(button[kind="primary"]) [data-testid="stMarkdownContainer"] {
         white-space: normal !important;
         overflow: visible !important;

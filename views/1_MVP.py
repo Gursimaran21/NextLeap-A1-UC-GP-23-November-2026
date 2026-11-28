@@ -281,6 +281,7 @@ def _init_state() -> None:
         "mvp_history_version": 0,
         "mvp_plan": [],
         "mvp_plan_summary": "",
+        "mvp_own_refresh_notice": False,
         "mvp_review_cues": [],
         "mvp_review_summary": "",
         "mvp_care_category": "AC Service",
@@ -760,17 +761,17 @@ def _render_plan_details(
     with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
         guide_df = pd.DataFrame(mvp.category_guide())
         st.dataframe(guide_df, width="stretch", hide_index=True)
-        if summary_key == "mvp_plan_summary":
-            st.download_button(
-                "Download own care plan (PDF)",
-                data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
-                file_name="own_care_plan.pdf",
-                mime="application/pdf",
-                type="primary",
-                width="content",
-            )
-        else:
+        if summary_key != "mvp_plan_summary":
             st.caption("Category descriptions use public information. No external action is taken from this page.")
+    if summary_key == "mvp_plan_summary":
+        st.download_button(
+            "Download own care plan (PDF)",
+            data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
+            file_name="own_care_plan.pdf",
+            mime="application/pdf",
+            type="primary",
+            width="content",
+        )
     st.divider()
 
 
@@ -929,6 +930,28 @@ def _edit_guided_answers(service: str, change: str, timing: str) -> None:
     st.session_state.mvp_edit_guided_notice = True
 
 
+def _build_own_plan(profile: dict, history: dict) -> None:
+    """Rebuild the private own-care plan from saved home details."""
+    ref = mvp.load_public_reference()
+    st.session_state.mvp_plan = mvp.build_plan_from_history(
+        profile,
+        history,
+        reference=ref,
+        llm=None,
+    )
+    st.session_state.mvp_plan_summary = ""
+    mvp.log_tool_trace({
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "session_hash": st.session_state.mvp_session_hash,
+        "turn": 0,
+        "chosen_tool": "build_calendar",
+        "reason": "User requested plan refresh from household history",
+        "user_input_length": len(json.dumps(history, ensure_ascii=False)),
+        "route": "PLAN",
+        "confidence": 1.0,
+    })
+
+
 def _render_calendar(profile: dict) -> None:
     st.subheader("Step 2: Your next 90 days")
     st.caption("A private plan built from your household history and public guidance. Planning cues only; no service is required by this plan.")
@@ -1019,33 +1042,32 @@ def _render_calendar(profile: dict) -> None:
 
     with st.expander("2. Build your own care plan"):
         st.markdown("### Build your own care plan")
+        st.caption(
+            "Use your saved home details and public timing guidance to build private planning cues. "
+            "No prices, availability, messages, or account access."
+        )
         history = st.session_state.get("mvp_history", {})
-        col_a, col_b = st.columns([1, 2])
-        with col_a:
+        build_col, refresh_col, _build_spacer = st.columns([0.205, 0.205, 0.59])
+        with build_col:
             if st.button("Build own care plan", type="primary", width="content"):
-                ref = mvp.load_public_reference()
-                plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
-                st.session_state.mvp_plan = plan
-                st.session_state.mvp_plan_summary = ""
-                mvp.log_tool_trace({
-                    "ts": datetime.now(timezone.utc).isoformat(),
-                    "session_hash": st.session_state.mvp_session_hash,
-                    "turn": 0,
-                    "chosen_tool": "build_calendar",
-                    "reason": "User requested plan refresh from household history",
-                    "user_input_length": len(json.dumps(history, ensure_ascii=False)),
-                    "route": "PLAN",
-                    "confidence": 1.0,
-                })
+                _build_own_plan(profile, history)
                 st.rerun()
-        with col_b:
-            custom = st.text_input(
+        with refresh_col:
+            if st.button("Refresh own care plan", key="own_plan_refresh", width="content"):
+                _build_own_plan(profile, history)
+                st.session_state.mvp_own_refresh_notice = True
+                st.rerun()
+        if st.session_state.pop("mvp_own_refresh_notice", False):
+            st.success("Own care plan refreshed.")
+        with st.container():
+            st.text_input(
                 "Add an upcoming need you already know (optional)",
                 value=st.session_state.get("mvp_custom_need", ""),
                 placeholder="e.g., Bathroom cleaning",
+                key="mvp_custom_need",
             )
-            st.session_state.mvp_custom_need = custom
-            if st.button("Add as personal note") and custom.strip():
+            if st.button("Add as personal note") and st.session_state.get("mvp_custom_need", "").strip():
+                custom = st.session_state.mvp_custom_need
                 plan = list(st.session_state.get("mvp_plan", []))
                 plan.append({
                     "need": custom.strip(),
