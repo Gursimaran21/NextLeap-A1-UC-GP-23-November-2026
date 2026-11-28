@@ -1356,7 +1356,7 @@ def _render_decider(profile: dict) -> None:
         "route, confidence, and why other routes were not preferred. No booking or account action."
     )
 
-    active_mode = _talk_mode_selector()
+    active_mode = str(st.session_state.get("mvp_talk_mode", "Decide"))
 
     st.markdown("**Quick prompts**")
     st.caption("Tap an example to send it, or type your own below. Examples are not instructions.")
@@ -1376,6 +1376,8 @@ def _render_decider(profile: dict) -> None:
         _handle_talk(active_mode, context, profile)
 
     st.divider()
+    _talk_mode_selector()
+
     for idx, msg in enumerate(list(st.session_state.mvp_chat)):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
