@@ -1416,15 +1416,6 @@ def _render_decider(profile: dict) -> None:
         (m for m in reversed(list(st.session_state.mvp_chat)) if m["role"] == "assistant"),
         None,
     )
-    if last_assistant:
-        clear_col, revisit_col = st.columns(2)
-        with clear_col:
-            if st.button("Route was clear", key="route_clear", width="stretch"):
-                _log_decision_event("route_clear", last_assistant)
-        with revisit_col:
-            if st.button("I’ll revisit later", key="revisit_later", width="stretch"):
-                _log_decision_event("revisit_later", last_assistant)
-
     st.divider()
     voice_text = _voice_bridge(
         _plain_speech(last_assistant["content"] if last_assistant else "Describe a home issue."),
