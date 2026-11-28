@@ -128,19 +128,6 @@ def _header_html() -> str:
     )
 
 
-def _service_badge_ui(category: str) -> str:
-    """Inline service-category badge for the Explain preview."""
-    safe_category = html.escape(str(category or "AC Service"))
-    return (
-        '<div style="margin-bottom:8px;">'
-        '<span style="display:inline-block; background:#500C6B; color:#FFFFFF; '
-        'border:1px solid #500C6B; border-radius:999px; padding:4px 10px; '
-        'font-size:12px; font-weight:700; white-space:nowrap;">'
-        f"{safe_category}</span>"
-        "</div>"
-    )
-
-
 STEPS = [
     "Tell me about your home",
     "Your next 90 days",
@@ -1362,19 +1349,6 @@ def _talk_mode_selector() -> str:
     return active
 
 
-def _latest_explain_index() -> int | None:
-    """Return the newest Explain reply so it can be shown above Quick prompts."""
-    chat = list(st.session_state.get("mvp_chat", []))
-    for idx in range(len(chat) - 1, -1, -1):
-        msg = chat[idx]
-        if not isinstance(msg, dict) or str(msg.get("role")) != "assistant":
-            continue
-        meta = msg.get("meta") or {}
-        if str(meta.get("mode")) == "Explain":
-            return idx
-    return None
-
-
 def _render_decider(profile: dict) -> None:
     st.subheader("Step 3: Insta Talk — Need Decider")
     st.caption(
@@ -1383,24 +1357,6 @@ def _render_decider(profile: dict) -> None:
     )
 
     active_mode = _talk_mode_selector()
-
-    explain_idx = _latest_explain_index()
-    if explain_idx is not None:
-        explain_msg = st.session_state.mvp_chat[explain_idx]
-        preview_category = str(
-            st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0]
-        )
-        with st.expander("Explain a service area", expanded=True, icon=":material/smart_toy:"):
-            st.markdown(_service_badge_ui(preview_category), unsafe_allow_html=True)
-            st.markdown(str(explain_msg.get("content", "")))
-            preview_clear_col, preview_revisit_col = st.columns(2)
-            with preview_clear_col:
-                if st.button("Route was clear", key="preview_route_clear", width="stretch"):
-                    _log_decision_event("route_clear", explain_msg)
-            with preview_revisit_col:
-                if st.button("I’ll revisit later", key="preview_revisit_later", width="stretch"):
-                    _log_decision_event("revisit_later", explain_msg)
-        st.divider()
 
     st.markdown("**Quick prompts**")
     st.caption("Tap an example to send it, or type your own below. Examples are not instructions.")
@@ -1421,8 +1377,6 @@ def _render_decider(profile: dict) -> None:
 
     st.divider()
     for idx, msg in enumerate(list(st.session_state.mvp_chat)):
-        if explain_idx is not None and idx == explain_idx:
-            continue
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("meta"):
@@ -1449,13 +1403,11 @@ def _render_decider(profile: dict) -> None:
                     st.session_state.mvp_plan_summary = ""
                     st.success("Private cue added to the Step 2 plan.")
 
-    chat = list(st.session_state.mvp_chat)
-    last_assistant_idx = next(
-        (i for i in range(len(chat) - 1, -1, -1) if str(chat[i].get("role")) == "assistant"),
+    last_assistant = next(
+        (m for m in reversed(list(st.session_state.mvp_chat)) if m["role"] == "assistant"),
         None,
     )
-    last_assistant = chat[last_assistant_idx] if last_assistant_idx is not None else None
-    if last_assistant and last_assistant_idx != explain_idx:
+    if last_assistant:
         clear_col, revisit_col = st.columns(2)
         with clear_col:
             if st.button("Route was clear", key="route_clear", width="stretch"):
