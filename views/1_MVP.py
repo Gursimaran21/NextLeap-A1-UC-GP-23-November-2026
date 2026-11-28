@@ -1320,16 +1320,25 @@ def _handle_talk(mode: str, text: str, profile: dict) -> None:
     st.rerun()
 
 
+def _mode_default_text(mode: str) -> str:
+    """Give each mode button a useful sample turn when no text is typed."""
+    category = str(st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0])
+    if mode in {"Explain", "Prepare", "Aftercare"}:
+        return category
+    if mode == "Decide":
+        return "I need guidance."
+    return ""
+
+
 def _talk_mode_selector() -> str:
     st.markdown("**Insta Talk modes**")
+    st.caption("Tap a mode to run a sample turn. Use the context box below to send your own details.")
     cols = st.columns(3)
     for idx, (mode, label) in enumerate(insta_talk.TALK_MODES):
         with cols[idx % 3]:
             if st.button(label, key=f"talk_mode_{idx}", width="stretch"):
                 st.session_state.mvp_talk_mode = mode
-                if mode in {"No action", "Next 90 days", "Care plan"}:
-                    _handle_talk(mode, "", st.session_state.get("mvp_profile", {}))
-                st.rerun()
+                _handle_talk(mode, _mode_default_text(mode), st.session_state.get("mvp_profile", {}))
     active = str(st.session_state.get("mvp_talk_mode", "Decide"))
     st.caption(f"Active mode: {active}")
     return active
