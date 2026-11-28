@@ -1298,7 +1298,9 @@ def _append_decider_result(result: dict, mode: str = "") -> None:
     })
 
 
-def _handle_talk(mode: str, text: str, profile: dict) -> None:
+def _handle_talk(mode: str, text: str, profile: dict, replace: bool = False) -> None:
+    if replace:
+        st.session_state.mvp_chat = []
     text = str(text or "").strip()
     if not text and mode not in {"No action", "Next 90 days", "Care plan"}:
         text = "I need guidance."
@@ -1343,7 +1345,12 @@ def _talk_mode_selector() -> str:
                 type="primary" if mode != "No action" else "tertiary",
             ):
                 st.session_state.mvp_talk_mode = mode
-                _handle_talk(mode, _mode_default_text(mode), st.session_state.get("mvp_profile", {}))
+                _handle_talk(
+                    mode,
+                    _mode_default_text(mode),
+                    st.session_state.get("mvp_profile", {}),
+                    replace=True,
+                )
     active = str(st.session_state.get("mvp_talk_mode", "Decide"))
     st.caption(f"Active mode: {active}")
     return active
