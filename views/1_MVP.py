@@ -699,7 +699,7 @@ def _render_plan_details(
 
     st.divider()
     st.markdown("**Plain-language summary**")
-    if st.button("Generate grounded summary", type="primary"):
+    if st.button("Generate grounded summary", type="primary", key=f"generate_summary_{summary_key}"):
         summary = mvp.summarise_plan(
             profile,
             history,
@@ -724,7 +724,7 @@ def _render_plan_details(
         st.caption("Generate a short summary grounded only in the items above.")
     _vertical_space()
 
-    with st.expander("Understand service categories"):
+    with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
         guide_df = pd.DataFrame(mvp.category_guide())
         st.dataframe(guide_df, width="stretch", hide_index=True)
         st.caption("Category descriptions use public information. No external action is taken from this page.")
