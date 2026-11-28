@@ -761,17 +761,17 @@ def _render_plan_details(
     with st.expander("Understand service categories", key=f"understand_categories_{summary_key}"):
         guide_df = pd.DataFrame(mvp.category_guide())
         st.dataframe(guide_df, width="stretch", hide_index=True)
-        if summary_key == "mvp_plan_summary":
-            st.download_button(
-                "Download own care plan (PDF)",
-                data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
-                file_name="own_care_plan.pdf",
-                mime="application/pdf",
-                type="primary",
-                width="content",
-            )
-        else:
+        if summary_key != "mvp_plan_summary":
             st.caption("Category descriptions use public information. No external action is taken from this page.")
+    if summary_key == "mvp_plan_summary":
+        st.download_button(
+            "Download own care plan (PDF)",
+            data=export.md_to_pdf_bytes(_own_plan_pdf_markdown(plan)),
+            file_name="own_care_plan.pdf",
+            mime="application/pdf",
+            type="primary",
+            width="content",
+        )
     st.divider()
 
 
