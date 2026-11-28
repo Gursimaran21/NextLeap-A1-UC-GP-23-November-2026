@@ -1393,7 +1393,7 @@ def _render_decider(profile: dict) -> None:
         preview_category = str(
             st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0]
         )
-        with st.container(border=True):
+        with st.chat_message("assistant"):
             st.markdown(_service_logo_ui(preview_category), unsafe_allow_html=True)
             st.markdown("**Explain a service area**")
             st.markdown(str(explain_msg.get("content", "")))
