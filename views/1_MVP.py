@@ -136,9 +136,9 @@ def _service_logo_ui(category: str) -> str:
         '<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">'
         f'<img src="data:image/png;base64,{encoded}" alt="Insta Talk logo" '
         'style="width:28px; height:28px; object-fit:contain; flex-shrink:0;" />'
-        '<span style="display:inline-block; background:#500C6B; color:#FFFFFF; '
-        'border:1px solid #500C6B; border-radius:999px; padding:4px 10px; '
-        'font-size:12px; font-weight:700; white-space:nowrap;">'
+        '<span class="ac-service-badge st-emotion-cache-1c9yjad" '
+        'style="background:#500C6B; color:#FFFFFF; border:1px solid #500C6B; '
+        'border-radius:999px; padding:4px 10px; white-space:nowrap;">'
         f"{safe_category}</span>"
         "</div>"
     )

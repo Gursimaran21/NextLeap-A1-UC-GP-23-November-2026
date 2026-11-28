@@ -150,6 +150,18 @@ st.markdown(
         text-overflow: clip !important;
         width: auto !important;
       }
+      .ac-service-badge.st-emotion-cache-1c9yjad {
+        display: inline-flex !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: max-content !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 12px !important;
+        line-height: 1.2 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        font-weight: 700 !important;
+      }
       .small-muted { color: #6B7A83; font-size: 0.9rem; }
       [data-testid="stFormSubmitButton"] [data-testid="stBaseButton-secondaryFormSubmit"] {
         background-color: #F1E4F5 !important;
