@@ -968,7 +968,7 @@ def _render_calendar(profile: dict) -> None:
     care = st.session_state.get("mvp_care_plan")
     history = st.session_state.get("mvp_history", {})
 
-    st.subheader("Your home care plan options")
+    st.subheader("Choose your home care plan")
     st.caption(
         "Choose a guided next-cycle plan or build your own private plan from home details. "
         "Planning cues only; no bookings, messages, or account access."
