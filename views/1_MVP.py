@@ -281,6 +281,8 @@ def _init_state() -> None:
         "mvp_history_version": 0,
         "mvp_plan": [],
         "mvp_plan_summary": "",
+        "mvp_review_cues": [],
+        "mvp_review_summary": "",
         "mvp_care_category": "AC Service",
         "mvp_care_plan": None,
         "mvp_continuity": None,
@@ -387,6 +389,8 @@ def _reset_home_intake_state() -> None:
     st.session_state.mvp_plan = []
     st.session_state.mvp_plan_summary = ""
     st.session_state.mvp_care_plan = None
+    st.session_state.mvp_review_cues = []
+    st.session_state.mvp_review_summary = ""
     st.session_state.mvp_continuity = None
     st.session_state.mvp_reflection = None
     st.session_state.mvp_reflection_text = ""
@@ -514,6 +518,8 @@ def _render_profile() -> dict:
         st.session_state.mvp_plan = []
         st.session_state.mvp_plan_summary = ""
         st.session_state.mvp_care_plan = None
+        st.session_state.mvp_review_cues = []
+        st.session_state.mvp_review_summary = ""
         st.session_state.mvp_continuity = None
         st.success("Home details saved. Step 2 is ready.")
     if reset_all:
@@ -657,8 +663,13 @@ def _care_pdf_markdown(care: dict) -> str:
     return "\n".join(lines)
 
 
-def _render_plan_details(plan: list[dict], profile: dict, history: dict) -> None:
-    """Render personal planning cues and the grounded summary."""
+def _render_plan_details(
+    plan: list[dict],
+    profile: dict,
+    history: dict,
+    summary_key: str = "mvp_plan_summary",
+) -> None:
+    """Render planning cues and the grounded summary for one cue list."""
     plan = list(plan or [])
     st.markdown("**Planning cues**")
     for item in plan:
@@ -695,7 +706,7 @@ def _render_plan_details(plan: list[dict], profile: dict, history: dict) -> None
             plan,
             llm=llm_mod if llm_mod.available() else None,
         )
-        st.session_state.mvp_plan_summary = summary
+        st.session_state[summary_key] = summary
         mvp.log_tool_trace({
             "ts": datetime.now(timezone.utc).isoformat(),
             "session_hash": st.session_state.mvp_session_hash,
@@ -706,9 +717,9 @@ def _render_plan_details(plan: list[dict], profile: dict, history: dict) -> None
             "route": "PLAN",
             "confidence": 1.0,
         })
-    if st.session_state.get("mvp_plan_summary"):
+    if st.session_state.get(summary_key):
         st.markdown("**Grounded summary**")
-        st.markdown(_tinted_note(st.session_state["mvp_plan_summary"]), unsafe_allow_html=True)
+        st.markdown(_tinted_note(st.session_state[summary_key]), unsafe_allow_html=True)
     else:
         st.caption("Generate a short summary grounded only in the items above.")
     _vertical_space()
@@ -767,10 +778,18 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                     st.caption("Use your own notes; no public timing cue is available.")
             st.caption("Review windows are prompts to check your own situation, not service requirements.")
             if care.get("plan_item") and st.button("Add first review cue below", key="care_add_plan", type="primary", width="content"):
-                plan = list(st.session_state.get("mvp_plan", []))
-                plan.append(dict(care["plan_item"]))
-                st.session_state.mvp_plan = plan
-                st.success("Private cue added to your plan in section 3.")
+                cues = list(st.session_state.get("mvp_review_cues", []))
+                cues.append(dict(care["plan_item"]))
+                st.session_state.mvp_review_cues = cues
+                st.session_state.mvp_review_summary = ""
+                st.success("Private cue added below.")
+            if st.session_state.get("mvp_review_cues"):
+                _render_plan_details(
+                    st.session_state.mvp_review_cues,
+                    profile,
+                    history,
+                    summary_key="mvp_review_summary",
+                )
             pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.44, 0.15])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
@@ -785,6 +804,8 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
             with none_col:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
+                    st.session_state.mvp_review_cues = []
+                    st.session_state.mvp_review_summary = ""
                     no_need_clicked = True
             with note_col:
                 if no_need_clicked:
@@ -844,6 +865,8 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
 def _reset_guided_care_plan() -> None:
     """Clear the built guided plan and return its three inputs to defaults."""
     st.session_state.mvp_care_plan = None
+    st.session_state.mvp_review_cues = []
+    st.session_state.mvp_review_summary = ""
     st.session_state.mvp_care_category = ""
     st.session_state.mvp_intake_edit = True
     st.session_state.intake_service = insta_talk.CARE_PLAN_CATEGORIES[0]
@@ -870,6 +893,8 @@ def _show_direct_care_plan(selected_service: str) -> None:
         selected_service,
         session_hash=st.session_state.mvp_session_hash,
     )
+    st.session_state.mvp_review_cues = []
+    st.session_state.mvp_review_summary = ""
     st.session_state.mvp_intake_edit = True
     st.session_state.mvp_direct_plan_notice = True
 
@@ -924,6 +949,8 @@ def _render_calendar(profile: dict) -> None:
                 )
                 st.session_state.mvp_care_category = intake_service
                 st.session_state.mvp_care_plan = built
+                st.session_state.mvp_review_cues = []
+                st.session_state.mvp_review_summary = ""
                 st.session_state.mvp_intake_edit = True
                 _log_leading_indicator("guided_intake_built", "guided_intake", {
                     "category": intake_service,
@@ -1025,24 +1052,24 @@ def _render_calendar(profile: dict) -> None:
                 st.session_state.mvp_plan = plan
                 st.rerun()
 
-    plan = list(st.session_state.get("mvp_plan", []))
-    if plan:
-        _render_plan_details(plan, profile, history)
+        plan = list(st.session_state.get("mvp_plan", []))
+        if plan:
+            _render_plan_details(plan, profile, history)
 
-    if not plan:
-        st.markdown(
-            '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
-            'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5; '
-            'margin-top:16px; margin-bottom:-24px;">'
-            "Save home details in Step 1, then build your plan to see upcoming home-care cues."
-            "</div>",
-            unsafe_allow_html=True,
-        )
+        if not plan:
+            st.markdown(
+                '<div style="background:#EBDFF0; color:#500C6B; border:1px solid #D9C6E0; '
+                'border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.5; '
+                'margin-top:16px; margin-bottom:-24px;">'
+                "Save home details in Step 1, then build your plan to see upcoming home-care cues."
+                "</div>",
+                unsafe_allow_html=True,
+            )
 
-    st.divider()
+        st.divider()
 
-    if not plan:
-        return
+        if not plan:
+            return
 
 
 
@@ -1220,6 +1247,8 @@ def _session_summary_panel() -> None:
         with reset_col:
             if st.button("Reset guided notes", key="summary_reset", width="content"):
                 st.session_state.mvp_care_plan = None
+                st.session_state.mvp_review_cues = []
+                st.session_state.mvp_review_summary = ""
                 st.session_state.mvp_continuity = None
                 st.session_state.mvp_reflection = None
                 st.session_state.mvp_reflection_text = ""
