@@ -1349,6 +1349,19 @@ def _talk_mode_selector() -> str:
     return active
 
 
+def _latest_explain_index() -> int | None:
+    """Return the newest Explain reply so it can be shown above Quick prompts."""
+    chat = list(st.session_state.get("mvp_chat", []))
+    for idx in range(len(chat) - 1, -1, -1):
+        msg = chat[idx]
+        if not isinstance(msg, dict) or str(msg.get("role")) != "assistant":
+            continue
+        meta = msg.get("meta") or {}
+        if str(meta.get("mode")) == "Explain":
+            return idx
+    return None
+
+
 def _render_decider(profile: dict) -> None:
     st.subheader("Step 3: Insta Talk — Need Decider")
     st.caption(
@@ -1357,6 +1370,14 @@ def _render_decider(profile: dict) -> None:
     )
 
     active_mode = _talk_mode_selector()
+
+    explain_idx = _latest_explain_index()
+    if explain_idx is not None:
+        explain_msg = st.session_state.mvp_chat[explain_idx]
+        with st.container(border=True):
+            st.markdown("**Explain a service area**")
+            st.markdown(str(explain_msg.get("content", "")))
+        st.divider()
 
     st.markdown("**Quick prompts**")
     st.caption("Tap an example to send it, or type your own below. Examples are not instructions.")
@@ -1377,6 +1398,8 @@ def _render_decider(profile: dict) -> None:
 
     st.divider()
     for idx, msg in enumerate(list(st.session_state.mvp_chat)):
+        if explain_idx is not None and idx == explain_idx:
+            continue
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("meta"):
