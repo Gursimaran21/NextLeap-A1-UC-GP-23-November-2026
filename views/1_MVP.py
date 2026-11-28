@@ -960,6 +960,10 @@ def _render_calendar(profile: dict) -> None:
     history = st.session_state.get("mvp_history", {})
 
     st.subheader("Your home care plan options")
+    st.caption(
+        "Choose a guided next-cycle plan or build your own private plan from home details. "
+        "Planning cues only; no bookings, messages, or account access."
+    )
 
     with st.expander("1. Guided intake - 3 quick questions", expanded=bool(st.session_state.get("mvp_intake_edit"))):
         st.markdown("### Next-cycle care plan (guidance only)")
