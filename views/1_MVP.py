@@ -287,6 +287,7 @@ def _init_state() -> None:
         "mvp_intake_edit": False,
         "mvp_edit_guided_notice": False,
         "mvp_direct_plan_notice": False,
+        "intake_service": insta_talk.CARE_PLAN_CATEGORIES[0],
         "mvp_leading": {},
         "mvp_reflection_text": "",
         "mvp_custom_need": "",
@@ -898,7 +899,6 @@ def _render_calendar(profile: dict) -> None:
             intake_service = st.selectbox(
                 "1. Recently completed service",
                 care_options,
-                index=care_options.index(default_care) if default_care in care_options else 0,
                 key="intake_service",
             )
         with intake_change:
