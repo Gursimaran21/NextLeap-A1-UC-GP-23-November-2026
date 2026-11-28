@@ -1303,7 +1303,10 @@ def _handle_talk(mode: str, text: str, profile: dict, replace: bool = False) -> 
         st.session_state.mvp_chat = []
     text = str(text or "").strip()
     if not text and mode not in {"No action", "Next 90 days", "Care plan"}:
-        text = "I need guidance."
+        text = str(
+            st.session_state.get("mvp_care_category")
+            or insta_talk.CARE_PLAN_CATEGORIES[0]
+        )
     user_text = text or "No service needed right now."
     st.session_state.mvp_chat.append({"role": "user", "content": user_text})
     if st.session_state.get("mvp_decision_started") is None:
@@ -1325,10 +1328,8 @@ def _handle_talk(mode: str, text: str, profile: dict, replace: bool = False) -> 
 def _mode_default_text(mode: str) -> str:
     """Give each mode button a useful sample turn when no text is typed."""
     category = str(st.session_state.get("mvp_care_category") or insta_talk.CARE_PLAN_CATEGORIES[0])
-    if mode in {"Explain", "Prepare", "Aftercare"}:
+    if mode in {"Explain", "Decide", "Prepare", "Aftercare"}:
         return category
-    if mode == "Decide":
-        return "I need guidance."
     return ""
 
 
