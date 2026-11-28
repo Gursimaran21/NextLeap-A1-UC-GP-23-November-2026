@@ -287,7 +287,6 @@ def _init_state() -> None:
         "mvp_intake_edit": False,
         "mvp_edit_guided_notice": False,
         "mvp_direct_plan_notice": False,
-        "mvp_plan_render_in_care": False,
         "intake_service": insta_talk.CARE_PLAN_CATEGORIES[0],
         "mvp_leading": {},
         "mvp_reflection_text": "",
@@ -771,13 +770,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 plan = list(st.session_state.get("mvp_plan", []))
                 plan.append(dict(care["plan_item"]))
                 st.session_state.mvp_plan = plan
-                st.success("Private cue added to the plan below.")
-                st.session_state.mvp_plan_details_visible = True
-                st.session_state.mvp_plan_render_in_care = True
-            plan = list(st.session_state.get("mvp_plan", []))
-
-            if st.session_state.get("mvp_plan_render_in_care"):
-                _render_plan_details(plan, profile, history)
+                st.success("Private cue added to your plan in section 3.")
             pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.44, 0.15])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
@@ -792,8 +785,6 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
             with none_col:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
-                    st.session_state.mvp_plan_details_visible = False
-                    st.session_state.mvp_plan_render_in_care = False
                     no_need_clicked = True
             with note_col:
                 if no_need_clicked:
@@ -855,8 +846,6 @@ def _reset_guided_care_plan() -> None:
     st.session_state.mvp_care_plan = None
     st.session_state.mvp_care_category = ""
     st.session_state.mvp_intake_edit = True
-    st.session_state.mvp_plan_details_visible = False
-    st.session_state.mvp_plan_render_in_care = False
     st.session_state.intake_service = insta_talk.CARE_PLAN_CATEGORIES[0]
     st.session_state.intake_note = ""
     st.session_state.intake_mode = "Routine"
@@ -882,8 +871,6 @@ def _show_direct_care_plan(selected_service: str) -> None:
         session_hash=st.session_state.mvp_session_hash,
     )
     st.session_state.mvp_intake_edit = True
-    st.session_state.mvp_plan_details_visible = False
-    st.session_state.mvp_plan_render_in_care = False
     st.session_state.mvp_direct_plan_notice = True
 
 
@@ -938,8 +925,6 @@ def _render_calendar(profile: dict) -> None:
                 st.session_state.mvp_care_category = intake_service
                 st.session_state.mvp_care_plan = built
                 st.session_state.mvp_intake_edit = True
-                st.session_state.mvp_plan_details_visible = False
-                st.session_state.mvp_plan_render_in_care = False
                 _log_leading_indicator("guided_intake_built", "guided_intake", {
                     "category": intake_service,
                     "timing": intake_mode,
@@ -1006,8 +991,6 @@ def _render_calendar(profile: dict) -> None:
                 plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
                 st.session_state.mvp_plan = plan
                 st.session_state.mvp_plan_summary = ""
-                st.session_state.mvp_plan_details_visible = True
-                st.session_state.mvp_plan_render_in_care = False
                 mvp.log_tool_trace({
                     "ts": datetime.now(timezone.utc).isoformat(),
                     "session_hash": st.session_state.mvp_session_hash,
@@ -1040,12 +1023,10 @@ def _render_calendar(profile: dict) -> None:
                     "evidence": "customer input only",
                 })
                 st.session_state.mvp_plan = plan
-                st.session_state.mvp_plan_details_visible = True
-                st.session_state.mvp_plan_render_in_care = False
                 st.rerun()
 
     plan = list(st.session_state.get("mvp_plan", []))
-    if plan and not st.session_state.get("mvp_plan_render_in_care"):
+    if plan:
         _render_plan_details(plan, profile, history)
 
     if not plan:
