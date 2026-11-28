@@ -287,6 +287,7 @@ def _init_state() -> None:
         "mvp_intake_edit": False,
         "mvp_edit_guided_notice": False,
         "mvp_direct_plan_notice": False,
+        "mvp_plan_render_in_care": False,
         "intake_service": insta_talk.CARE_PLAN_CATEGORIES[0],
         "mvp_leading": {},
         "mvp_reflection_text": "",
@@ -657,6 +658,70 @@ def _care_pdf_markdown(care: dict) -> str:
     return "\n".join(lines)
 
 
+def _render_plan_details(plan: list[dict], profile: dict, history: dict) -> None:
+    """Render personal planning cues and the grounded summary."""
+    plan = list(plan or [])
+    st.markdown("**Planning cues**")
+    for item in plan:
+        conf = float(item.get("confidence", 0))
+        conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
+        status = str(item.get("status", "Unclear"))
+        with st.container(border=True):
+            head_left, head_right = st.columns([4, 1])
+            with head_left:
+                st.markdown(f"**{item.get('need', 'Cue')}**")
+                st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
+            with head_right:
+                st.metric("Confidence", f"{conf:.2f}")
+            if item.get("due_in_days") is not None:
+                st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
+            st.write(f"**Why:** {item.get('why', '')}")
+            st.write(f"**Basis:** {item.get('basis', '')}")
+            src = item.get("source_url", "")
+            if src:
+                st.markdown(f"**Public source:** [{src}]({src})")
+            if status == "Not needed":
+                st.success("You marked this as not needed. No action is suggested.")
+            elif status == "Needs more detail":
+                st.warning("Add more detail if you want a specific timing cue.")
+            else:
+                st.caption("Planning cue only — not a service requirement.")
+
+    st.divider()
+    st.markdown("**Plain-language summary**")
+    if st.button("Generate grounded summary", type="primary"):
+        summary = mvp.summarise_plan(
+            profile,
+            history,
+            plan,
+            llm=llm_mod if llm_mod.available() else None,
+        )
+        st.session_state.mvp_plan_summary = summary
+        mvp.log_tool_trace({
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "session_hash": st.session_state.mvp_session_hash,
+            "turn": 0,
+            "chosen_tool": "summarise_plan",
+            "reason": "User requested grounded summary of household plan",
+            "user_input_length": len(summary),
+            "route": "PLAN",
+            "confidence": 1.0,
+        })
+    if st.session_state.get("mvp_plan_summary"):
+        st.markdown("**Grounded summary**")
+        st.markdown(_tinted_note(st.session_state["mvp_plan_summary"]), unsafe_allow_html=True)
+    else:
+        st.caption("Generate a short summary grounded only in the items above.")
+    _vertical_space()
+
+    with st.expander("Understand service categories"):
+        guide_df = pd.DataFrame(mvp.category_guide())
+        st.dataframe(guide_df, width="stretch", hide_index=True)
+        st.caption("Category descriptions use public information. No external action is taken from this page.")
+    st.divider()
+
+
+
 def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
     """Render the care plan display inside the guided intake expander."""
     if care:
@@ -708,68 +773,11 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 st.session_state.mvp_plan = plan
                 st.success("Private cue added to the plan below.")
                 st.session_state.mvp_plan_details_visible = True
+                st.session_state.mvp_plan_render_in_care = True
             plan = list(st.session_state.get("mvp_plan", []))
 
-            if st.session_state.get("mvp_plan_details_visible"):
-                st.markdown("**Planning cues**")
-                for item in plan:
-                    conf = float(item.get("confidence", 0))
-                    conf_label = "High" if conf >= 0.75 else ("Medium" if conf >= 0.5 else "Low")
-                    status = str(item.get("status", "Unclear"))
-                    with st.container(border=True):
-                        head_left, head_right = st.columns([4, 1])
-                        with head_left:
-                            st.markdown(f"**{item.get('need', 'Cue')}**")
-                            st.caption(f"Status: {status} · Evidence: {item.get('evidence', 'not stated')}")
-                        with head_right:
-                            st.metric("Confidence", f"{conf:.2f}")
-                        if item.get("due_in_days") is not None:
-                            st.write(f"**When:** about {int(item['due_in_days'])} day(s) from today")
-                        st.write(f"**Why:** {item.get('why', '')}")
-                        st.write(f"**Basis:** {item.get('basis', '')}")
-                        src = item.get("source_url", "")
-                        if src:
-                            st.markdown(f"**Public source:** [{src}]({src})")
-                        if status == "Not needed":
-                            st.success("You marked this as not needed. No action is suggested.")
-                        elif status == "Needs more detail":
-                            st.warning("Add more detail if you want a specific timing cue.")
-                        else:
-                            st.caption("Planning cue only — not a service requirement.")
-
-                st.divider()
-                st.markdown("**Plain-language summary**")
-                if st.button("Generate grounded summary", type="primary"):
-                    summary = mvp.summarise_plan(
-                        profile,
-                        history,
-                        plan,
-                        llm=llm_mod if llm_mod.available() else None,
-                    )
-                    st.session_state.mvp_plan_summary = summary
-                    mvp.log_tool_trace({
-                        "ts": datetime.now(timezone.utc).isoformat(),
-                        "session_hash": st.session_state.mvp_session_hash,
-                        "turn": 0,
-                        "chosen_tool": "summarise_plan",
-                        "reason": "User requested grounded summary of household plan",
-                        "user_input_length": len(summary),
-                        "route": "PLAN",
-                        "confidence": 1.0,
-                    })
-                if st.session_state.get("mvp_plan_summary"):
-                    st.markdown("**Grounded summary**")
-                    st.markdown(_tinted_note(st.session_state["mvp_plan_summary"]), unsafe_allow_html=True)
-                else:
-                    st.caption("Generate a short summary grounded only in the items above.")
-                _vertical_space()
-
-                with st.expander("Understand service categories"):
-                    guide_df = pd.DataFrame(mvp.category_guide())
-                    st.dataframe(guide_df, width="stretch", hide_index=True)
-                    st.caption("Category descriptions use public information. No external action is taken from this page.")
-                st.divider()
-
+            if st.session_state.get("mvp_plan_render_in_care"):
+                _render_plan_details(plan, profile, history)
             pdf_col, none_col, note_col, _pdf_spacer = st.columns([0.23, 0.18, 0.44, 0.15])
             with pdf_col:
                 care_pdf_downloaded = st.download_button(
@@ -785,6 +793,7 @@ def _render_care_plan(care: dict, profile: dict, history: dict) -> None:
                 if st.button("No need right now", key="care_no_need", width="content"):
                     st.session_state.mvp_care_plan = None
                     st.session_state.mvp_plan_details_visible = False
+                    st.session_state.mvp_plan_render_in_care = False
                     no_need_clicked = True
             with note_col:
                 if no_need_clicked:
@@ -847,6 +856,7 @@ def _reset_guided_care_plan() -> None:
     st.session_state.mvp_care_category = ""
     st.session_state.mvp_intake_edit = True
     st.session_state.mvp_plan_details_visible = False
+    st.session_state.mvp_plan_render_in_care = False
     st.session_state.intake_service = insta_talk.CARE_PLAN_CATEGORIES[0]
     st.session_state.intake_note = ""
     st.session_state.intake_mode = "Routine"
@@ -873,6 +883,7 @@ def _show_direct_care_plan(selected_service: str) -> None:
     )
     st.session_state.mvp_intake_edit = True
     st.session_state.mvp_plan_details_visible = False
+    st.session_state.mvp_plan_render_in_care = False
     st.session_state.mvp_direct_plan_notice = True
 
 
@@ -928,6 +939,7 @@ def _render_calendar(profile: dict) -> None:
                 st.session_state.mvp_care_plan = built
                 st.session_state.mvp_intake_edit = True
                 st.session_state.mvp_plan_details_visible = False
+                st.session_state.mvp_plan_render_in_care = False
                 _log_leading_indicator("guided_intake_built", "guided_intake", {
                     "category": intake_service,
                     "timing": intake_mode,
@@ -994,6 +1006,8 @@ def _render_calendar(profile: dict) -> None:
                 plan = mvp.build_plan_from_history(profile, history, reference=ref, llm=None)
                 st.session_state.mvp_plan = plan
                 st.session_state.mvp_plan_summary = ""
+                st.session_state.mvp_plan_details_visible = True
+                st.session_state.mvp_plan_render_in_care = False
                 mvp.log_tool_trace({
                     "ts": datetime.now(timezone.utc).isoformat(),
                     "session_hash": st.session_state.mvp_session_hash,
@@ -1026,9 +1040,13 @@ def _render_calendar(profile: dict) -> None:
                     "evidence": "customer input only",
                 })
                 st.session_state.mvp_plan = plan
+                st.session_state.mvp_plan_details_visible = True
+                st.session_state.mvp_plan_render_in_care = False
                 st.rerun()
 
     plan = list(st.session_state.get("mvp_plan", []))
+    if plan and not st.session_state.get("mvp_plan_render_in_care"):
+        _render_plan_details(plan, profile, history)
 
     if not plan:
         st.markdown(
