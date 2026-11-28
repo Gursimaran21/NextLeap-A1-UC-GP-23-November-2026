@@ -1360,7 +1360,7 @@ def _talk_mode_selector(profile: dict) -> str:
         key=f"talk_context_{active}",
         placeholder="e.g., Deep cleaning was 9 months ago",
     )
-    if st.button("Send to Insta Talk", key="talk_send_mode"):
+    if st.button("Send to Insta Talk", key="talk_send_mode", type="primary"):
         _handle_talk(active, context, profile)
     return active
 

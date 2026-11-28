@@ -242,6 +242,15 @@ st.markdown(
       [data-testid="stButton"]:has([title="Clear Insta Talk modes"]) > button * {
         color: #500C6B !important;
       }
+      [data-testid="stButton"]:has([title="Send to Insta Talk"]) > button,
+      [data-testid="stButton"]:has([title="Send to Insta Talk"]) > button:hover {
+        background-color: #500C6B !important;
+        border: 1px solid #500C6B !important;
+      }
+      [data-testid="stButton"]:has([title="Send to Insta Talk"]) > button,
+      [data-testid="stButton"]:has([title="Send to Insta Talk"]) > button * {
+        color: #FFFFFF !important;
+      }
       [data-testid="stProgress"] [data-testid="stProgressBarTrack"] > div {
         background-color: #500C6B !important;
       }
